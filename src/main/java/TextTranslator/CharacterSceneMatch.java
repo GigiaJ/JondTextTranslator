@@ -32,6 +32,10 @@ public class CharacterSceneMatch {
 		permutationMatches.add(match);
 	}		
 	
+	public void removePermutationMatch(PermutationMatch match) {
+		permutationMatches.remove(match);
+	}
+	
 	/**
 	 * Sets the scene that this scene match is related to
 	 * @param scene 		the scene

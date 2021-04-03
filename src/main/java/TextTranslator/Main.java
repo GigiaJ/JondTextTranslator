@@ -29,32 +29,105 @@ public class Main {
 		
 		
 		
-		printNonMatches(removeMatches(dialogueMatchList, dialogueContainList), kalosEngMainText);
+		printNonMatches(removeCollisions(dialogueMatchList, filterPermutations(dialogueContainList)), kalosEngMainText);
 		//printMatches(dialogueContainList, kalosEngMainText);
 	}
 	
-	public static ArrayList<CharacterSceneMatch> removeMatches(ArrayList<CharacterSceneMatch> matches1, ArrayList<CharacterSceneMatch> matches2) {
+	
+	/**
+	 * Quickly written collision removal
+	 * TODO:
+	 * Revise this entirely (nested for loops bad)
+	 * @param matches1
+	 * @param matches2
+	 * @return
+	 */
+	public static ArrayList<CharacterSceneMatch> removeCollisions(ArrayList<CharacterSceneMatch> matches1, ArrayList<CharacterSceneMatch> matches2) {
 		//for (CharacterSceneMatch scene1 : matches1) {
 		for (int i = 0; i < matches1.size(); i++) {
 			CharacterSceneMatch scene1 = matches1.get(i);
 			for (int x = 0; x < matches2.size(); x++) {
 				CharacterSceneMatch scene2 = matches2.get(x);
-				if (scene1.getMatches().isEmpty() && !scene2.getMatches().isEmpty()) {
-					continue;
+				if (!scene1.getMatches().isEmpty() && !scene2.getMatches().isEmpty()) {
+					for (PermutationMatch pm1 : scene1.getMatches()) {
+						for (PermutationMatch pm2 : scene2.getMatches()) {
+							for (int s1 : pm1.getLineMatches()) {
+								for (int s2 : pm2.getLineMatches()) {
+									if (s1 == s2) {
+										matches2.remove(x);
+										return removeCollisions(matches1, matches2);
+									}
+								}
+							}
+						}
+					}
 				}
 				else {
-					matches2.remove(x);
-					return removeMatches(matches1, matches2);
+					continue;
 				}
 			}
 		}
 		return matches2;
 	}
 	
+	/**
+	 * Quickly written filter
+	 * TODO:
+	 * Revise this
+	 * @param sm
+	 * @return
+	 */
+	public static ArrayList<CharacterSceneMatch> filterPermutations(ArrayList<CharacterSceneMatch> sm) {
+		for (int i = 0; i < sm.size(); i++) {
+			ArrayList<PermutationMatch> pmal = sm.get(i).getMatches();
+			int longest = 0;
+			PermutationMatch pm = new PermutationMatch();
+			for (int x = 0; x < pmal.size(); x++) {
+				if (!pmal.get(x).getLineMatches().isEmpty()) {
+					if (longest == 0) {
+						longest = pmal.get(x).getSize();
+						pm = pmal.get(x);
+					}
+					else {
+						if (pm.getStart() == pmal.get(x).getStart()) {
+							if (pmal.get(x).getSize() > longest) {
+								longest = pmal.get(x).getSize();
+								sm.get(i).removePermutationMatch(pm);
+
+							}
+							else {
+								sm.get(i).removePermutationMatch(pmal.get(x));
+							}
+						}
+						else {
+							sm.get(i).removePermutationMatch(pm);
+							x = 0;
+							longest = 0;
+						}
+					}
+				}
+				else {
+					sm.get(i).removePermutationMatch(pmal.get(x));
+				}
+			}
+		}
+		return sm;
+	}
+	
+	
+	/**
+	 * Do translations here
+	 */
 	public static void translate() {
 		
 	}
 	
+	/**
+	 * Prints test data
+	 * @param dialogueMatchList
+	 * @param text
+	 * @return
+	 */
 	public static ArrayList<CharacterScene> getNonMatchingScenes(ArrayList<CharacterSceneMatch> dialogueMatchList, ArrayList<String> text) {
 		ArrayList<CharacterScene> scenes = new ArrayList<CharacterScene>();
 		for (CharacterSceneMatch dialogueMatch : dialogueMatchList) {
@@ -65,6 +138,12 @@ public class Main {
 		return scenes;
 	}
 	
+	/**
+	 * Prints test data
+	 * @param dialogueMatchList
+	 * @param text
+	 * @return
+	 */
 	public static void printNonMatches(ArrayList<CharacterSceneMatch> dialogueMatchList, ArrayList<String> text) {
 		int counter = 0;
 		for (CharacterSceneMatch dialogueMatch : dialogueMatchList) {
@@ -73,7 +152,7 @@ public class Main {
 					System.out.println(dialogue.getText());
 				}
 				System.out.println();
-				counter += dialogueMatch.getCharacterScene().size();
+				counter++;
 				
 			}
 		}
@@ -84,10 +163,10 @@ public class Main {
 		int counter = 0;
 		for (CharacterSceneMatch dialogueMatch : dialogueMatchList) {
 			for (PermutationMatch match : dialogueMatch.getMatches()) {
-				counter += dialogueMatch.getCharacterScene().size();
+				counter++;
 				System.out.println(match.text);
 				for (int i : match.getLineMatches()) {
-					System.out.println(text.get(i));
+					//System.out.println(text.get(i));
 				}
 				
 			}
