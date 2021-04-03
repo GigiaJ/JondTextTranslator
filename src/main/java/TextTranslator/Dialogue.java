@@ -37,6 +37,10 @@ class Dialogue {
 	public String getText() {
 		return text;
 	}
+	
+	public int getRow() {
+		return row;
+	}
 
 	public void setText(String text) {
 		this.text = text;
@@ -65,4 +69,6 @@ class Dialogue {
 	public void setTalkTime(int talkTime) {
 		this.talkTime = talkTime;
 	}
+
+
 }
