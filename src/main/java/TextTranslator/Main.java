@@ -2,45 +2,176 @@ package TextTranslator;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import static net.gcardone.junidecode.Junidecode.*;
 
 
 public class Main {
 	
-	static int countguy = 0;
 	public static void main(String[] args) {
 		File spreadSheetInput = new File("C:\\Users\\Jaggar\\Downloads\\englishSheet.csv");
 		File engMain = new File("C:\\Users\\Jaggar\\Downloads\\eng_story.txt");
 		File spaMain = new File("C:\\Users\\Jaggar\\Downloads\\spa_main.txt");
 		
 		ArrayList<CharacterSceneMatch> dialogueMatchList = new ArrayList<CharacterSceneMatch>();
-
+		ArrayList<CharacterSceneMatch> dialogueContainList = new ArrayList<CharacterSceneMatch>();
+		
 		ArrayList<String> kalosEngMainText = loadTextFile(engMain);
 		ArrayList<String> kalosSpaMainText = loadTextFile(spaMain);
 		ArrayList<CharacterScene> scenes = assignDialogueToScene(getDialogue(spreadSheetInput));
 
-		dialogueMatchList = getMatchingLines(scenes, kalosEngMainText);
+		dialogueMatchList = getMatchingLines(scenes, kalosEngMainText, true);
+		dialogueContainList = getMatchingLines(getNonMatchingScenes(dialogueMatchList, kalosEngMainText), kalosEngMainText, false);
 		
+		
+		
+		printNonMatches(removeCollisions(dialogueMatchList, filterPermutations(dialogueContainList)), kalosEngMainText);
+		//printMatches(dialogueContainList, kalosEngMainText);
+	}
+	
+	
+	/**
+	 * Quickly written collision removal
+	 * TODO:
+	 * Revise this entirely (nested for loops bad)
+	 * @param matches1
+	 * @param matches2
+	 * @return
+	 */
+	public static ArrayList<CharacterSceneMatch> removeCollisions(ArrayList<CharacterSceneMatch> matches1, ArrayList<CharacterSceneMatch> matches2) {
+		//for (CharacterSceneMatch scene1 : matches1) {
+		for (int i = 0; i < matches1.size(); i++) {
+			CharacterSceneMatch scene1 = matches1.get(i);
+			for (int x = 0; x < matches2.size(); x++) {
+				CharacterSceneMatch scene2 = matches2.get(x);
+				if (!scene1.getMatches().isEmpty() && !scene2.getMatches().isEmpty()) {
+					for (PermutationMatch pm1 : scene1.getMatches()) {
+						for (PermutationMatch pm2 : scene2.getMatches()) {
+							for (int s1 : pm1.getLineMatches()) {
+								for (int s2 : pm2.getLineMatches()) {
+									if (s1 == s2) {
+										matches2.remove(x);
+										return removeCollisions(matches1, matches2);
+									}
+								}
+							}
+						}
+					}
+				}
+				else {
+					continue;
+				}
+			}
+		}
+		return matches2;
+	}
+	
+	/**
+	 * Quickly written filter
+	 * TODO:
+	 * Revise this
+	 * @param sm
+	 * @return
+	 */
+	public static ArrayList<CharacterSceneMatch> filterPermutations(ArrayList<CharacterSceneMatch> sm) {
+		for (int i = 0; i < sm.size(); i++) {
+			ArrayList<PermutationMatch> pmal = sm.get(i).getMatches();
+			int longest = 0;
+			PermutationMatch pm = new PermutationMatch();
+			for (int x = 0; x < pmal.size(); x++) {
+				if (!pmal.get(x).getLineMatches().isEmpty()) {
+					if (longest == 0) {
+						longest = pmal.get(x).getSize();
+						pm = pmal.get(x);
+					}
+					else {
+						if (pm.getStart() == pmal.get(x).getStart()) {
+							if (pmal.get(x).getSize() > longest) {
+								longest = pmal.get(x).getSize();
+								sm.get(i).removePermutationMatch(pm);
+
+							}
+							else {
+								sm.get(i).removePermutationMatch(pmal.get(x));
+							}
+						}
+						else {
+							sm.get(i).removePermutationMatch(pm);
+							x = 0;
+							longest = 0;
+						}
+					}
+				}
+				else {
+					sm.get(i).removePermutationMatch(pmal.get(x));
+				}
+			}
+		}
+		return sm;
+	}
+	
+	
+	/**
+	 * Do translations here
+	 */
+	public static void translate() {
+		
+	}
+	
+	/**
+	 * Prints test data
+	 * @param dialogueMatchList
+	 * @param text
+	 * @return
+	 */
+	public static ArrayList<CharacterScene> getNonMatchingScenes(ArrayList<CharacterSceneMatch> dialogueMatchList, ArrayList<String> text) {
+		ArrayList<CharacterScene> scenes = new ArrayList<CharacterScene>();
+		for (CharacterSceneMatch dialogueMatch : dialogueMatchList) {
+			if (dialogueMatch.getMatches().isEmpty()) {
+				scenes.add(dialogueMatch.getCharacterScene());
+			}
+		}
+		return scenes;
+	}
+	
+	/**
+	 * Prints test data
+	 * @param dialogueMatchList
+	 * @param text
+	 * @return
+	 */
+	public static void printNonMatches(ArrayList<CharacterSceneMatch> dialogueMatchList, ArrayList<String> text) {
+		int counter = 0;
+		for (CharacterSceneMatch dialogueMatch : dialogueMatchList) {
+			if (dialogueMatch.getMatches().isEmpty()) {
+				for (Dialogue dialogue : dialogueMatch.getCharacterScene()) {
+					System.out.println(dialogue.getText());
+				}
+				System.out.println();
+				counter++;
+				
+			}
+		}
+		System.out.println(counter);
+	}
+	
+	public static void printMatches(ArrayList<CharacterSceneMatch> dialogueMatchList, ArrayList<String> text) {
+		int counter = 0;
 		for (CharacterSceneMatch dialogueMatch : dialogueMatchList) {
 			for (PermutationMatch match : dialogueMatch.getMatches()) {
+				counter++;
 				System.out.println(match.text);
 				for (int i : match.getLineMatches()) {
-					System.out.println(kalosEngMainText.get(i));
+					//System.out.println(text.get(i));
 				}
 				
 			}
 		}
-		System.out.println(countguy);
+		System.out.println(counter);
 	}
 	
 	/**
@@ -60,10 +191,8 @@ public class Main {
 			Pattern dialogueTagPattern = Pattern.compile("score_DialogueTrigger=(\\d*)");
 			int counter = 1;
 			while ((line = br.readLine()) != null) {
-				while (line.contains("\\u2019")) {
-					line = line.replace("\\u2019", "'");
-				}
-				line = line.replaceAll("Pokémon", "Pok�mon");
+				line = correctLine(line);
+
 				String s = "";
 				
 				Matcher matchText = textPattern.matcher(line);
@@ -172,7 +301,7 @@ public class Main {
 	 * @param textDump		the lines in the text file
 	 * @return				the list of character scenes with their potential matching lines
 	 */
-	private static ArrayList<CharacterSceneMatch> getMatchingLines(ArrayList<CharacterScene> scenes, ArrayList<String> textDump) {
+	private static ArrayList<CharacterSceneMatch> getMatchingLines(ArrayList<CharacterScene> scenes, ArrayList<String> textDump, boolean exactMatch) {
 		ArrayList<CharacterSceneMatch> sceneMatchList = new ArrayList<CharacterSceneMatch>();
 		//Iterate through the character scenes to find matches
 		for (int i = 0; i < scenes.size(); i++) {
@@ -188,14 +317,21 @@ public class Main {
 				for (int k = 0; k < textDump.size(); k++) {
 					String textToCheck = textDump.get(k); //The line in the text dump we want to check
 					String permutationToCheck = match.getText();
-					if (textToCheck.equals(permutationToCheck)) {
-						match.addLineMatch(k);
-						countguy = countguy+1;
+					if (exactMatch) {
+						if (textToCheck.equals(permutationToCheck)) {
+							match.addLineMatch(k);
+						}
+					}
+					else {
+						if (textToCheck.contains(permutationToCheck)) {
+							match.addLineMatch(k);
+						}
 					}
 				}
 				if (match.hasLineMatches()) {
 					sceneMatch.addPermutationMatch(match);
 				}
+				sceneMatch.setScene(scene);
 			}
 			sceneMatchList.add(sceneMatch);
 			
@@ -230,6 +366,28 @@ public class Main {
 		return output;
 	}
 	
+	public static String correctLine(String line) {
+		line = line.replaceAll("PokÃ©mon", "Pokémon");
+		line = line.replaceAll("Pokemon", "Pokémon");
+		//line = line.replaceAll("Froakie", "@s");
+		while (line.contains("\\u2019")) {
+			line = line.replace("\\u2019", "'");
+		}
+		while (line.contains("\\u266a")) {
+			line = line.replace("\\u266a", "♪");
+		}
+		while (line.contains("\\u201c")) {
+			line = line.replace("\\u201c", "“");
+		}
+		while (line.contains("\\u201d")) {
+			line = line.replace("\\u201d", "”");
+		}
+		while (line.contains("\\u0020")) {
+			line = line.replace("\\u0020", " ");
+		}
+		return line;
+	}
+	
 	private static String normalizeTo(String s) {
 		final String PK0 = "[VAR PKNAME(0000)]";
 		final String PK1 = "[VAR PKNAME(0001)]";
@@ -245,12 +403,12 @@ public class Main {
 
 		//s = s.replace("Pokemon", "");
 		
-		s = s.replace(PK0, "Pok�mon");
-		s = s.replace(PK1, "Pok�mon");
-		s = s.replace(PK2, "Pok�mon");
-		s = s.replace(PK3, "Pok�mon");
-		s = s.replace(PK4, "Pok�mon");
-		s = s.replace(PK5, "Pok�mon");
+		s = s.replace(PK0, "Pokémon");
+		s = s.replace(PK1, "Pokémon");
+		s = s.replace(PK2, "Pokémon");
+		s = s.replace(PK3, "Pokémon");
+		s = s.replace(PK4, "Pokémon");
+		s = s.replace(PK5, "Pokémon");
 		s = s.replace(TN, "");
 		s = s.replace(PKN0, "");
 		s = s.replace(PKN1, "");

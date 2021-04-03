@@ -56,6 +56,18 @@ public class PermutationMatch {
 		return !lineMatches.isEmpty();
 	}
 	
+	public int getStart() {
+		return start;
+	}
+	
+	public int getEnd() {
+		return end;
+	}
+	
+	public int getSize() {
+		return end - start;
+	}
+	
 	/**
 	 * DEBUG PURPOSES ONLY
 	 */
