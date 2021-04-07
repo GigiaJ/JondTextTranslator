@@ -65,7 +65,8 @@ public class PermutationMatch {
 	}
 	
 	public int getSize() {
-		return end - start;
+		//Ensures that we don't assume one line entries are empty
+		return (end - start) + 1;
 	}
 	
 	/**

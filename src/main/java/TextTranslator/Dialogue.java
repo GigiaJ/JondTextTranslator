@@ -70,5 +70,11 @@ class Dialogue {
 		this.talkTime = talkTime;
 	}
 
+	
+	
 
+
+	public String toString() {
+		return this.text;
+	}
 }

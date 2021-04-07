@@ -23,6 +23,36 @@ public class CharacterScene	extends ArrayList<Dialogue> {
 		return text;
 	}
 	
+	public int getDialogueRowStart() {
+		sortEntries();
+		return this.get(0).getRow();
+	}
+	
+	public int getDialogueRowEnd() {
+		sortEntries();
+		return this.get(this.size()-1).getRow();
+	}
+	
+	public void removeCopies() {
+		ArrayList<Dialogue> list = new ArrayList<Dialogue>();
+		for (Dialogue toCheck : this) {
+			boolean listContains = false;
+			for (Dialogue toCheckAgainst : list) {
+				if (toCheckAgainst.getText().equals(toCheck.getText())) {
+					listContains = true;
+				}
+			}
+			if (!listContains) {
+				list.add(toCheck);
+			}
+		}
+		this.clear();
+		this.addAll(list);
+	}
+	
+	public void sortEntries() {
+		this.sort((o1, o2) -> o1.getRow() - o2.getRow());
+	}
 	
 	/**
 	 * Generated serial
