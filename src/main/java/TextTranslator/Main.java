@@ -23,9 +23,9 @@ public class Main {
 	public static int noMatch = 0;
 	
 	public static void main(String[] args) {
-		File spreadSheetInput = new File("C:\\Users\\Jaggar\\Downloads\\englishSheet.csv");
-		File engMain = new File("C:\\Users\\Jaggar\\Downloads\\eng_story.txt");
-		File spaMain = new File("C:\\Users\\Jaggar\\Downloads\\spa_story.txt");
+		File spreadSheetInput = new File("C:\\Users\\gigia\\Downloads\\englishSheet.csv");
+		File engMain = new File("C:\\Users\\gigia\\Downloads\\eng_story.txt");
+		File spaMain = new File("C:\\Users\\gigia\\Downloads\\spa_story.txt");
 
 		ArrayList<CharacterSceneMatch> dialogueMatchList = new ArrayList<CharacterSceneMatch>();
 		ArrayList<CharacterSceneMatch> dialogueContainList = new ArrayList<CharacterSceneMatch>();
@@ -48,8 +48,11 @@ public class Main {
 
 		dialogueMatchList.addAll(dialogueContainList);
 		
+		ArrayList<CharacterScene> nonMatchingScenes = getNonMatchingScenes(dialogueMatchList);
 		
-		
+		nonMatchingScenes.sort((CharacterScene o1, CharacterScene o2) -> {
+			return o1.getDialogueRowStart() - o2.getDialogueRowStart();
+		});
 		
        // System.out.println("YOOOOOOOOOOOO " + counter);
 
@@ -71,7 +74,27 @@ public class Main {
 		//mappedText = translate(dialogueContainList, kalosEngMainText, kalosSpaMainText);
 		
 		StringBuilder output = new StringBuilder();
+		
+		
 		TreeMap<Integer, String[]> mappedText = translate(dialogueMatchList, kalosEngMainText, kalosSpaMainText);
+		
+		
+		for (int x = 0; x < nonMatchingScenes.size(); x++) {
+			if (mappedText.containsKey(2950)) {
+				System.out.println(mappedText.get(2950));
+			}
+			if (!mappedText.containsKey(nonMatchingScenes.get(x).getDialogueRowStart())) {
+				String nonMatchedText = "";
+				for (Dialogue dialogue : nonMatchingScenes.get(x)) {
+					nonMatchedText += dialogue.getText() + " / ";
+				}
+				mappedText.put(nonMatchingScenes.get(x).getDialogueRowStart(), new String[] {
+						String.valueOf(nonMatchingScenes.get(x).getDialogueRowEnd()),
+						nonMatchedText,
+						"NO MATCH",
+						"NO MATCH"});
+			}
+		}
 		
 		int entryEnd = 0;
 		for (int i = 1; i <= 2951; i++) {
@@ -559,14 +582,14 @@ public class Main {
 	private static void saveTo(String string) {
 		String fileName = "test.tsv";
 	    try {
-	        File myObj = new File("C:\\Users\\Jaggar\\Downloads\\" + fileName);
+	        File myObj = new File("C:\\Users\\gigia\\Downloads\\" + fileName);
 	        if (myObj.createNewFile()) {
 	          System.out.println("File created: " + myObj.getName());
 	        } else {
 	          System.out.println("File already exists.");
 	        }
 	        
-	        FileWriter myWriter = new FileWriter("C:\\Users\\Jaggar\\Downloads\\" + fileName);
+	        FileWriter myWriter = new FileWriter("C:\\Users\\gigia\\Downloads\\" + fileName);
 	        myWriter.write(string);
 	        myWriter.close();
 	        System.out.println("Successfully wrote to the file.");
