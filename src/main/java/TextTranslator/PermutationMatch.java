@@ -12,6 +12,7 @@ public class PermutationMatch {
 	int start;
 	int end;
 	ArrayList<Integer> lineMatches;
+	CharacterScene scene;
 	
 	public PermutationMatch() {
 		this.lineMatches = new ArrayList<Integer>();
@@ -21,14 +22,15 @@ public class PermutationMatch {
 	 * Creates a permutation based on the start index to the end index of excel 
 	 * sheet rows as well as stores the text for those combined lines
 	 * @param text	the combined text
-	 * @param start	the start of the excel rows
-	 * @param end	the end of the excel rows
+	 * @param start	the starting index in the scene which this match is based from
+	 * @param end	the ending index in the scene which this match is based from
 	 */
-	public PermutationMatch(String text, int start, int end) {
+	public PermutationMatch(String text, int start, int end, CharacterScene scene) {
 		this.text = text;
 		lineMatches = new ArrayList<Integer>();
 		this.start = start;
 		this.end = end;
+		this.scene = scene;
 		
 	}
 	
@@ -67,6 +69,10 @@ public class PermutationMatch {
 	public int getSize() {
 		//Ensures that we don't assume one line entries are empty
 		return (end - start) + 1;
+	}
+	
+	public CharacterScene getScene() {
+		return scene;
 	}
 	
 	/**

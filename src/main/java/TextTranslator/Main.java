@@ -22,10 +22,12 @@ public class Main {
 	public static int diaCount = 0;
 	public static int noMatch = 0;
 	
+	public static int EXCEL_SHEET_SIZE = 2950;
+	
 	public static void main(String[] args) {
-		File spreadSheetInput = new File("C:\\Users\\gigia\\Downloads\\englishSheet.csv");
-		File engMain = new File("C:\\Users\\gigia\\Downloads\\eng_story.txt");
-		File spaMain = new File("C:\\Users\\gigia\\Downloads\\spa_story.txt");
+		File spreadSheetInput = new File("C:\\Users\\Jaggar\\Downloads\\englishSheet.csv");
+		File engMain = new File("C:\\Users\\Jaggar\\Downloads\\eng_story.txt");
+		File spaMain = new File("C:\\Users\\Jaggar\\Downloads\\spa_story.txt");
 
 		ArrayList<CharacterSceneMatch> dialogueMatchList = new ArrayList<CharacterSceneMatch>();
 		ArrayList<CharacterSceneMatch> dialogueContainList = new ArrayList<CharacterSceneMatch>();
@@ -36,91 +38,20 @@ public class Main {
 
 		dialogueMatchList = filterPermutations(getMatchingLines(scenes, kalosEngMainText, true));
 		dialogueContainList = filterPermutations(getMatchingLines((scenes),	kalosEngMainText, false));
-		
-		
 		removeCollisions(dialogueMatchList, dialogueContainList);
-		
-
-		
-				
-		//Collections.sort(dialogueContainList, (CharacterSceneMatch o1, CharacterSceneMatch o2) -> 
-		//o1.getCharacterScene().getDialogueRowStart() - o2.getCharacterScene().getDialogueRowStart());
-
 		dialogueMatchList.addAll(dialogueContainList);
 		
-		ArrayList<CharacterScene> nonMatchingScenes = getNonMatchingScenes(dialogueMatchList);
-		
-		nonMatchingScenes.sort((CharacterScene o1, CharacterScene o2) -> {
-			return o1.getDialogueRowStart() - o2.getDialogueRowStart();
-		});
-		
-       // System.out.println("YOOOOOOOOOOOO " + counter);
-
-		
-		
-		/*
-		mappedText.forEach((found, translated)
-                -> System.out.println("COMMAND: " + found + "\nENGLISH: "+ translated[0] + "\nSPANISH: " + translated[1] + "\n"));
-		
-		mappedText = translate(dialogueMatchList, kalosEngMainText, kalosSpaMainText);
-		
-		mappedText.forEach((found, translated)
-                -> System.out.println("COMMAND: " + found + "\nENGLISH: "+ translated[0] + "\nSPANISH: " + translated[1] + "\n"));
-		
-		*/
-
-		//HashMap<String, String[]> 
-		
-		//mappedText = translate(dialogueContainList, kalosEngMainText, kalosSpaMainText);
-		
 		StringBuilder output = new StringBuilder();
+		String[][] mapText = translate(placeCommands(new String[2950][5], scenes), dialogueMatchList, kalosEngMainText, kalosSpaMainText);
 		
-		
-		TreeMap<Integer, String[]> mappedText = translate(dialogueMatchList, kalosEngMainText, kalosSpaMainText);
-		
-		
-		for (int x = 0; x < nonMatchingScenes.size(); x++) {
-			if (mappedText.containsKey(2950)) {
-				System.out.println(mappedText.get(2950));
+		for (int i = 0; i < 2950; i++) {
+			if (mapText[i] != null) {
+				output.append(mapText[i][0] + "\t" + mapText[i][1] + "\t" + mapText[i][2] + "\t" + mapText[i][3] + "\n");
 			}
-			if (!mappedText.containsKey(nonMatchingScenes.get(x).getDialogueRowStart())) {
-				String nonMatchedText = "";
-				for (Dialogue dialogue : nonMatchingScenes.get(x)) {
-					nonMatchedText += dialogue.getText() + " / ";
-				}
-				mappedText.put(nonMatchingScenes.get(x).getDialogueRowStart(), new String[] {
-						String.valueOf(nonMatchingScenes.get(x).getDialogueRowEnd()),
-						nonMatchedText,
-						"NO MATCH",
-						"NO MATCH"});
-			}
-		}
-		
-		int entryEnd = 0;
-		for (int i = 1; i <= 2951; i++) {
-			if (mappedText.get(i) != null) {
-				entryEnd = Integer.valueOf(mappedText.get(i)[0]);
-				output.append(mappedText.get(i)[1] + "\t" + mappedText.get(i)[2] + "\t" + mappedText.get(i)[3] + "\n");
-			}
-			else {
-				if (i <= entryEnd) {
-					output.append("Filled by the written out above entry (This is simply because entries aren't split up)\n");
-				}
-				else {
-					entryEnd = 0;
-					output.append("Not found yet.\n");
-				}
-			}
-			
 		}
 		
 		saveTo(output.toString());
 		
-		
-
-		
-		
-		//printNonMatches(dialogueMatchList, kalosEngMainText);
 		System.out.println("Multiple Lines: " + multiLine);
 		System.out.println("No Lines: " + noMatch);
 		System.out.println("Scene permutation count: " + scenePMCount);
@@ -213,48 +144,82 @@ public class Main {
 		}
 		return sceneMatches;
 	}
-
-	/**
-	 * Do translations here
-	 */
-	public static TreeMap<Integer, String[]> translate(ArrayList<CharacterSceneMatch> sceneMatches, ArrayList<String> text, ArrayList<String> altText) {
-		TreeMap<Integer, String[]> map = new TreeMap<Integer, String[]>();
-		for (int i = 0; i < sceneMatches.size(); i++) {
-			sceneCount++;
-			for (PermutationMatch match : sceneMatches.get(i).getMatches()) {
-				scenePMCount++;
-				if (match.getLineMatches().size() > 1) {
-					multiLine++;
+	
+	public static String[][] placeCommands(String[][] map, ArrayList<CharacterScene> scenes) {
+		for (int i = 0; i < EXCEL_SHEET_SIZE; i++) {
+			for (CharacterScene scene : scenes) {
+				for (Dialogue dialogue : scene) {
+					if (dialogue.getRow() == i + 1) {
+						map[i] = 
+								new String[] {
+										dialogue.getText()/*ROWTEXT*/,
+										""/*MATCHED*/, 
+										""/*ENGLISHFOUND*/, 
+										""/*ALTLANGUAGEFOUND*/,
+										String.valueOf(dialogue.getRow())
+										};
+						
+					}
 				}
-				String english = "";
-				String other = "";
-				for (int line : match.getLineMatches()) {
-					english += text.get(line);
-					other += altText.get(line);
-				}
-
-				if (map.get(sceneMatches.get(i).getCharacterScene().getDialogueRowStart()) == null) {
-					map.put(sceneMatches.get(i).getCharacterScene().getDialogueRowStart(), new String[] {String.valueOf(sceneMatches.get(i).getCharacterScene().getDialogueRowEnd()),
-							match.getText(), english, other});	
-				}
-				else {
-					String lastEnglishEntry = map.get(sceneMatches.get(i).getCharacterScene().getDialogueRowStart())[2], 
-							lastOtherEntry = map.get(sceneMatches.get(i).getCharacterScene().getDialogueRowStart())[3], 
-							lastMatchEntry = map.get(sceneMatches.get(i).getCharacterScene().getDialogueRowStart())[1];
-					
-					map.put(sceneMatches.get(i).getCharacterScene().getDialogueRowStart(), new String[] {
-							String.valueOf(sceneMatches.get(i).getCharacterScene().getDialogueRowEnd()),
-							match.getText() + " / " + lastMatchEntry, 
-							english + " / " + lastEnglishEntry,
-							other + " / " + lastOtherEntry});	
-				}
-				
 			}
-			diaCount += sceneMatches.get(i).getCharacterScene().size();
+			if (map[i] == null) {
+				map[i] = 
+						new String[] {
+								"DUPLICATE LINE"/*ROWTEXT*/,
+								""/*MATCHED*/, 
+								""/*ENGLISHFOUND*/, 
+								""/*ALTLANGUAGEFOUND*/,
+								""
+								};
+			}
 		}
 		return map;
 	}
-
+	
+	public static String[][] translate(String[][] map, ArrayList<CharacterSceneMatch> sceneMatches, ArrayList<String> text, ArrayList<String> altText) {
+		for (int i = 0; i < sceneMatches.size(); i++) {
+			//sceneCount++;
+			for (PermutationMatch match : sceneMatches.get(i).getMatches()) {
+				//scenePMCount++;
+				if (match.getLineMatches().size() > 1) {
+					multiLine++;
+				}
+				for (int x = match.getStart(); x < match.getSize() + match.getStart(); x++) {
+					int row = match.getScene().get(x).getRow() - 1;
+					if (match.hasLineMatches()) {
+						String english = "";
+						String other = "";
+						for (int line : match.getLineMatches()) {
+							english += text.get(line);
+							other += altText.get(line);
+						}
+						String[] value = new String[] {
+								map[row][0],
+								match.getText(),
+								english,
+								other
+								};				
+						if (map[row][1] != null && map[row][1].equals("")) {
+							map[row] = value;
+						}
+						else {
+							value = new String[] {
+									map[row][0],
+									map[row][1] + " / " + match.getText(),
+									map[row][2]  + " / " + english,
+									map[row][3] + " / " + other
+									};
+							map[row] = value;
+						
+					}
+					}
+				}
+			//diaCount += sceneMatches.get(i).getCharacterScene().size();
+		}
+	}
+		return map;
+	}
+	
 	/**
 	 * Gets the non-matching scenes
 	 * 
@@ -321,7 +286,11 @@ public class Main {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line;
-			Pattern textPattern = Pattern.compile("(?:\"text\"\":\"\")([^}^\"\"$]*)(?:\"\")");
+			//(?:"text":")((?:(?!",")(?!"})[^}])*)		 actual pattern
+			//(?:""text"":"")((?:(?!"","")(?!""})[^}])*) adjusted pattern
+
+			Pattern textPattern = Pattern.compile("(?:\"\"text\"\":\"\")((?:(?!\"\",\"\")(?!\"\"})[^}])*)"
+					);
 			Pattern dialogueTalkTimePattern = Pattern.compile("score_TalkTime=(\\d*)");
 			Pattern dialogueTagPattern = Pattern.compile("score_DialogueTrigger=(\\d*)");
 			Pattern selectorPattern = Pattern.compile("(\"\"selector\"\":\"\"@)");
@@ -413,6 +382,8 @@ public class Main {
 				scene.add(dialogue);
 			}
 		}
+		scenes.add(scene); //This scene is the last one and isn't added because there isn't anyway for the 
+		//the above requirements to be true
 
 		return scenes;
 	}
@@ -456,7 +427,7 @@ public class Main {
 			CharacterScene scene = scenes.get(i);
 			CharacterSceneMatch sceneMatch = new CharacterSceneMatch();
 			// List of the possible permutations of this text
-			ArrayList<PermutationMatch> permutationsList = combinations(scene.getText(),
+			ArrayList<PermutationMatch> permutationsList = combinations(scene,
 					new ArrayList<PermutationMatch>(), 0);
 			// Iterate through all of the permutations
 			for (int t = 0; t < permutationsList.size(); t++) {
@@ -497,20 +468,20 @@ public class Main {
 	 * @param index  the index to start searching from
 	 * @return the combined strings in the form of a permutation match
 	 */
-	public static ArrayList<PermutationMatch> combinations(ArrayList<String> a, ArrayList<PermutationMatch> output,
+	public static ArrayList<PermutationMatch> combinations(CharacterScene scene, ArrayList<PermutationMatch> output,
 			int index) {
-		if (index < a.size()) {
+		if (index < scene.size()) {
 			String combined = "";
-			for (int i = index; i < a.size(); i++) {
-				String s = a.get(i);
+			for (int i = index; i < scene.size(); i++) {
+				String s = scene.get(i).getText();
 				if (i == index) {
 					combined += s;
 				} else {
 					combined += " " + s;
 				}
-				output.add(new PermutationMatch(combined, index, i));
+				output.add(new PermutationMatch(combined, index, i, scene));
 			}
-			return combinations(a, output, index + 1);
+			return combinations(scene, output, index + 1);
 		}
 		return output;
 	}
@@ -582,14 +553,14 @@ public class Main {
 	private static void saveTo(String string) {
 		String fileName = "test.tsv";
 	    try {
-	        File myObj = new File("C:\\Users\\gigia\\Downloads\\" + fileName);
+	        File myObj = new File("C:\\Users\\Jaggar\\Downloads\\" + fileName);
 	        if (myObj.createNewFile()) {
 	          System.out.println("File created: " + myObj.getName());
 	        } else {
 	          System.out.println("File already exists.");
 	        }
 	        
-	        FileWriter myWriter = new FileWriter("C:\\Users\\gigia\\Downloads\\" + fileName);
+	        FileWriter myWriter = new FileWriter("C:\\Users\\Jaggar\\Downloads\\" + fileName);
 	        myWriter.write(string);
 	        myWriter.close();
 	        System.out.println("Successfully wrote to the file.");
