@@ -75,49 +75,70 @@ public class CharacterSceneMatch {
 			int longest = 0;
 			// Store the longest length permutation per match
 			int longestIndex = -1;
+			ArrayList<Integer> indexesToRemove = new ArrayList<Integer>();
 			for (int x = 0; x < sceneMatches.get(i).getMatches().size(); x++) {
 				if (!sceneMatches.get(i).getMatches().get(x).getLineMatches().isEmpty()) {
 					if (longest == 0) {
 						// Fill the values if the longest is 0
 						longest = sceneMatches.get(i).getMatches().get(x).getSize();
 						longestIndex = x;
-					} else {
-						if (sceneMatches.get(i).getMatches().get(x).getSize() > longest) {
-							// if longer than the longest
-							if (sceneMatches.get(i).getMatches().get(longestIndex).getStart() == sceneMatches.get(i)
-									.getMatches().get(x).getStart()) {
+					} 
+					else {		
+						if (sceneMatches.get(i).getMatches().get(longestIndex).getStart() == sceneMatches.get(i)
+								.getMatches().get(x).getStart()) {
+							if (sceneMatches.get(i).getMatches().get(x).getSize() > longest) {
+								// if longer than the longest
 								// if the index starts match
 								longest = sceneMatches.get(i).getMatches().get(x).getSize();
 								// this is the new longest
-								sceneMatches.get(i)
-										.removePermutationMatch(sceneMatches.get(i).getMatches().get(longestIndex));
+								indexesToRemove.add(longestIndex);
 								// remove the old longest
-								longestIndex = x - 1;
-								x = x - 1;
-							} else {
-								// if the index starts do not match
-								if (sceneMatches.get(i).getMatches().get(longestIndex).getEnd() == sceneMatches.get(i)
-										.getMatches().get(x).getEnd()) {
-									sceneMatches.get(i).removePermutationMatch(sceneMatches.get(i).getMatches().get(x));
-									// remove this as it is smaller than the longest for the start index
-									x = x - 1;
-								} else {
-									longest = 0;
-									x = x - 1;
-								}
+								longestIndex = x ;
 							}
-						} else {
-							// if the same size or shorter than the longest
-							sceneMatches.get(i).removePermutationMatch(sceneMatches.get(i).getMatches().get(x));
-							// remove this as it is smaller than the longest for the start index
-							x = x - 1;
-						}
+							else {
+								// remove this as it is smaller than the longest for the start index
+								indexesToRemove.add(x);
+							}
+						} 
+						else {
+						// if the index starts do not match
+							if (sceneMatches.get(i).getMatches().get(longestIndex).getEnd() == sceneMatches.get(i)
+									.getMatches().get(x).getEnd()) {
+								if (sceneMatches.get(i).getMatches().get(x).getSize() > longest) {
+									// if longer than the longest
+									// if the index starts match
+									longest = sceneMatches.get(i).getMatches().get(x).getSize();
+									// this is the new longest
+									indexesToRemove.add(longestIndex);
+									// remove the old longest
+									longestIndex = x;
+								}
+								else {
+									// remove this as it is smaller than the longest for the start index
+									indexesToRemove.add(x);
+								}
+							} 
+							else {
+								longest = 0;
+								x = x - 1;
+								//Restart on this one to begin a new permutation set to check
+							}
+						} 
+						
 					}
 				} else {
-					sceneMatches.get(i).removePermutationMatch(sceneMatches.get(i).getMatches().get(x));
-					x = x - 1;
+					indexesToRemove.add(x);
 				}
 			}
+			
+			/*Remove in reverse to avoid having to change the index for the array list removal*/
+			for (int x = indexesToRemove.size() - 1; x > 0; x--) {
+				//Make a new object for index as otherwise the array list will try to remove
+				//an Integer object and not an object at index of int
+				int index = indexesToRemove.get(x);
+				sceneMatches.get(i).getMatches().remove(index);
+			}
+			
 			if (sceneMatches.get(i).getMatches().isEmpty()) {
 				sceneMatches.remove(i);
 				i = i - 1;
@@ -213,11 +234,20 @@ public class CharacterSceneMatch {
 						}
 					}
 					if (scene1.getCharacterScene().getTrigger() == matches2.get(x).getCharacterScene().getTrigger() &&
-					scene1.getCharacterScene().get(0).getRow() == scene2.getCharacterScene().get(0).getRow()) {
+							scene1.getCharacterScene().get(0).getRow() == scene2.getCharacterScene().get(0).getRow()) {
 							scene1.getMatches().addAll(scene2.getMatches());
 					}
 				} else {
-					continue;
+					if (scene2.getMatches().isEmpty()) {
+						matches2.remove(x);
+						x = x - 1;
+						continue;
+					}
+					if (scene1.getMatches().isEmpty()) {
+						matches1.remove(i);
+						i = i - 1;
+						break;
+					}
 				}
 			}
 		}
@@ -234,7 +264,11 @@ public class CharacterSceneMatch {
 			for (Integer s1 : pm1.getLineMatches()) {
 				for (Integer s2 : pm2.getLineMatches()) {
 					if (s1.equals(s2) && pm1.getScene().getTrigger() == pm2.getScene().getTrigger()) {
-						return true;
+						int pm1s = pm1.getScene().get(pm1.getStart()).getRow();
+						int pm2s = pm2.getScene().get(pm2.getStart()).getRow();
+						if  (pm1s == pm2s) {
+							return true;
+						}
 					}
 				}
 			}
@@ -273,7 +307,6 @@ public class CharacterSceneMatch {
 				for (int k = 0; k < textDump.size(); k++) {
 					String textToCheck = textDump.get(k); // The line in the text dump we want to check
 					String permutationToCheck = match.getText();
-
 					if (exactMatch) {
 						if (textToCheck.equals(permutationToCheck)) {
 							match.addLineMatch(k);

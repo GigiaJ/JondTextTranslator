@@ -19,10 +19,11 @@ public class Main {
 		ArrayList<String> kalosSpaMainText = FileHandler.loadTextFile(spaMain);
 		ArrayList<CharacterScene> scenes = CharacterScene.assignDialogueToScene(Dialogue.getDialogue(spreadSheetInput));
 
-		dialogueMatchList =CharacterSceneMatch.getMatchingLines(scenes, kalosEngMainText, true);
-		dialogueContainList = CharacterSceneMatch.getMatchingLines(scenes, kalosEngMainText, false);
+		dialogueMatchList = CharacterSceneMatch.filterPermutations(CharacterSceneMatch.getMatchingLines(scenes, kalosEngMainText, true));
+		dialogueContainList = CharacterSceneMatch.filterPermutations(CharacterSceneMatch.getMatchingLines(scenes, kalosEngMainText, false));
 		CharacterSceneMatch.removeCollisions(dialogueMatchList, dialogueContainList);
 		dialogueMatchList.addAll(dialogueContainList);
+		CharacterSceneMatch.filterPermutations(dialogueMatchList);
 		String[][] mapText = CharacterSceneMatch.translate(CharacterScene.placeCommands(new String[EXCEL_SHEET_SIZE][INNER_ARRAY_SIZE], scenes), dialogueMatchList, kalosEngMainText, kalosSpaMainText);
 		
 		FileHandler.save("test.tsv", FileHandler.generateOutput(mapText));

@@ -38,6 +38,9 @@ public class FileHandler {
 		while (line.contains("\\u2026")) {
 			line = line.replace("\\u2026", "...");
 		}
+		//while (line.contains("\\\"\"")) {
+		//	line = line.replace("\\\"\"", "\"");
+		//}
 		return line;
 	}
 	
@@ -57,7 +60,8 @@ public class FileHandler {
 		final String PKN0 = "[VAR PKNICK(0000)]";
 		final String PKN1 = "[VAR PKNICK(0001)]";
 
-		final String TN = "[VAR TRNICK(0000)]";
+		final String TN0 = "[VAR TRNICK(0000)]";
+		final String TN1 = "[VAR TRNICK(0001)]";
 		
 		final String TRAINER_PLACE_HOLDER = "@s";
 
@@ -69,7 +73,8 @@ public class FileHandler {
 		s = s.replace(PK3, "Pokémon");
 		s = s.replace(PK4, "Pokémon");
 		s = s.replace(PK5, "Pokémon");
-		s = s.replace(TN, TRAINER_PLACE_HOLDER);
+		s = s.replace(TN0, TRAINER_PLACE_HOLDER);
+		//s = s.replace(TN1, TRAINER_PLACE_HOLDER);
 		s = s.replace(PKN0, "");
 		s = s.replace(PKN1, "");
 
