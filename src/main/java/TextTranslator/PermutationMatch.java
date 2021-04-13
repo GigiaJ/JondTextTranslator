@@ -106,6 +106,6 @@ public class PermutationMatch {
 	 * DEBUG PURPOSES ONLY
 	 */
 	public String toString() {
-		return text;
+		return getSize() + text;
 	}
 }

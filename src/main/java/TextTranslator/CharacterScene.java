@@ -6,7 +6,8 @@ import java.util.Collections;
 /**
  * A collection of dialogues for a particular character in a given instance
  * 
- * Simply used as an array list, but could store additional data later
+ * This collection of dialogue tends to be based on the character speaking
+ *  as well as the dialogue's trigger tag
  * 
  * @author Jaggar
  *
@@ -18,7 +19,7 @@ public class CharacterScene	extends ArrayList<Dialogue> {
 	
 	/**
 	 * Returns all the text in this objects list in order of appearance in the excel sheet
-	 * @return
+	 * @return		the text in order of appearance in the commands excel sheet
 	 */
 	public ArrayList<String> getText() {
 		ArrayList<String> text = new ArrayList<String>();
@@ -26,6 +27,10 @@ public class CharacterScene	extends ArrayList<Dialogue> {
 			text.add(dialogue.getText());
 		}
 		return text;
+	}
+	
+	public int getTrigger() {
+		return this.get(0).getTrigger();
 	}
 	
 	/**
@@ -58,7 +63,7 @@ public class CharacterScene	extends ArrayList<Dialogue> {
 		for (Dialogue toCheck : this) {
 			boolean listContains = false;
 			for (Dialogue toCheckAgainst : list) {
-				if (toCheckAgainst.getText().equals(toCheck.getText())) {
+				if (toCheckAgainst.getText().equals(toCheck.getText()) && toCheckAgainst.getRow() == toCheck.getRow()) {
 					listContains = true;
 				}
 			}
@@ -141,8 +146,8 @@ public class CharacterScene	extends ArrayList<Dialogue> {
 	 * Assigns the dialogue in the dialogue list to the correct scenes and then also
 	 * re-orders that scene to put the dialogue in correct order
 	 * 
-	 * @param dialogueList the list of dialogue to assign to scenes
-	 * @return the scenes
+	 * @param dialogueList 		the list of dialogue to assign to scenes
+	 * @return 					the scenes containing the matching dialogue
 	 */
 	public static ArrayList<CharacterScene> assignDialogueToScene(ArrayList<Dialogue> dialogueList) {
 		ArrayList<CharacterScene> scenes = new ArrayList<CharacterScene>();
