@@ -50,27 +50,52 @@ public class PermutationMatch {
 		return text;
 	}	
 	
+	/**
+	 * Returns the matching lines for this permutation
+	 * @return	the matching lines
+	 */
 	public ArrayList<Integer> getLineMatches() {
 		return this.lineMatches;
 	}
 	
+	/**
+	 * Determines if the permutation matched any lines
+	 * @return	true if the permutation matched any lines else false
+	 */
 	public boolean hasLineMatches() {
 		return !lineMatches.isEmpty();
 	}
 	
+	/**
+	 * Gets the index in the scene where this permutation starts
+	 * @return	the start index
+	 */
 	public int getStart() {
 		return start;
 	}
 	
+	/**
+	 * Gets the index in the scene where this permutation ends
+	 * @return	the end index
+	 */
 	public int getEnd() {
 		return end;
 	}
 	
+	/**
+	 * Gets the size of this permutation based on how many entries in the scene it contains
+	 * 
+	 * @return  the size of the permutation
+	 */
 	public int getSize() {
 		//Ensures that we don't assume one line entries are empty
 		return (end - start) + 1;
 	}
 	
+	/**
+	 * Gets the scene associated with this permutation
+	 * @return	the associated scene
+	 */
 	public CharacterScene getScene() {
 		return scene;
 	}
@@ -104,6 +129,7 @@ public class PermutationMatch {
 	
 	/**
 	 * DEBUG PURPOSES ONLY
+	 * (Useful for seeing the contents of a permutation match in debug view)
 	 */
 	public String toString() {
 		return getSize() + text;
