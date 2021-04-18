@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,7 +25,7 @@ public class DialogueLoader {
     public static ArrayList<Dialogue> loadDialogue(File file) {
         ArrayList<Dialogue> dialogueList = new ArrayList<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
             String line;
             int row = 1;
             while ((line = br.readLine()) != null) {

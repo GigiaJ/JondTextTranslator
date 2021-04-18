@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 /**
@@ -96,7 +97,7 @@ public class FileHandler {
 	public static ArrayList<String> loadTextFile(File file) {
 		ArrayList<String> lines = new ArrayList<String>();
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
+			BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
 			String line;
 			while ((line = br.readLine()) != null) {
 				line = normalize(line);

@@ -170,6 +170,11 @@ public class CharacterSceneMatchHandler {
                     String textToCheck = textDump.get(k); // The line in the text dump we want to check
                     String permutationToCheck = match.getText();
                     if (exactMatch) {
+                        if (textToCheck.contains("When I did this, the man asked me")) {
+                            if (permutationToCheck.contains("When I did this, the man asked me")) {
+                                System.out.println();
+                            }
+                        }
                         if (textToCheck.equals(permutationToCheck)) {
                             match.addLineMatch(k);
                         }
