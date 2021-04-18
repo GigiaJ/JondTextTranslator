@@ -121,7 +121,12 @@ public class FileHandler {
 		StringBuilder output = new StringBuilder();
 		for (int i = 0; i < mapText.length; i++) {
 			if (mapText[i] != null) {
-				output.append(mapText[i][0] + "\t" + mapText[i][1] + "\t" + mapText[i][2] + "\t" + mapText[i][3] + "\n");
+				StringBuilder s = new StringBuilder();
+				s.append(mapText[i][0]+"\t");
+				for (int x = 2; x < mapText[i].length; x++) {
+					s.append(mapText[i][x]+"\t");
+				}
+				output.append(s.append("\n"));
 			}
 		}
 		return output.toString();
@@ -136,7 +141,7 @@ public class FileHandler {
 	 */
 	public static void save(String fileName, String string) {
 	    try {
-	        File saveFile = new File(FileHandler.class.getProtectionDomain().getCodeSource().getLocation() + fileName);
+	        File saveFile = new File(FileHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath() + fileName);
 	        if (saveFile.createNewFile()) {
 	        	log.info("File created.");
 	        } else {

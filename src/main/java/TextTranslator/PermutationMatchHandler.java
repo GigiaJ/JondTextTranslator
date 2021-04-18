@@ -97,26 +97,21 @@ public class PermutationMatchHandler {
             for (int x = 0; x < sceneMatches.get(i).getPermutationMatches().size(); x++) {
                 PermutationMatch currentPermutation = sceneMatches.get(i).getPermutationMatches().get(x);
                 if (!currentPermutation.getLineMatches().isEmpty()) {
-                    boolean hasEndMatch = true;
                     if (hasLongest(longestIndex)) {
                         PermutationMatch longestPermutation = sceneMatches.get(i).getPermutationMatches().get(longestIndex);
                         if ((hasMatchingStartingPositions(longestPermutation, currentPermutation)) ?
                                 (hasMatchingStartingPositions(longestPermutation, currentPermutation)) :
-                                (hasEndMatch = hasMatchingEndingPositions(longestPermutation, currentPermutation)) ?
-                                        true : true)
+                                (hasMatchingEndingPositions(longestPermutation, currentPermutation)))
                         {
-                            if (hasEndMatch) {
-                                if (isGreaterThanLongestSize(longestPermutation, currentPermutation)) {
-                                    indexesToRemove.add(longestIndex);
-                                    longestIndex = x;
-                                } else {
-                                    indexesToRemove.add(x);
-                                }
+                            if (isGreaterThanLongestSize(longestPermutation, currentPermutation)) {
+                                indexesToRemove.add(longestIndex);
+                                longestIndex = x;
+                            } else {
+                                indexesToRemove.add(x);
                             }
-                            else {
-                                longestIndex = -1;
-                                x = x - 1;
-                            }
+                        }
+                        else {
+                            longestIndex = x;
                         }
                     }
                     else {
@@ -126,7 +121,6 @@ public class PermutationMatchHandler {
                     indexesToRemove.add(x);
                 }
             }
-
             removeFilteredMatches(sceneMatches.get(i), indexesToRemove);
             i = removeEmptyMatches(sceneMatches, i);
         }

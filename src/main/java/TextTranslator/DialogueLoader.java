@@ -115,7 +115,7 @@ public class DialogueLoader {
         if (s.contains("<") && s.contains(">")) {
             return s.substring(s.indexOf("<") + 1, s.indexOf(">"));
         }
-        return null;
+        return "";
     }
 
     @ExtraInfo(UnitTested = true)

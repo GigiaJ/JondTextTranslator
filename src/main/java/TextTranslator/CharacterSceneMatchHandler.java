@@ -44,18 +44,16 @@ public class CharacterSceneMatchHandler {
                         }
                         ArrayList<String> v = new ArrayList<>(Arrays.asList(map[row][0], map[row][1], match.getText(), english));
                         v.addAll(Arrays.asList(other));
-                        if (map[row][1] != null && map[row][1].equals("")) {
-                            map[row] = v.toArray(new String[0]);
-                        } else {
-                            v.set(0,map[row][0]);
-                            v.set(0, map[row][1]);
-                            v.set(1, map[row][2] + " / " + match.getText());
-                            v.set(2, map[row][3] + " / " + english);
+                        if (map[row][0] == null || !map[row][2].equals("")) {
+                            v.set(0, map[row][0]);
+                            v.set(1, map[row][1]);
+                            v.set(2, map[row][2] + " / " + match.getText());
+                            v.set(3, map[row][3] + " / " + english);
                             for (int i = 0; i < other.length; i++) {
-                                v.set(i+4, v.get(i+4) + " / " + other[i]);
+                                v.set(i + 4, v.get(i + 4) + " / " + other[i]);
                             }
-                            map[row] = v.toArray(new String[0]);
                         }
+                        map[row] = v.toArray(new String[0]);
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package TextTranslator;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Dialogue {
 
 	/**The speaker of the text of dialogue*/
+	@NonNull
 	String speaker;
 	/**The text in this line of dialogue*/
 	String text;
@@ -28,7 +30,7 @@ public class Dialogue {
 	/**
 	 * Generates a new dialogue object with all of the fields in this class as parameters.
 	 */
-	public Dialogue(String speaker, String text, int minimum, int trigger, int talkTime, int row) {
+	public Dialogue(@NonNull String speaker, String text, int minimum, int trigger, int talkTime, int row) {
 		super();
 		this.speaker = speaker;
 		this.text = text;

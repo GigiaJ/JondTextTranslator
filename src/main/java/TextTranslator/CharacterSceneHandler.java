@@ -61,14 +61,13 @@ public class CharacterSceneHandler {
         CharacterScene scene = new CharacterScene();
         for (Dialogue dialogue : dialogueList) {
             // Assigns these values for the first iteration through the loop
-            if (currentSpeaker == null  || currentSpeaker.equals("") || currentTalkTime == 0 || currentTrigger == 0) {
+            if (currentSpeaker.equals("") || currentTalkTime == 0 || currentTrigger == 0) {
                 currentSpeaker = dialogue.getSpeaker();
                 currentTalkTime = dialogue.getTalkTime();
                 currentTrigger = dialogue.getTrigger();
-                scene.add(dialogue);
             }
             // If the values don't match then we're on a new scene
-            if ((dialogue.getSpeaker() != null  && !dialogue.getSpeaker().equals(currentSpeaker)) || dialogue.getTrigger() != currentTrigger) {
+            if (!dialogue.getSpeaker().equals(currentSpeaker) || dialogue.getTrigger() != currentTrigger) {
                 // Sorts the scene by the correct speaking lines
                 scene.sort(Comparator.comparingInt(Dialogue::getTalkTime));
                 scene.removeCopies();
