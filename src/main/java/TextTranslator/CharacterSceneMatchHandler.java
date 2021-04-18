@@ -1,93 +1,14 @@
 package TextTranslator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+/**
+ * A class created to handle the character scene matches and the data within them.
+ */
 public class CharacterSceneMatchHandler {
 
-    /**
-     * Filters the permutations to remove the shorter line matches and leave only
-     * the longest possible match as well as removing duplicates.
-     *
-     * @param sceneMatches the list of scenes match objects
-     * @return the filtered list
-     */
-    public static ArrayList<CharacterSceneMatch> filterPermutations(ArrayList<CharacterSceneMatch> sceneMatches) {
-        for (int i = 0; i < sceneMatches.size(); i++) {
-            // Iterate through the matches
-            int longest = 0;
-            // Store the longest length permutation per match
-            int longestIndex = -1;
-            ArrayList<Integer> indexesToRemove = new ArrayList<>();
-            for (int x = 0; x < sceneMatches.get(i).getPermutationMatches().size(); x++) {
-                if (!sceneMatches.get(i).getPermutationMatches().get(x).getLineMatches().isEmpty()) {
-                    if (longest == 0) {
-                        // Fill the values if the longest is 0
-                        longest = sceneMatches.get(i).getPermutationMatches().get(x).getSize();
-                        longestIndex = x;
-                    }
-                    else {
-                        if (sceneMatches.get(i).getPermutationMatches().get(longestIndex).getStart() == sceneMatches.get(i)
-                                .getPermutationMatches().get(x).getStart()) {
-                            if (sceneMatches.get(i).getPermutationMatches().get(x).getSize() > longest) {
-                                // if longer than the longest
-                                // if the index starts match
-                                longest = sceneMatches.get(i).getPermutationMatches().get(x).getSize();
-                                // this is the new longest
-                                indexesToRemove.add(longestIndex);
-                                // remove the old longest
-                                longestIndex = x ;
-                            }
-                            else {
-                                // remove this as it is smaller than the longest for the start index
-                                indexesToRemove.add(x);
-                            }
-                        }
-                        else {
-                            // if the index starts do not match
-                            if (sceneMatches.get(i).getPermutationMatches().get(longestIndex).getEnd() == sceneMatches.get(i)
-                                    .getPermutationMatches().get(x).getEnd()) {
-                                if (sceneMatches.get(i).getPermutationMatches().get(x).getSize() > longest) {
-                                    // if longer than the longest
-                                    // if the index starts match
-                                    longest = sceneMatches.get(i).getPermutationMatches().get(x).getSize();
-                                    // this is the new longest
-                                    indexesToRemove.add(longestIndex);
-                                    // remove the old longest
-                                    longestIndex = x;
-                                }
-                                else {
-                                    // remove this as it is smaller than the longest for the start index
-                                    indexesToRemove.add(x);
-                                }
-                            }
-                            else {
-                                longest = 0;
-                                x = x - 1;
-                                //Restart on this one to begin a new permutation set to check
-                            }
-                        }
 
-                    }
-                } else {
-                    indexesToRemove.add(x);
-                }
-            }
-
-            /*Remove in reverse to avoid having to change the index for the array list removal*/
-            for (int x = indexesToRemove.size() - 1; x > 0; x--) {
-                //Make a new object for index as otherwise the array list will try to remove
-                //an Integer object and not an object at index of int
-                int index = indexesToRemove.get(x);
-                sceneMatches.get(i).getPermutationMatches().remove(index);
-            }
-
-            if (sceneMatches.get(i).getPermutationMatches().isEmpty()) {
-                sceneMatches.remove(i);
-                i = i - 1;
-            }
-        }
-        return sceneMatches;
-    }
 
     /**
      * Takes a 2d string array and fills the contents within the inner array with
@@ -101,32 +22,39 @@ public class CharacterSceneMatchHandler {
      *                     command excel sheet
      * @param text         The English text dump file as an array list based on line
      *                     breaks
-     * @param altText      The other language dump file as an array list based on
+     * @param altTexts     The other language dump files as an array of array lists based on
      *                     line breaks
      * @return The 2d string array with the values collected mapped to each other in
      *         the inner array
      */
     public static String[][] translate(String[][] map, ArrayList<CharacterSceneMatch> sceneMatches,
-                                       ArrayList<String> text, ArrayList<String> altText) {
+                                       ArrayList<String> text, @SuppressWarnings("rawtypes") ArrayList[] altTexts) {
         for (CharacterSceneMatch sceneMatch : sceneMatches) {
             for (PermutationMatch match : sceneMatch.getPermutationMatches()) {
                 for (int x = match.getStart(); x < match.getSize() + match.getStart(); x++) {
                     int row = match.getScene().get(x).getRow() - 1;
                     if (match.hasLineMatches()) {
                         String english = "";
-                        String other = "";
+                        String[] other = new String[altTexts.length];
                         for (int line : match.getLineMatches()) {
                             english += text.get(line);
-                            other += altText.get(line);
+                            for (int i = 0; i < altTexts.length; i++) {
+                                other[i] = (String) altTexts[i].get(line);
+                            }
                         }
-                        String[] value = new String[]{map[row][0], match.getText(), english, other};
+                        ArrayList<String> v = new ArrayList<>(Arrays.asList(map[row][0], map[row][1], match.getText(), english));
+                        v.addAll(Arrays.asList(other));
                         if (map[row][1] != null && map[row][1].equals("")) {
-                            map[row] = value;
+                            map[row] = v.toArray(new String[0]);
                         } else {
-                            value = new String[]{map[row][0], map[row][1] + " / " + match.getText(),
-                                    map[row][2] + " / " + english, map[row][3] + " / " + other};
-                            map[row] = value;
-
+                            v.set(0,map[row][0]);
+                            v.set(0, map[row][1]);
+                            v.set(1, map[row][2] + " / " + match.getText());
+                            v.set(2, map[row][3] + " / " + english);
+                            for (int i = 0; i < other.length; i++) {
+                                v.set(i+4, v.get(i+4) + " / " + other[i]);
+                            }
+                            map[row] = v.toArray(new String[0]);
                         }
                     }
                 }

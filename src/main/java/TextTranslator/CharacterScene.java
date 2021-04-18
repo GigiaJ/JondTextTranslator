@@ -13,9 +13,7 @@ import java.util.Collections;
  *
  */
 public class CharacterScene	extends ArrayList<Dialogue> {
-	public CharacterScene() {
-		
-	}
+	public CharacterScene(){}
 	
 	/**
 	 * Returns all the text in this objects list in order of appearance in the excel sheet
@@ -55,8 +53,6 @@ public class CharacterScene	extends ArrayList<Dialogue> {
 	
 	/**
 	 * Removes any duplicates in the list of dialogue
-	 * TODO:
-	 * Fix the actual duplicates with a different row being removed
 	 */
 	public void removeCopies() {
 		ArrayList<Dialogue> list = new ArrayList<Dialogue>();
