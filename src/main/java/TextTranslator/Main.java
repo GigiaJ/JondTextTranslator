@@ -17,14 +17,14 @@ public class Main {
 
 		ArrayList<String> kalosEngMainText = FileHandler.loadTextFile(engMain);
 		ArrayList<String> kalosSpaMainText = FileHandler.loadTextFile(spaMain);
-		ArrayList<CharacterScene> scenes = CharacterScene.assignDialogueToScene(Dialogue.getDialogue(spreadSheetInput));
+		ArrayList<CharacterScene> scenes = CharacterSceneHandler.assignDialogueToScene(DialogueLoader.loadDialogue(spreadSheetInput));
 
-		dialogueMatchList = CharacterSceneMatch.filterPermutations(CharacterSceneMatch.getMatchingLines(scenes, kalosEngMainText, true));
-		dialogueContainList = CharacterSceneMatch.filterPermutations(CharacterSceneMatch.getMatchingLines(scenes, kalosEngMainText, false));
-		CharacterSceneMatch.removeCollisions(dialogueMatchList, dialogueContainList);
+		dialogueMatchList = CharacterSceneMatchHandler.filterPermutations(CharacterSceneMatchHandler.getMatchingLines(scenes, kalosEngMainText, true));
+		dialogueContainList = CharacterSceneMatchHandler.filterPermutations(CharacterSceneMatchHandler.getMatchingLines(scenes, kalosEngMainText, false));
+		CharacterSceneMatchHandler.removeCollisions(dialogueMatchList, dialogueContainList);
 		dialogueMatchList.addAll(dialogueContainList);
-		CharacterSceneMatch.filterPermutations(dialogueMatchList);
-		String[][] mapText = CharacterSceneMatch.translate(CharacterScene.placeCommands(new String[EXCEL_SHEET_SIZE][INNER_ARRAY_SIZE], scenes), dialogueMatchList, kalosEngMainText, kalosSpaMainText);
+		CharacterSceneMatchHandler.filterPermutations(dialogueMatchList);
+		String[][] mapText = CharacterSceneMatchHandler.translate(CharacterSceneHandler.placeCommands(new String[EXCEL_SHEET_SIZE][INNER_ARRAY_SIZE], scenes), dialogueMatchList, kalosEngMainText, kalosSpaMainText);
 		
 		FileHandler.save("test.tsv", FileHandler.generateOutput(mapText));
 	}
