@@ -1,8 +1,11 @@
 package TextTranslator;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.util.ArrayList;
 
+@Slf4j
 public class Main {	
 	public static int EXCEL_SHEET_SIZE = 2950;	/*Potentially will simply find this */
 	public static int INNER_ARRAY_SIZE = 5; 	/*ROWTEXT, MATCHED, ENGLISHFOUND ,ALTLANGUAGEFOUND, String.valueOf(dialogue.getRow()) */
@@ -17,8 +20,9 @@ public class Main {
 		File spreadsheetFile = new File(args[0]);
 		File englishLanguageFile = new File(args[1]);
 		ArrayList<String> englishGameText = FileHandler.loadTextFile(englishLanguageFile);
-		File[] additionalLanguageFiles = new File[args.length-3];
-		var additionalLanguageGameTexts = new ArrayList[args.length-3];
+		File[] additionalLanguageFiles = new File[args.length-2];
+		var additionalLanguageGameTexts = new ArrayList[args.length-2];
+		log.info(args[0]);
 		for (int i = 2; i < args.length; i++) {
 			additionalLanguageFiles[i - 2] = new File(args[i]);
 			additionalLanguageGameTexts[i - 2] = FileHandler.loadTextFile(additionalLanguageFiles[i - 2]);

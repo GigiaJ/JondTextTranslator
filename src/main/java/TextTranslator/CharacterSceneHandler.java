@@ -1,5 +1,7 @@
 package TextTranslator;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.List;
 /**
  * A class to handle changes performed involving character scenes
  */
+@Slf4j
 public class CharacterSceneHandler {
     /**
      * Places the commands from the excel sheet into a 2d string array populating the first value of the
@@ -58,14 +61,14 @@ public class CharacterSceneHandler {
         CharacterScene scene = new CharacterScene();
         for (Dialogue dialogue : dialogueList) {
             // Assigns these values for the first iteration through the loop
-            if (currentSpeaker.equals("") || currentTalkTime == 0 || currentTrigger == 0) {
+            if (currentSpeaker == null  || currentSpeaker.equals("") || currentTalkTime == 0 || currentTrigger == 0) {
                 currentSpeaker = dialogue.getSpeaker();
                 currentTalkTime = dialogue.getTalkTime();
                 currentTrigger = dialogue.getTrigger();
                 scene.add(dialogue);
             }
             // If the values don't match then we're on a new scene
-            if (!dialogue.getSpeaker().equals(currentSpeaker) || dialogue.getTrigger() != currentTrigger) {
+            if ((dialogue.getSpeaker() != null  && !dialogue.getSpeaker().equals(currentSpeaker)) || dialogue.getTrigger() != currentTrigger) {
                 // Sorts the scene by the correct speaking lines
                 scene.sort(Comparator.comparingInt(Dialogue::getTalkTime));
                 scene.removeCopies();

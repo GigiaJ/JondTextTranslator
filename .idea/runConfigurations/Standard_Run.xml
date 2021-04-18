@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Standard Run" type="Application" factoryName="Application" editBeforeRun="true">
+    <option name="MAIN_CLASS_NAME" value="TextTranslator.Main" />
+    <module name="TextTranslator.main" />
+    <option name="PROGRAM_PARAMETERS" value="C:\Users\gigia\Downloads\englishSheet.csv C:\Users\gigia\Downloads\eng_story.txt C:\Users\gigia\Downloads\spa_story.txt" />
+    <selectedOptions>
+      <option name="environmentVariables" visible="false" />
+    </selectedOptions>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

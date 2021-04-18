@@ -1,10 +1,7 @@
 package TextTranslator;
 
-import com.jcabi.aspects.Loggable;
-import org.slf4j.Marker;
 
 import java.lang.annotation.*;
-import java.util.Iterator;
 
 public class Library {
     /**
@@ -12,7 +9,6 @@ public class Library {
      * given method or variable is undergoes direct testing
      *
      */
-    @Loggable
     @Documented
     @Retention(RetentionPolicy.SOURCE)
     @Target(ElementType.METHOD)

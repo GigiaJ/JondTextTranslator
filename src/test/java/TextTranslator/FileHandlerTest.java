@@ -1,4 +1,4 @@
-package Tests;
+package TextTranslator;
 
 import static TextTranslator.FileHandler.loadTextFile;
 

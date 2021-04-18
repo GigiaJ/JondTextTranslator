@@ -1,4 +1,4 @@
-package Tests;
+package TextTranslator;
 
 public class CharacterSceneTest {
 }

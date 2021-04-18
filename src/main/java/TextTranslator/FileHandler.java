@@ -1,5 +1,7 @@
 package TextTranslator;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,6 +9,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * A class to handle the file interactions of the program
+ */
+@Slf4j
 public class FileHandler {
 
 	/**
@@ -130,19 +136,19 @@ public class FileHandler {
 	 */
 	public static void save(String fileName, String string) {
 	    try {
-	        File myObj = new File("C:\\Users\\Jaggar\\Downloads\\" + fileName);
-	        if (myObj.createNewFile()) {
-	          System.out.println("File created: " + myObj.getName());
+	        File saveFile = new File(FileHandler.class.getProtectionDomain().getCodeSource().getLocation() + fileName);
+	        if (saveFile.createNewFile()) {
+	        	log.info("File created.");
 	        } else {
-	          System.out.println("File already exists.");
+	        	log.info("File exists already.");
 	        }
 	        
-	        FileWriter myWriter = new FileWriter("C:\\Users\\Jaggar\\Downloads\\" + fileName);
+	        FileWriter myWriter = new FileWriter(saveFile);
 	        myWriter.write(string);
 	        myWriter.close();
-	        System.out.println("Successfully wrote to the file.");
+	        log.info("File successfully saved at: " + saveFile.getAbsolutePath());
 	      } catch (IOException e) {
-	        System.out.println("An error occurred.");
+	        log.error("Error when saving the file.", e);
 	        e.printStackTrace();
 	      }
 	}

@@ -95,11 +95,11 @@ public class PermutationMatchHandler {
             int longestIndex = -1;
             ArrayList<Integer> indexesToRemove = new ArrayList<>();
             for (int x = 0; x < sceneMatches.get(i).getPermutationMatches().size(); x++) {
-                PermutationMatch longestPermutation = sceneMatches.get(i).getPermutationMatches().get(longestIndex);
                 PermutationMatch currentPermutation = sceneMatches.get(i).getPermutationMatches().get(x);
                 if (!currentPermutation.getLineMatches().isEmpty()) {
                     boolean hasEndMatch = true;
                     if (hasLongest(longestIndex)) {
+                        PermutationMatch longestPermutation = sceneMatches.get(i).getPermutationMatches().get(longestIndex);
                         if ((hasMatchingStartingPositions(longestPermutation, currentPermutation)) ?
                                 (hasMatchingStartingPositions(longestPermutation, currentPermutation)) :
                                 (hasEndMatch = hasMatchingEndingPositions(longestPermutation, currentPermutation)) ?

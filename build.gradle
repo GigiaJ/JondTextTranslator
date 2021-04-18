@@ -10,6 +10,8 @@ plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
 }
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
 
 repositories {
     // Use jcenter for resolving dependencies.
@@ -34,12 +36,6 @@ dependencies {
 
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
-
-    // needed for jcabi-aspects; aspects for logging; jcabi-aspects uses log4j-slf4j-impl to bing to log4j2
-    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
-    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.8.2'
-    // https://mvnrepository.com/artifact/com.jcabi/jcabi-aspects
-    compile group: 'com.jcabi', name: 'jcabi-aspects', version: '0.22.6'
 
     compile 'com.google.guava:guava:30.1.1-jre'
 }
