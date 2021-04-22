@@ -17,7 +17,7 @@ public class Main {
 	 * @param args		In order, the spreadsheet file followed by the English story file and then any additional language files
 	 */
 	public static void main(String[] args) {
-		args = new String[]{"C:\\Users\\gigia\\Downloads\\englishSheet.csv", "C:\\Users\\gigia\\Downloads\\eng_story.txt", "C:\\Users\\gigia\\Downloads\\spa_story.txt"};
+		args = new String[]{"C:\\Users\\Jaggar\\Downloads\\englishSheet.csv", "C:\\Users\\Jaggar\\Downloads\\eng_story.txt", "C:\\Users\\Jaggar\\Downloads\\spa_story.txt"};
 		File spreadsheetFile = new File(args[0]);
 		File englishLanguageFile = new File(args[1]);
 		ArrayList<String> englishGameText = FileHandler.loadTextFile(englishLanguageFile);

@@ -1,23 +1,27 @@
 package TextTranslator;
 
+import lombok.Data;
 import java.util.ArrayList;
+import static TextTranslator.Library.ExtraInfo;
 
 /**
  * A class to store permutation matches and their respective matching line
  * @author Jaggar
  *
  */
+@Data
 public class PermutationMatch {
+	/** The text of the dialogues this permutation match corresponds with in their correct order */
 	String text;
+	/** The starting index in list of dialogues in the scene which this match is based on */
 	int start;
+	/** The ending index in list of dialogues in the scene which this match is based on */
 	int end;
+	/** The lines in the text dump file that the this permutation match corresponds with */
 	ArrayList<Integer> lineMatches;
+	/** The scene that this match is based on */
 	CharacterScene scene;
-	
-	public PermutationMatch() {
-		this.lineMatches = new ArrayList<Integer>();
-	}
-	
+
 	/**
 	 * Creates a permutation based on the start index to the end index of excel 
 	 * sheet rows as well as stores the text for those combined lines
@@ -27,11 +31,10 @@ public class PermutationMatch {
 	 */
 	public PermutationMatch(String text, int start, int end, CharacterScene scene) {
 		this.text = text;
-		lineMatches = new ArrayList<Integer>();
+		lineMatches = new ArrayList<>();
 		this.start = start;
 		this.end = end;
 		this.scene = scene;
-		
 	}
 	
 	/**
@@ -41,23 +44,7 @@ public class PermutationMatch {
 	public void addLineMatch(int index) {
 		lineMatches.add(index);
 	}
-	
-	/**
-	 * Gets the text of this permutation 
-	 * @return text of the permutation
-	 */
-	public String getText() {
-		return text;
-	}	
-	
-	/**
-	 * Returns the matching lines for this permutation
-	 * @return	the matching lines
-	 */
-	public ArrayList<Integer> getLineMatches() {
-		return this.lineMatches;
-	}
-	
+
 	/**
 	 * Determines if the permutation matched any lines
 	 * @return	true if the permutation matched any lines else false
@@ -67,48 +54,24 @@ public class PermutationMatch {
 	}
 	
 	/**
-	 * Gets the index in the scene where this permutation starts
-	 * @return	the start index
-	 */
-	public int getStart() {
-		return start;
-	}
-	
-	/**
-	 * Gets the index in the scene where this permutation ends
-	 * @return	the end index
-	 */
-	public int getEnd() {
-		return end;
-	}
-	
-	/**
 	 * Gets the size of this permutation based on how many entries in the scene it contains
+	 * Adds one to the size to ensure that single entries aren't considered empty
 	 * 
 	 * @return  the size of the permutation
 	 */
 	public int getSize() {
-		//Ensures that we don't assume one line entries are empty
 		return (end - start) + 1;
 	}
-	
-	/**
-	 * Gets the scene associated with this permutation
-	 * @return	the associated scene
-	 */
-	public CharacterScene getScene() {
-		return scene;
-	}
-	
+
 	/**
 	 * Generates all permutations from the beginning index onward. IE [The, Big,
 	 * Cat] would be effectively [The, The Big, The Big Cat, Big Cat, Cat]
-	 * 
-	 * @param a      the strings to combine
+	 *
 	 * @param output all combined strings
 	 * @param index  the index to start searching from
 	 * @return the combined strings in the form of a permutation match
 	 */
+	@ExtraInfo(UnitTested = true)
 	public static ArrayList<PermutationMatch> combinations(CharacterScene scene, ArrayList<PermutationMatch> output,
 			int index) {
 		if (index < scene.size()) {
@@ -125,13 +88,5 @@ public class PermutationMatch {
 			return combinations(scene, output, index + 1);
 		}
 		return output;
-	}
-	
-	/**
-	 * DEBUG PURPOSES ONLY
-	 * (Useful for seeing the contents of a permutation match in debug view)
-	 */
-	public String toString() {
-		return getSize() + text;
 	}
 }

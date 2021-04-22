@@ -217,6 +217,7 @@ public class CharacterSceneMatchHandler {
         System.out.println(counter);
     }
 
+
     /**
      * Outputs to the console a line in a scene that does a match as well as the
      * number of them

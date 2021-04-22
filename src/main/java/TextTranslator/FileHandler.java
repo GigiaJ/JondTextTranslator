@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import static TextTranslator.Library.ExtraInfo;
 
 /**
  * A class to handle the file interactions of the program
@@ -21,6 +22,7 @@ public class FileHandler {
 	 * @param line			the line to correct
 	 * @return				the corrected line
 	 */
+	@ExtraInfo(UnitTested = true)
 	public static String correctLine(String line) {
 		line = line.replaceAll("PokÃ©mon", "Pokémon");
 		line = line.replaceAll("Pokemon", "Pokémon");
@@ -45,9 +47,7 @@ public class FileHandler {
 		while (line.contains("\\u2026")) {
 			line = line.replace("\\u2026", "...");
 		}
-		//while (line.contains("\\\"\"")) {
-		//	line = line.replace("\\\"\"", "\"");
-		//}
+
 		return line;
 	}
 	
@@ -56,6 +56,7 @@ public class FileHandler {
 	 * @param s				The string to normalize for use
 	 * @return				A normalized form of the string
 	 */
+	@ExtraInfo(UnitTested = true)
 	private static String normalize(String s) {
 		final String PK0 = "[VAR PKNAME(0000)]";
 		final String PK1 = "[VAR PKNAME(0001)]";
@@ -68,11 +69,9 @@ public class FileHandler {
 		final String PKN1 = "[VAR PKNICK(0001)]";
 
 		final String TN0 = "[VAR TRNICK(0000)]";
-		final String TN1 = "[VAR TRNICK(0001)]";
+		//final String TN1 = "[VAR TRNICK(0001)]";
 		
 		final String TRAINER_PLACE_HOLDER = "@s";
-
-		// s = s.replace("Pokemon", "");
 
 		s = s.replace(PK0, "Pokémon");
 		s = s.replace(PK1, "Pokémon");
@@ -81,7 +80,6 @@ public class FileHandler {
 		s = s.replace(PK4, "Pokémon");
 		s = s.replace(PK5, "Pokémon");
 		s = s.replace(TN0, TRAINER_PLACE_HOLDER);
-		//s = s.replace(TN1, TRAINER_PLACE_HOLDER);
 		s = s.replace(PKN0, "");
 		s = s.replace(PKN1, "");
 
@@ -91,11 +89,11 @@ public class FileHandler {
 	/**
 	 * Reads the lines of a text file and returns them in an array list
 	 * 
-	 * @param file the file to load
-	 * @return the lines of text in the text file
+	 * @param file 	the file to load
+	 * @return 		the lines of text in the text file
 	 */
 	public static ArrayList<String> loadTextFile(File file) {
-		ArrayList<String> lines = new ArrayList<String>();
+		ArrayList<String> lines = new ArrayList<>();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
 			String line;
@@ -105,7 +103,7 @@ public class FileHandler {
 			}
 			br.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Failed to load the text file at :" + file.getAbsolutePath(), e);
 		}
 		return lines;
 	}
@@ -120,12 +118,12 @@ public class FileHandler {
 	 */
 	public static String generateOutput(String[][] mapText) {
 		StringBuilder output = new StringBuilder();
-		for (int i = 0; i < mapText.length; i++) {
-			if (mapText[i] != null) {
+		for (String[] strings : mapText) {
+			if (strings != null) {
 				StringBuilder s = new StringBuilder();
-				s.append(mapText[i][0]+"\t");
-				for (int x = 2; x < mapText[i].length; x++) {
-					s.append(mapText[i][x]+"\t");
+				s.append(strings[0]).append("\t");
+				for (int x = 2; x < strings.length; x++) {
+					s.append(strings[x]).append("\t");
 				}
 				output.append(s.append("\n"));
 			}
@@ -134,11 +132,10 @@ public class FileHandler {
 	}
 	
 	/**
-	 * Saves the string to a file
-	 * Needed as Eclipse will not show the entire string during debug
-	 * as well as useful for seeing the data in a neater manner
-	 * 
-	 * @param string
+	 * Saves the given string to a file in the location of this program's execution
+	 *
+	 * @param fileName	the file name for the output file
+	 * @param string	the string to save to the file
 	 */
 	public static void save(String fileName, String string) {
 	    try {
@@ -148,14 +145,12 @@ public class FileHandler {
 	        } else {
 	        	log.info("File exists already.");
 	        }
-	        
 	        FileWriter myWriter = new FileWriter(saveFile);
 	        myWriter.write(string);
 	        myWriter.close();
 	        log.info("File successfully saved at: " + saveFile.getAbsolutePath());
 	      } catch (IOException e) {
 	        log.error("Error when saving the file.", e);
-	        e.printStackTrace();
 	      }
 	}
 }

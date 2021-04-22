@@ -1,7 +1,6 @@
 package TextTranslator;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 /**
@@ -10,9 +9,8 @@ import java.util.ArrayList;
  * @author Jaggar
  *
  */
-public class CharacterSceneMatch {
-	@Getter @Setter
-	/** the scene that this scene match is related to */
+public class  CharacterSceneMatch {
+	@Getter
 	CharacterScene scene;
 	@Getter
 	ArrayList<PermutationMatch> permutationMatches;
@@ -37,5 +35,9 @@ public class CharacterSceneMatch {
 	 */
 	public void removePermutationMatch(PermutationMatch match) {
 		permutationMatches.remove(match);
+	}
+
+	public void setScene(CharacterScene scene) {
+		this.scene = scene;
 	}
 }
