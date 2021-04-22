@@ -15,5 +15,6 @@ public class Library {
     public @ interface ExtraInfo {
         String Author() default "Jaggar"; //Writer of the method
         boolean UnitTested() default false; //Is the method unit tested directly
+        boolean Review() default false;//Should we go back and look at this method particularly
     }
 }

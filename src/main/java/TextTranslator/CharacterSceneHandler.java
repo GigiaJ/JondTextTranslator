@@ -28,7 +28,7 @@ public class CharacterSceneHandler {
     public static String[][] placeCommands(String[][] map, ArrayList<CharacterScene> scenes) {
         for (int i = 0; i < map.length; i++) {
             int mapRow = i + 1;
-            enterRowData(map, i, iterateThroughAllScenesUntilMatch(scenes,
+            enterRowData(map, i, iterateThroughAllScenesAndDialogueUntilMatch(scenes,
                     row -> (row == mapRow), Dialogue::getRow));
         }
         return map;
@@ -45,7 +45,7 @@ public class CharacterSceneHandler {
      * @return                  A dialogue matching the search constraints otherwise null
      */
     @ExtraInfo(UnitTested = true)
-    public static < T> Dialogue iterateThroughAllScenesUntilMatch(ArrayList<CharacterScene> scenes, Predicate<T> checkObjects, Function<Dialogue, T> objectFunction) {
+    public static <T> Dialogue iterateThroughAllScenesAndDialogueUntilMatch(ArrayList<CharacterScene> scenes, Predicate<T> checkObjects, Function<Dialogue, T> objectFunction) {
         final Dialogue[] d = {null};
         scenes.stream().takeWhile(t -> (d[0] == null)).forEach(scene -> d[0] = iterateThroughScene(scene, checkObjects, objectFunction));
         return d[0];

@@ -35,8 +35,8 @@ public class Main {
 
 		ArrayList<CharacterSceneMatch> dialogueMatchList;
 		ArrayList<CharacterSceneMatch> dialogueContainList;
-		dialogueMatchList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getMatchingLines(scenes, englishGameText, true));
-		dialogueContainList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getMatchingLines(scenes, englishGameText, false));
+		dialogueMatchList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(scenes, englishGameText, true));
+		dialogueContainList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(scenes, englishGameText, false));
 		CharacterSceneMatchHandler.removeCollisions(dialogueMatchList, dialogueContainList);
 		dialogueMatchList.addAll(dialogueContainList);
 		PermutationMatchHandler.filterPermutations(dialogueMatchList);

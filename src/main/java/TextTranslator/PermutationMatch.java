@@ -42,7 +42,9 @@ public class PermutationMatch {
 	 * @param index the index of the matching line
 	 */
 	public void addLineMatch(int index) {
-		lineMatches.add(index);
+		if ((index != -1)) {
+			lineMatches.add(index);
+		}
 	}
 
 	/**

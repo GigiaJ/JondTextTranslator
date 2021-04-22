@@ -2,7 +2,7 @@ package TextTranslator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import static TextTranslator.Library.ExtraInfo;
 /**
  * A class created to handle the character scene matches and the data within them.
  */
@@ -126,7 +126,7 @@ public class CharacterSceneMatchHandler {
      * @param pm2		The second permutation match to check
      * @return			True if their is a collision and the permutation match needs to be removed
      */
-    public static boolean removeLineMatch(PermutationMatch pm1, PermutationMatch pm2) {
+    protected static boolean removeLineMatch(PermutationMatch pm1, PermutationMatch pm2) {
         if (pm1.getStart() == pm2.getStart() && pm1.getEnd() == pm2.getEnd()) {
             for (Integer s1 : pm1.getLineMatches()) {
                 for (Integer s2 : pm2.getLineMatches()) {
@@ -147,96 +147,61 @@ public class CharacterSceneMatchHandler {
      * Gets all the lines in the text dump that match the permutations generated
      * from the dialogue lines
      *
-     * @param scenes the list of dialogues
-     * @param textDump     the lines in the text file
-     * @return the list of character scenes with their potential matching lines
+     * @param scenes        The scenes to get the matching lines for
+     * @param textDump      The English text dump lines
+     * @param exactMatch    Whether or not the results should be an exact match or a partial match
+     * @return              A list of Character Scene Match objects with the data filled by getMatchingLines()
      */
-    public static ArrayList<CharacterSceneMatch> getMatchingLines(ArrayList<CharacterScene> scenes,
+    @ExtraInfo(UnitTested = true)
+    public static ArrayList<CharacterSceneMatch> getAllMatchingLines(ArrayList<CharacterScene> scenes,
                                                                   ArrayList<String> textDump, boolean exactMatch) {
         ArrayList<CharacterSceneMatch> sceneMatchList = new ArrayList<>();
-        // Iterate through the character scenes to find matches
         for (int i = 0; i < scenes.size(); i++) {
-            CharacterScene scene = scenes.get(i);
-            CharacterSceneMatch sceneMatch = new CharacterSceneMatch();
-            // List of the possible permutations of this text
-            ArrayList<PermutationMatch> permutationsList = PermutationMatch.combinations(scene,
-                    new ArrayList<PermutationMatch>(), 0);
-            // Iterate through all of the permutations
-            for (PermutationMatch match : permutationsList) {
-                // Now iterate through the English text to find lines that match the
-                // permutations
-                // K being the line in the text file
-                for (int k = 0; k < textDump.size(); k++) {
-                    String textToCheck = textDump.get(k); // The line in the text dump we want to check
-                    String permutationToCheck = match.getText();
-                    if (exactMatch) {
-                        if (textToCheck.contains("When I did this, the man asked me")) {
-                            if (permutationToCheck.contains("When I did this, the man asked me")) {
-                                System.out.println();
-                            }
-                        }
-                        if (textToCheck.equals(permutationToCheck)) {
-                            match.addLineMatch(k);
-                        }
-                    } else {
-                        if (textToCheck.contains(permutationToCheck)) {
-                            match.addLineMatch(k);
-                        }
-                    }
-                }
-                if (match.hasLineMatches()) {
-                    sceneMatch.addPermutationMatch(match);
-                }
-                sceneMatch.setScene(scene);
-            }
-            sceneMatchList.add(sceneMatch);
-
+            sceneMatchList.add(getMatchingLines(scenes.get(i), textDump, exactMatch));
         }
         return sceneMatchList;
     }
 
     /**
-     * Outputs to the console a line in a scene that does not contain a match as
-     * well as the number of them
-     *
-     * @param sceneMatchList the list of scenes containing matches
+     * Gets the matching lines for the given scenes dialogue by iterating through  a generated permutations list
+     * of dialogue texts
+     * @param scene         The scene to get the matching lines for
+     * @param textDump      The English text dump lines
+     * @param exactMatch    Whether or not the results should be an exact match or a partial match
+     * @return              The character scene passed as a Character Scene Match object containing the permutations
+     *                      that have matches and their respective matching line numbers in the English text dump
      */
-    public static void printNonMatches(ArrayList<CharacterSceneMatch> sceneMatchList) {
-        int counter = 0;
-        for (CharacterSceneMatch sceneMatch : sceneMatchList) {
-            if (sceneMatch.getPermutationMatches().isEmpty()) {
-                for (Dialogue dialogue : sceneMatch.getScene()) {
-                    System.out.println(dialogue.getText());
-                    //counter++;
-                }
-                System.out.println(sceneMatch.getScene().size());
-                System.out.println();
-                counter++;
+    @ExtraInfo(UnitTested = true, Review=true)
+    protected static CharacterSceneMatch getMatchingLines(CharacterScene scene, ArrayList<String> textDump, boolean exactMatch) {
+        CharacterSceneMatch sceneMatch = new CharacterSceneMatch();
+        ArrayList<PermutationMatch> permutationsList = PermutationMatch.combinations(scene,
+                new ArrayList<>(), 0);
+        for (PermutationMatch match : permutationsList) {
+            addMatchingLines(match, textDump, exactMatch);
+            if (match.hasLineMatches()) {
+                sceneMatch.addPermutationMatch(match);
             }
+            sceneMatch.setScene(scene);
         }
-        System.out.println(counter);
+        return sceneMatch;
     }
 
 
     /**
-     * Outputs to the console a line in a scene that does a match as well as the
-     * number of them
-     *
-     * @param sceneMatchList the list of scenes containing matches
-     * @param text           the text dump as an array list
+     * Iterates through the English text to find lines in the dump that match the text in the permutation passed.
+     * Based on the boolean the results can be an exact match or a partial match to the text of the permutation.
+     * @param match         The permutation match to check for any matches
+     * @param textDump      The English text dump to search for matches in
+     * @param exactMatch     A boolean to determine whether to get a partial match or an exact match
      */
-    public static void printMatches(ArrayList<CharacterSceneMatch> sceneMatchList, ArrayList<String> text) {
-        int counter = 0;
-        for (CharacterSceneMatch sceneMatch : sceneMatchList) {
-            for (PermutationMatch match : sceneMatch.getPermutationMatches()) {
-                counter++;
-                System.out.println(match.text);
-                for (int i : match.getLineMatches()) {
-                    System.out.println(text.get(i));
-                }
-
+    @ExtraInfo(UnitTested = true)
+    protected static void addMatchingLines(PermutationMatch match, ArrayList<String> textDump, boolean exactMatch) {
+        String permutationToCheck = match.getText();
+        for (int k = 0; k < textDump.size(); k++) {
+            String textToCheck = textDump.get(k);
+            if ((exactMatch) ? textToCheck.equals(permutationToCheck) : textToCheck.contains(permutationToCheck)) {
+                    match.addLineMatch(k);
             }
         }
-        System.out.println(counter);
     }
 }
