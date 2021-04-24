@@ -2,13 +2,10 @@ package TextTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
 import static TextTranslator.Library.ExtraInfo;
 
 /**
@@ -138,19 +135,24 @@ public class FileHandler {
 	 * @param string	the string to save to the file
 	 */
 	public static void save(String fileName, String string) {
-	    try {
-	        File saveFile = new File(FileHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath() + fileName);
-	        if (saveFile.createNewFile()) {
-	        	log.info("File created.");
-	        } else {
-	        	log.info("File exists already.");
-	        }
-	        FileWriter myWriter = new FileWriter(saveFile);
-	        myWriter.write(string);
-	        myWriter.close();
-	        log.info("File successfully saved at: " + saveFile.getAbsolutePath());
-	      } catch (IOException e) {
-	        log.error("Error when saving the file.", e);
-	      }
+		try {
+			File saveFile = new File(FileHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath() + addOutputFileExtension(fileName));
+			if (saveFile.createNewFile()) {
+				log.info("File created.");
+			} else {
+				log.info("File exists already.");
+			}
+			FileWriter myWriter = new FileWriter(saveFile);
+			myWriter.write(string);
+			myWriter.close();
+			log.info("File successfully saved at: " + saveFile.getAbsolutePath());
+		} catch (IOException e) {
+			log.error("Error when saving the file.", e);
+		}
+	}
+
+	public static String addOutputFileExtension(String fileName) {
+		final String OUTPUT_EXTENSION = ".tsv";
+		return fileName + OUTPUT_EXTENSION;
 	}
 }

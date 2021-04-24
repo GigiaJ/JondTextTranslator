@@ -6,15 +6,16 @@ import java.io.File;
 import java.util.ArrayList;
 
 @Slf4j
-public class Main {	
-	public static int EXCEL_SHEET_SIZE = 2950;	/*Potentially will simply find this */
-	public static int INNER_ARRAY_SIZE = 5; 	/*ROWTEXT, MATCHED, ENGLISHFOUND ,ALTLANGUAGEFOUND, String.valueOf(dialogue.getRow()) */
-	public static String OUTPUT_FILE_NAME = "test.tsv";
+public class Main {
+	public static int EXCEL_SHEET_SIZE = 2950;    /*Potentially will simply find this */
+	public static int INNER_ARRAY_SIZE = 5;    /*ROWTEXT, MATCHED, ENGLISHFOUND ,ALTLANGUAGEFOUND, String.valueOf(dialogue.getRow()) */
+	public static String OUTPUT_FILE_NAME = "test"; /*Set as an argument for the file name*/
 
 
 	/**
 	 * Main method
-	 * @param args		In order, the spreadsheet file followed by the English story file and then any additional language files
+	 *
+	 * @param args In order, the spreadsheet file followed by the English story file and then any additional language files
 	 */
 	public static void main(String[] args) {
 		args = new String[]{"C:\\Users\\Jaggar\\Downloads\\englishSheet.csv", "C:\\Users\\Jaggar\\Downloads\\eng_story.txt", "C:\\Users\\Jaggar\\Downloads\\spa_story.txt"};
