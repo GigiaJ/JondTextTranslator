@@ -151,6 +151,12 @@ public class FileHandler {
 		}
 	}
 
+	/**
+	 * Adds the file extension to the file passed
+	 *
+	 * @param fileName The file name
+	 * @return The file name with the extension added
+	 */
 	public static String addOutputFileExtension(String fileName) {
 		final String OUTPUT_EXTENSION = ".tsv";
 		return fileName + OUTPUT_EXTENSION;

@@ -109,7 +109,7 @@ public class DialogueLoader {
     /**
      * Finds the speaker within the string passed to this method found by the <method>findText</method>
      * @param s		The text for the dialogue
-     * @return		The speaker of the dialogue
+     * @return The speaker of the dialogue
      */
     @ExtraInfo(UnitTested = true)
     protected static String findSpeaker(String s) {
@@ -119,6 +119,12 @@ public class DialogueLoader {
         return "";
     }
 
+    /**
+     * Removes the speaker tag from the string
+     *
+     * @param s The string to remove the speaker tag from
+     * @return The string without any speaker tags in it
+     */
     @ExtraInfo(UnitTested = true)
     protected static String removeSpeaker(String s) {
         return s.replaceAll("(<.*>) ", "");
