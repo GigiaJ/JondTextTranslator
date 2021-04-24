@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
 import static TextTranslator.Library.ExtraInfo;
 
 /**
@@ -19,10 +20,10 @@ public class CharacterSceneHandler {
      * inner array with the text for the row of the excel sheet and the last value of the inner array with
      * the actual row number as a string
      *
-     * @param map            the 2d string array to populate
-     * @param scenes        the scenes containing dialogue extracted from the command excel sheet
-     * @return				the 2d string array containing the lines of text for the row matching
-     * 						the index of the outer string array and the row number itself
+     * @param map    the 2d string array to populate
+     * @param scenes the scenes containing dialogue extracted from the command excel sheet
+     * @return the 2d string array containing the lines of text for the row matching
+     * the index of the outer string array and the row number itself
      */
     @ExtraInfo(UnitTested = true)
     public static String[][] placeCommands(String[][] map, ArrayList<CharacterScene> scenes) {
@@ -42,12 +43,15 @@ public class CharacterSceneHandler {
      * @param checkObjects      The predicate that should be used to test the two values
      * @param objectFunction    The second value to be obtained from the dialogue
      * @param <T>               The generic typing of the parameter to be extracted from the dialogue
-     * @return                  A dialogue matching the search constraints otherwise null
+     * @return A dialogue matching the search constraints otherwise null
      */
     @ExtraInfo(UnitTested = true)
-    public static <T> Dialogue iterateThroughAllScenesAndDialogueUntilMatch(ArrayList<CharacterScene> scenes, Predicate<T> checkObjects, Function<Dialogue, T> objectFunction) {
+    public static <T> Dialogue iterateThroughAllScenesAndDialogueUntilMatch(ArrayList<CharacterScene> scenes,
+                                                                            Predicate<T> checkObjects,
+                                                                            Function<Dialogue, T> objectFunction) {
         final Dialogue[] d = {null};
-        scenes.stream().takeWhile(t -> (d[0] == null)).forEach(scene -> d[0] = iterateThroughScene(scene, checkObjects, objectFunction));
+        scenes.stream().takeWhile(t -> (d[0] == null)).forEach(scene -> d[0] = iterateThroughScene(scene, checkObjects,
+                objectFunction));
         return d[0];
     }
 
@@ -58,10 +62,11 @@ public class CharacterSceneHandler {
      * @param checkObjects      The predicate that should be used to test the two values
      * @param objectFunction    The second value to be obtained from the dialogue
      * @param <T>               The generic typing of the parameter to be extracted from the dialogue
-     * @return                  A dialogue matching the search constraints otherwise null
+     * @return A dialogue matching the search constraints otherwise null
      */
     @ExtraInfo(UnitTested = true)
-    public static <T> Dialogue iterateThroughScene(CharacterScene scene, Predicate<T> checkObjects, Function<Dialogue, T> objectFunction) {
+    public static <T> Dialogue iterateThroughScene(CharacterScene scene, Predicate<T> checkObjects,
+                                                   Function<Dialogue, T> objectFunction) {
         for (Dialogue dialogue : scene) {
             if (checkObjects.test(objectFunction.apply(dialogue))) {
                 return dialogue;

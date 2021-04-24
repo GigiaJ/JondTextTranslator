@@ -2,6 +2,7 @@ package TextTranslator;
 
 import java.io.Serial;
 import java.util.ArrayList;
+
 import static TextTranslator.Library.ExtraInfo;
 
 /**
@@ -19,7 +20,7 @@ public class CharacterScene	extends ArrayList<Dialogue> {
 	
 	/**
 	 * Returns all the text in this objects list in order of appearance in the excel sheet
-	 * @return		the text in order of appearance in the commands excel sheet
+	 * @return the text in order of appearance in the commands excel sheet
 	 */
 	@ExtraInfo(UnitTested = true)
 	public ArrayList<String> getText() {
@@ -31,9 +32,29 @@ public class CharacterScene	extends ArrayList<Dialogue> {
 	}
 
 	/**
+	 * Gets the row for the first dialogue at in this character scene object
+	 *
+	 * @return Gets the row for the first dialogue in this character scene object
+	 */
+	public int getRow() {
+		return getRow(0);
+	}
+
+	/**
+	 * Gets the excel row for the dialogue at the index of this character scene object
+	 *
+	 * @param index The index of the dialogue
+	 * @return The row of the dialogue at the given index
+	 */
+	public int getRow(int index) {
+		return this.get(index).getRow();
+	}
+
+	/**
 	 * Gets the trigger tag for this scene. All dialogues in a scene contain the same trigger tag so
 	 * simply grabbing the first entry in the list is fine.
-	 * @return			The trigger tag for this scene
+	 *
+	 * @return The trigger tag for this scene
 	 */
 	public int getTrigger() {
 		return getTrigger(0);
