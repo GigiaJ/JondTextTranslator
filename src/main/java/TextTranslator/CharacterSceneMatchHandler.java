@@ -222,7 +222,7 @@ public class CharacterSceneMatchHandler {
     @ExtraInfo(UnitTested = true, Review=true)
     protected static CharacterSceneMatch getMatchingLines(CharacterScene scene, ArrayList<String> textDump, boolean exactMatch) {
         CharacterSceneMatch sceneMatch = new CharacterSceneMatch(scene);
-        ArrayList<PermutationMatch> permutationsList = PermutationMatch.combinations(scene,
+        ArrayList<PermutationMatch> permutationsList = PermutationMatchHandler.combinations(scene,
                 new ArrayList<>(), 0);
         for (PermutationMatch match : permutationsList) {
             addMatchingLines(match, textDump, exactMatch);

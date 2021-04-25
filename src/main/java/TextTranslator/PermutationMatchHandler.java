@@ -1,6 +1,7 @@
 package TextTranslator;
 
 import java.util.ArrayList;
+
 import static TextTranslator.Library.ExtraInfo;
 
 /**
@@ -127,5 +128,30 @@ public class PermutationMatchHandler {
         return sceneMatches;
     }
 
-
+    /**
+     * Generates all permutations from the beginning index onward. IE [The, Big,
+     * Cat] would be effectively [The, The Big, The Big Cat, Big Cat, Cat]
+     *
+     * @param output all combined strings
+     * @param index  the index to start searching from
+     * @return the combined strings in the form of a permutation match
+     */
+    @ExtraInfo(UnitTested = true)
+    public static ArrayList<PermutationMatch> combinations(CharacterScene scene, ArrayList<PermutationMatch> output,
+                                                           int index) {
+        if (index < scene.size()) {
+            String combined = "";
+            for (int i = index; i < scene.size(); i++) {
+                String s = scene.get(i).getText();
+                if (i == index) {
+                    combined += s;
+                } else {
+                    combined += " " + s;
+                }
+                output.add(new PermutationMatch(combined, index, i, scene));
+            }
+            return combinations(scene, output, index + 1);
+        }
+        return output;
+    }
 }
