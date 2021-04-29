@@ -13,6 +13,11 @@ import java.util.regex.Pattern;
 
 import static TextTranslator.Library.ExtraInfo;
 
+/**
+ * A class for loading the dialogue efficiently
+ *
+ * @author Jaggar
+ */
 @Slf4j
 public class DialogueLoader {
     /**

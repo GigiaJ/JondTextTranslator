@@ -1,6 +1,5 @@
 package TextTranslator;
 
-
 import java.lang.annotation.*;
 
 public class Library {

@@ -12,6 +12,8 @@ import static TextTranslator.Library.ExtraInfo;
 
 /**
  * A class to handle changes performed involving character scenes
+ *
+ * @author Jaggar
  */
 @Slf4j
 public class CharacterSceneHandler {
@@ -26,7 +28,7 @@ public class CharacterSceneHandler {
      * the index of the outer string array and the row number itself
      */
     @ExtraInfo(UnitTested = true)
-    public static String[][] placeCommands(String[][] map, ArrayList<CharacterScene> scenes) {
+    public static String[][] placeCommands(String[][] map, ArrayList<CharacterSceneMatch> scenes) {
         for (int i = 0; i < map.length; i++) {
             int mapRow = i + 1;
             enterRowData(map, i, iterateThroughAllScenesAndDialogueUntilMatch(scenes,
@@ -46,7 +48,7 @@ public class CharacterSceneHandler {
      * @return A dialogue matching the search constraints otherwise null
      */
     @ExtraInfo(UnitTested = true)
-    public static <T> Dialogue iterateThroughAllScenesAndDialogueUntilMatch(ArrayList<CharacterScene> scenes,
+    public static <T> Dialogue iterateThroughAllScenesAndDialogueUntilMatch(ArrayList<CharacterSceneMatch> scenes,
                                                                             Predicate<T> checkObjects,
                                                                             Function<Dialogue, T> objectFunction) {
         final Dialogue[] d = {null};
@@ -98,10 +100,10 @@ public class CharacterSceneHandler {
      * @return 					the scenes containing the matching dialogue
      */
     @ExtraInfo(UnitTested = true)
-    public static ArrayList<CharacterScene> assignDialogueToScene(ArrayList<Dialogue> dialogueList) {
-        ArrayList<CharacterScene> scenes = new ArrayList<>();
+    public static ArrayList<CharacterSceneMatch> assignDialogueToScene(ArrayList<Dialogue> dialogueList) {
+        ArrayList<CharacterSceneMatch> scenes = new ArrayList<>();
         Object[] currentValues = new Object[]{"", 0, 0};
-        CharacterScene scene = new CharacterScene();
+        CharacterSceneMatch scene = new CharacterSceneMatch(new CharacterScene());
         for (Dialogue dialogue : dialogueList) {
             if (currentSceneIsEmpty(currentValues)) {
                 setSceneToCurrent(currentValues, dialogue);
@@ -111,7 +113,7 @@ public class CharacterSceneHandler {
                 scene.removeCopies();
                 scenes.add(scene);
                 setSceneToCurrent(currentValues, dialogue);
-                scene = new CharacterScene();
+                scene = new CharacterSceneMatch(new CharacterScene());
             }
             scene.add(dialogue);
         }

@@ -201,7 +201,7 @@ public class CharacterSceneMatchHandler {
      * @return              A list of Character Scene Match objects with the data filled by getMatchingLines()
      */
     @ExtraInfo(UnitTested = true)
-    public static ArrayList<CharacterSceneMatch> getAllMatchingLines(ArrayList<CharacterScene> scenes,
+    public static ArrayList<CharacterSceneMatch> getAllMatchingLines(ArrayList<CharacterSceneMatch> scenes,
                                                                   ArrayList<String> textDump, boolean exactMatch) {
         ArrayList<CharacterSceneMatch> sceneMatchList = new ArrayList<>();
         for (CharacterScene scene : scenes) {

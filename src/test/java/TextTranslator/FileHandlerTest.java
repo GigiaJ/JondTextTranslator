@@ -1,26 +1,12 @@
 package TextTranslator;
 
-import static TextTranslator.FileHandler.loadTextFile;
+public class FileHandlerTest extends FileHandler {
 
-public class FileHandlerTest {
-    public void testTextFileLoading() {
-
-    }
-
-
-    public void testOutputGeneration() {
+    public void testNormalize() {
 
     }
 
-    public void testLineCorrections() {
+    public void testCorrectLine() {
 
     }
-
-    public void testFileSaving() {
-
-    }
-
-    /**
-     * Fill in the data creation stuff down here
-     */
 }

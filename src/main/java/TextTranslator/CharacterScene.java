@@ -2,6 +2,7 @@ package TextTranslator;
 
 import java.io.Serial;
 import java.util.ArrayList;
+import java.util.List;
 
 import static TextTranslator.Library.ExtraInfo;
 
@@ -17,6 +18,10 @@ import static TextTranslator.Library.ExtraInfo;
 public class CharacterScene	extends ArrayList<Dialogue> {
 
 	public CharacterScene(){}
+
+	public CharacterScene(List<Dialogue> list) {
+		super(list);
+	}
 	
 	/**
 	 * Returns all the text in this objects list in order of appearance in the excel sheet
@@ -66,7 +71,6 @@ public class CharacterScene	extends ArrayList<Dialogue> {
 	 * @param index		The index in this character scene associated with a dialogue
 	 * @return			The trigger tag for this scene
 	 */
-	@ExtraInfo(UnitTested = true)
 	public int getTrigger(int index) {
 		return this.get(index).getTrigger();
 	}
@@ -78,19 +82,31 @@ public class CharacterScene	extends ArrayList<Dialogue> {
 	public void removeCopies() {
 		ArrayList<Dialogue> list = new ArrayList<>();
 		for (Dialogue toCheck : this) {
-			boolean listContains = false;
-			for (Dialogue toCheckAgainst : list) {
-				if (toCheckAgainst.getText().equals(toCheck.getText()) && toCheckAgainst.getRow() == toCheck.getRow()) {
-					listContains = true;
-					break;
-				}
-			}
-			if (!listContains) {
+			if (!checkContains(toCheck, list)) {
 				list.add(toCheck);
 			}
 		}
 		this.clear();
 		this.addAll(list);
+	}
+
+	/**
+	 * Checks for a matching entry in a second array based on the contents of a dialogue passed
+	 * @param toCheck	a dialogue to check for in the second array
+	 * @param list		the second array of dialogues
+	 * @return			true if the list contains the dialogue otherwise false
+	 */
+	@ExtraInfo(UnitTested = true)
+	protected boolean checkContains(Dialogue toCheck, ArrayList<Dialogue> list) {
+		for (Dialogue toCheckAgainst : list) {
+			if (toCheckAgainst.getText().equals(toCheck.getText())
+					&& toCheckAgainst.getRow() == toCheck.getRow()
+			&& toCheckAgainst.getSpeaker().equals(toCheck.getSpeaker())
+			&& toCheckAgainst.getTrigger() == toCheck.getTrigger()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
