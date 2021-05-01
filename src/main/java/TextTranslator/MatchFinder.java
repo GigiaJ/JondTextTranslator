@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.ArrayList;
-import static TextTranslator.Library.ExtraInfo;
 
 /**
  * A class to be used in generating useful data from all the input files
@@ -22,12 +21,13 @@ public class MatchFinder {
     private static ArrayList<String> englishGameText;
     @SuppressWarnings("rawtypes")
     private final ArrayList[] additionalLanguageGameTexts;
-    private ArrayList<CharacterSceneMatch> dialogues, dialogueMatchList, dialogueContainList;
+    private ArrayList<CharacterSceneMatch> scenes, dialogueMatchList, dialogueContainList;
 
 
     /**
      * Creates a MatchFinder object from the program arguments and loads the text files associated
-     * @param programArgs   The program arguments for this program
+     *
+     * @param programArgs The program arguments for this program
      */
     public MatchFinder(String[] programArgs) {
         args = programArgs;
@@ -50,7 +50,8 @@ public class MatchFinder {
      * sets the size for the excel sheet.
      */
     protected void loadDialogues() {
-        dialogues = CharacterSceneHandler.assignDialogueToScene(DialogueLoader.loadDialogue(spreadsheetFile));
+        ArrayList<Dialogue> dialogues = DialogueLoader.loadDialogue(spreadsheetFile);
+        scenes = CharacterSceneHandler.assignDialogueToScene(dialogues);
         EXCEL_SHEET_SIZE = dialogues.size();
         log.info("Dialogues loaded successfully. Command excel sheet size is " + EXCEL_SHEET_SIZE + ".");
     }
@@ -60,8 +61,8 @@ public class MatchFinder {
      * then only contain matches
      */
     protected void matchDialogue() {
-        dialogueMatchList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(dialogues, englishGameText, true));
-        dialogueContainList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(dialogues, englishGameText, false));
+        dialogueMatchList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(scenes, englishGameText, true));
+        dialogueContainList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(scenes, englishGameText, false));
         log.info("Dialogues matched successfully.");
     }
 
@@ -85,7 +86,7 @@ public class MatchFinder {
      * extra languages.
      */
     protected String[][] generateGlobalOutput() {
-        return CharacterSceneMatchHandler.translate(CharacterSceneHandler.placeCommands(new String[EXCEL_SHEET_SIZE][OUTPUT_INNER_ARRAY_SIZE], dialogues), dialogueMatchList, englishGameText, additionalLanguageGameTexts);
+        return CharacterSceneMatchHandler.translate(CharacterSceneHandler.placeCommands(new String[EXCEL_SHEET_SIZE][OUTPUT_INNER_ARRAY_SIZE], scenes), dialogueMatchList, englishGameText, additionalLanguageGameTexts);
     }
 
     /**
