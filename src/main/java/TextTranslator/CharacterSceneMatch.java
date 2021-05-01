@@ -20,7 +20,8 @@ public class CharacterSceneMatch extends CharacterScene {
 
 	CharacterSceneMatch(CharacterScene scene) {
 		this.addAll(scene);
-		permutationMatches = new ArrayList<>();
+		this.scene = scene;
+		this.permutationMatches = new ArrayList<>();
 	}
 
 	/**
@@ -29,7 +30,7 @@ public class CharacterSceneMatch extends CharacterScene {
 	 * @param match the permutation match to add
 	 */
 	public void addPermutationMatch(PermutationMatch match) {
-		permutationMatches.add(match);
+		this.permutationMatches.add(match);
 	}
 
 	/**
@@ -38,7 +39,7 @@ public class CharacterSceneMatch extends CharacterScene {
 	 * @param match the permutation match to remove
 	 */
 	public void removePermutationMatch(PermutationMatch match) {
-		permutationMatches.remove(match);
+		this.permutationMatches.remove(match);
 	}
 
 

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static TextTranslator.Library.ExtraInfo;
 
@@ -47,38 +48,39 @@ public class FileHandler {
 
 		return line;
 	}
-	
+
 	/**
 	 * Normalizes a string (typically a text dump) to be usable in comparisons
-	 * @param s				The string to normalize for use
-	 * @return				A normalized form of the string
+	 *
+	 * @param s The string to normalize for use
+	 * @return A normalized form of the string
 	 */
 	@ExtraInfo(UnitTested = true)
-	private static String normalize(String s) {
-		final String PK0 = "[VAR PKNAME(0000)]";
-		final String PK1 = "[VAR PKNAME(0001)]";
-		final String PK2 = "[VAR PKNAME(0002)]";
-		final String PK3 = "[VAR PKNAME(0003)]";
-		final String PK4 = "[VAR PKNAME(0004)]";
-		final String PK5 = "[VAR PKNAME(0005)]";
+	protected static String normalize(String s) {
+		String[] LINES_TO_CORRECT = {"[VAR PKNAME(0000)]", "[VAR PKNAME(0001)]", "[VAR PKNAME(0002)]",
+				"[VAR PKNAME(0003)]", "[VAR PKNAME(0004)]", "[VAR PKNAME(0005)]"
+		};
 
 		final String PKN0 = "[VAR PKNICK(0000)]";
 		final String PKN1 = "[VAR PKNICK(0001)]";
 
 		final String TN0 = "[VAR TRNICK(0000)]";
 		//final String TN1 = "[VAR TRNICK(0001)]";
-		
+
 		final String TRAINER_PLACE_HOLDER = "@s";
 
-		s = s.replace(PK0, "Pokémon");
-		s = s.replace(PK1, "Pokémon");
-		s = s.replace(PK2, "Pokémon");
-		s = s.replace(PK3, "Pokémon");
-		s = s.replace(PK4, "Pokémon");
-		s = s.replace(PK5, "Pokémon");
-		s = s.replace(TN0, TRAINER_PLACE_HOLDER);
-		s = s.replace(PKN0, "");
-		s = s.replace(PKN1, "");
+		StringBuilder sb = new StringBuilder(s);
+		Arrays.stream(LINES_TO_CORRECT).forEach(string -> {
+			while (sb.indexOf(string) != -1) {
+				sb.replace(sb.indexOf(string), sb.indexOf(string) + string.length(), "Pokémon");
+			}
+		});
+		s = sb.toString();
+		while (s.contains(PKN0) || s.contains(PKN1) || s.contains(TN0)) {
+			s = s.replace(PKN0, "");
+			s = s.replace(PKN1, "");
+			s = s.replace(TN0, TRAINER_PLACE_HOLDER);
+		}
 
 		return s;
 	}

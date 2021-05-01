@@ -36,7 +36,7 @@ public class PermutationMatch {
 		this.end = end;
 		this.scene = scene;
 	}
-	
+
 	/**
 	 * Add the line that matches the tested permutation
 	 * @param index the index of the matching line

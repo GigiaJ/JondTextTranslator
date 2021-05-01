@@ -61,7 +61,7 @@ public class PermutationMatchHandler {
      */
     @ExtraInfo(UnitTested = true)
     protected static void removeFilteredMatches(CharacterSceneMatch sceneMatch, ArrayList<Integer> indexesToRemove) {
-        for (int x = indexesToRemove.size() - 1; x > 0; x--) {
+        for (int x = indexesToRemove.size() - 1; x >= 0; x--) {
             int index = indexesToRemove.get(x);
             sceneMatch.getPermutationMatches().remove(index);
         }

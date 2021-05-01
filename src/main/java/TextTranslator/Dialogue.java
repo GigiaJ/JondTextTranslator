@@ -31,7 +31,6 @@ public class Dialogue {
 	 * Generates a new dialogue object with all of the fields in this class as parameters.
 	 */
 	public Dialogue(@NonNull String speaker, String text, int minimum, int trigger, int talkTime, int row) {
-		super();
 		this.speaker = speaker;
 		this.text = text;
 		this.minimum = minimum;

@@ -3,8 +3,8 @@ package TextTranslator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -85,7 +85,7 @@ public class CharacterSceneHandler {
      */
     @ExtraInfo(UnitTested = true)
     public static void enterRowData(String[][] map, int index, Dialogue dialogue) {
-        ArrayList<String> v = new ArrayList<>(List.of((map[index] != null) ? dialogue.getText() : "DUPLICATE", String.valueOf(dialogue.getRow())));
+        ArrayList<String> v = new ArrayList<>(Arrays.asList((map[index] != null) ? dialogue.getText() : "DUPLICATE", String.valueOf(dialogue.getRow())));
         for (int x = 2; x < map[index].length; x++) {
             v.add("");
         }
@@ -108,7 +108,7 @@ public class CharacterSceneHandler {
             if (currentSceneIsEmpty(currentValues)) {
                 setSceneToCurrent(currentValues, dialogue);
             }
-            if (isCurrentScene(currentValues, dialogue)) {
+            if (isNotCurrentScene(currentValues, dialogue)) {
                 scene.sort(Comparator.comparingInt(Dialogue::getTalkTime));
                 scene.removeCopies();
                 scenes.add(scene);
@@ -146,12 +146,13 @@ public class CharacterSceneHandler {
     /**
      * Checks the dialogue to determine if it is still in the current scene
      * This means the speaker and the talk trigger are the same.
-     * @param currentValues     The current values for the dialogue
-     * @param dialogue          The dialogue to check
-     * @return                  Whether the dialogue is in the current scene or not
+     *
+     * @param currentValues The current values for the dialogue
+     * @param dialogue      The dialogue to check
+     * @return Whether the dialogue is in the current scene or not
      */
     @ExtraInfo(UnitTested = true)
-    protected static boolean isCurrentScene(Object[] currentValues, Dialogue dialogue) {
+    protected static boolean isNotCurrentScene(Object[] currentValues, Dialogue dialogue) {
         return !dialogue.getSpeaker().equals(currentValues[0]) || dialogue.getTrigger() != (int) currentValues[1];
     }
 }
