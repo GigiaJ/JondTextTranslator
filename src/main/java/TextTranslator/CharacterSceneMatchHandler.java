@@ -133,15 +133,14 @@ public class CharacterSceneMatchHandler {
                 CharacterSceneMatch toCheckEntry = toCheckIterator.next();
                 if (!checkAgainstEntry.getPermutationMatches().isEmpty() && !toCheckEntry.getPermutationMatches().isEmpty()) {
                     comparePermutationMatches(checkAgainstEntry, toCheckEntry);
-                } else {
-                    if (toCheckEntry.getPermutationMatches().isEmpty()) {
-                        toCheckIterator.remove();
-                        continue;
-                    }
-                    if (checkAgainstEntry.getPermutationMatches().isEmpty()) {
-                        checkAgainstIterator.remove();
-                        break;
-                    }
+                }
+                if (toCheckEntry.getPermutationMatches().isEmpty()) {
+                    toCheckIterator.remove();
+                    continue;
+                }
+                if (checkAgainstEntry.getPermutationMatches().isEmpty()) {
+                    checkAgainstIterator.remove();
+                    break;
                 }
             }
         }

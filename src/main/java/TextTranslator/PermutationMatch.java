@@ -39,6 +39,7 @@ public class PermutationMatch {
 
 	/**
 	 * Add the line that matches the tested permutation
+	 *
 	 * @param index the index of the matching line
 	 */
 	public void addLineMatch(int index) {
@@ -48,13 +49,25 @@ public class PermutationMatch {
 	}
 
 	/**
+	 * Remove the line at the index in the permutation match
+	 *
+	 * @param index the index to remove
+	 */
+	public void removeLineMatch(int index) {
+		if ((index != -1)) {
+			lineMatches.remove(index);
+		}
+	}
+
+	/**
 	 * Determines if the permutation matched any lines
-	 * @return	true if the permutation matched any lines else false
+	 *
+	 * @return true if the permutation matched any lines else false
 	 */
 	public boolean hasLineMatches() {
 		return !lineMatches.isEmpty();
 	}
-	
+
 	/**
 	 * Gets the size of this permutation based on how many entries in the scene it contains
 	 * Adds one to the size to ensure that single entries aren't considered empty
