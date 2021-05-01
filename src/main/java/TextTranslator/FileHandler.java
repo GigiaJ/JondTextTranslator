@@ -65,7 +65,11 @@ public class FileHandler {
 		final String PKN1 = "[VAR PKNICK(0001)]";
 
 		final String TN0 = "[VAR TRNICK(0000)]";
-		//final String TN1 = "[VAR TRNICK(0001)]";
+		final String TN1 = "[VAR TRNICK(0001)]";
+
+		final String CL0 = "[VAR COLOR(0000)]";
+		final String CL1 = "[VAR COLOR(0001)]";
+		final String CL2 = "[VAR COLOR(0002)]";
 
 		final String TRAINER_PLACE_HOLDER = "@s";
 
@@ -76,10 +80,16 @@ public class FileHandler {
 			}
 		});
 		s = sb.toString();
-		while (s.contains(PKN0) || s.contains(PKN1) || s.contains(TN0)) {
+		while (s.contains(PKN0) || s.contains(PKN1) || s.contains(TN0) || s.contains(TN1) ||
+				s.contains(CL0) || s.contains(CL1) || s.contains(CL2)
+		) {
 			s = s.replace(PKN0, "");
 			s = s.replace(PKN1, "");
 			s = s.replace(TN0, TRAINER_PLACE_HOLDER);
+			s = s.replace(TN1, TRAINER_PLACE_HOLDER);
+			s = s.replace(CL0, "");
+			s = s.replace(CL1, "");
+			s = s.replace(CL2, "");
 		}
 
 		return s;
