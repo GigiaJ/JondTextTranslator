@@ -72,7 +72,7 @@ public class MatchFinder {
      * scene entries from the final output
      */
     protected void filterMatches() {
-        CharacterSceneMatchHandler.removeCollisions(dialogueMatchList, dialogueContainList);
+        CharacterSceneMatchHandler.removeCollisions(dialogueMatchList, dialogueContainList, false);
         dialogueMatchList.addAll(dialogueContainList);
         PermutationMatchHandler.filterPermutations(dialogueMatchList);
         log.info("Scene matches filtered successfully.");

@@ -42,7 +42,7 @@ public class CharacterSceneMatchHandlerTest extends CharacterSceneMatchHandler {
         String[][] mockMap = generateMap();
         ArrayList<CharacterSceneMatch> sceneMatchArrayList = generateSceneMatchList(true, true);
 
-        translate(mockMap, sceneMatchArrayList, mockEnglishText, new ArrayList[]{mockAltText});
+        translate(mockMap, sceneMatchArrayList, mockEnglishText, new ArrayList[]{mockAltText}, true);
         Assert.assertEquals(mockMap[0][2], mockEnglishText.get(0));
         Assert.assertEquals(mockMap[1][2], mockEnglishText.get(1));
         Assert.assertEquals(mockMap[2][2], mockEnglishText.get(2));
@@ -81,7 +81,7 @@ public class CharacterSceneMatchHandlerTest extends CharacterSceneMatchHandler {
         ArrayList<CharacterSceneMatch> mockListToCheck = generateSceneMatchList(true, true);
         ArrayList<CharacterSceneMatch> mockListToEmpty = generateSceneMatchList(true, true);
 
-        removeCollisions(mockListToCheck, mockListToEmpty);
+        removeCollisions(mockListToCheck, mockListToEmpty, true);
 
         Assert.assertTrue(mockListToEmpty.isEmpty());
     }
@@ -195,7 +195,7 @@ public class CharacterSceneMatchHandlerTest extends CharacterSceneMatchHandler {
     /**
      * Generates a copy of the mockMap
      *
-     * @return a copy of the mockmap
+     * @return a copy of the mockMap
      */
     private String[][] generateMap() {
         String[][] mockMap = new String[map.length][map[0].length];

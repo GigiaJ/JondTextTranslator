@@ -57,25 +57,6 @@ public class CharacterSceneMatchHandler {
                     }
                 }
             }
-        /*
-        sceneMatches.forEach(sceneMatch -> sceneMatch.getPermutationMatches().forEach(permutationMatch -> {
-            for (int x = permutationMatch.getStart(); x < permutationMatch.getSize() + permutationMatch.getStart(); x++) {
-                if (permutationMatch.hasLineMatches()) {
-                    int row = permutationMatch.getScene().get(x).getRow() - 1;
-                    StringBuilder english = new StringBuilder();
-                    String[] extraLanguages = new String[extraLanguagesText.length];
-                    setLineMatchText(english, extraLanguages, englishText, extraLanguagesText, permutationMatch);
-                    if (view) {
-                        assignRowEntry(map, row, english, extraLanguages, permutationMatch);
-                    }
-                    else {
-                        assignRowEntry(map, sceneMatch, english, extraLanguages, permutationMatch);
-                    }
-                }
-            }
-        }));
-         */
-
         return map;
     }
 
@@ -150,7 +131,7 @@ public class CharacterSceneMatchHandler {
      */
     @ExtraInfo(UnitTested = true)
     public static void removeCollisions(ArrayList<CharacterSceneMatch> checkAgainstList,
-                                        ArrayList<CharacterSceneMatch> toCheckList) {
+                                        ArrayList<CharacterSceneMatch> toCheckList, boolean removeEmpty) {
         log.info("Removing collisions from the match lists");
         for (Iterator<CharacterSceneMatch> checkAgainstIterator = checkAgainstList.iterator(); checkAgainstIterator.hasNext(); ) {
             CharacterSceneMatch checkAgainstEntry = checkAgainstIterator.next();
@@ -159,9 +140,11 @@ public class CharacterSceneMatchHandler {
                 if (!checkAgainstEntry.getPermutationMatches().isEmpty() && !toCheckEntry.getPermutationMatches().isEmpty()) {
                     comparePermutationMatches(checkAgainstEntry, toCheckEntry);
                 }
-                if (toCheckEntry.getPermutationMatches().isEmpty()) {
-                    toCheckIterator.remove();
-                    continue;
+                if (removeEmpty) {
+                    if (toCheckEntry.getPermutationMatches().isEmpty()) {
+                        toCheckIterator.remove();
+                        continue;
+                    }
                 }
                 if (checkAgainstEntry.getPermutationMatches().isEmpty()) {
                     checkAgainstIterator.remove();
