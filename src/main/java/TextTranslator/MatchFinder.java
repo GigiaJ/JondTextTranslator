@@ -79,21 +79,34 @@ public class MatchFinder {
     }
 
     /**
-     * Generates a globally usable output to work from containing every dialogue entry per row and all the translation
-     * data needed.
-     * @return  A 2d String array containing the row data, the original command text, the text that found a match,
+     * Generates an output useful for checking the matches by creating a 2d string array
+     * containing every dialogue entry per row and all the translation data needed.
+     *
+     * @return A 2d String array containing the row data, the original command text, the text that found a match,
      * the line that the match corresponded to according to its permutation match, and the same line but for the
      * extra languages.
      */
-    protected String[][] generateGlobalOutput() {
-        return CharacterSceneMatchHandler.translate(CharacterSceneHandler.placeCommands(new String[EXCEL_SHEET_SIZE][OUTPUT_INNER_ARRAY_SIZE], scenes), dialogueMatchList, englishGameText, additionalLanguageGameTexts);
+    protected String[][] generateMatchOutput() {
+        return CharacterSceneMatchHandler.translate(CharacterSceneHandler.placeCommands(new String[EXCEL_SHEET_SIZE][OUTPUT_INNER_ARRAY_SIZE], scenes), dialogueMatchList, englishGameText, additionalLanguageGameTexts, true);
+    }
+
+
+    /**
+     * Generates an output that will be closer to what we want the final draft to look like.
+     *
+     * @return A 2d String array containing an empty entry, an empty entry, the text that found a match,
+     * the line that the match corresponded to according to its permutation match, and the same line but for the
+     * extra languages.
+     */
+    protected String[][] generateUpdatedOutput() {
+        return CharacterSceneMatchHandler.translate(new String[dialogueMatchList.size()][OUTPUT_INNER_ARRAY_SIZE], dialogueMatchList, englishGameText, additionalLanguageGameTexts, false);
     }
 
     /**
      * Saves the generated table output as a table
      */
     protected void saveAsSpreadSheet() {
-        FileHandler.save(args[ARGS.SAVE_FILE.getPosition()], FileHandler.generateOutput(generateGlobalOutput()));
+        FileHandler.save(args[ARGS.SAVE_FILE.getPosition()], FileHandler.generateOutput(generateUpdatedOutput()));
     }
 
     /**

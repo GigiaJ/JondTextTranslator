@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static TextTranslator.Library.ExtraInfo;
 /**
@@ -38,8 +39,25 @@ public class CharacterSceneMatchHandler {
      * the inner array
      */
     @ExtraInfo(UnitTested = true)
-    public static String[][] translate(String[][] map, ArrayList<CharacterSceneMatch> sceneMatches, ArrayList<String> englishText, @SuppressWarnings("rawtypes") ArrayList[] extraLanguagesText) {
+    public static String[][] translate(String[][] map, ArrayList<CharacterSceneMatch> sceneMatches, ArrayList<String> englishText, @SuppressWarnings("rawtypes") ArrayList[] extraLanguagesText, boolean view) {
         log.info("Beginning translation and assignment.");
+        for (AtomicInteger i = new AtomicInteger(0); i.get() < sceneMatches.size(); i.set(i.get() + 1))
+            for (PermutationMatch permutationMatch : sceneMatches.get(i.get()).getPermutationMatches()) {
+                for (int x = permutationMatch.getStart(); x < permutationMatch.getSize() + permutationMatch.getStart(); x++) {
+                    if (permutationMatch.hasLineMatches()) {
+                        int row = permutationMatch.getScene().get(x).getRow() - 1;
+                        StringBuilder english = new StringBuilder();
+                        String[] extraLanguages = new String[extraLanguagesText.length];
+                        setLineMatchText(english, extraLanguages, englishText, extraLanguagesText, permutationMatch);
+                        if (view) {
+                            assignRowEntry(map, row, english, extraLanguages, permutationMatch);
+                        } else {
+                            assignRowEntry(map, i.get(), english, extraLanguages, permutationMatch);
+                        }
+                    }
+                }
+            }
+        /*
         sceneMatches.forEach(sceneMatch -> sceneMatch.getPermutationMatches().forEach(permutationMatch -> {
             for (int x = permutationMatch.getStart(); x < permutationMatch.getSize() + permutationMatch.getStart(); x++) {
                 if (permutationMatch.hasLineMatches()) {
@@ -47,10 +65,17 @@ public class CharacterSceneMatchHandler {
                     StringBuilder english = new StringBuilder();
                     String[] extraLanguages = new String[extraLanguagesText.length];
                     setLineMatchText(english, extraLanguages, englishText, extraLanguagesText, permutationMatch);
-                    assignRowEntry(map, row, english, extraLanguages, permutationMatch);
+                    if (view) {
+                        assignRowEntry(map, row, english, extraLanguages, permutationMatch);
+                    }
+                    else {
+                        assignRowEntry(map, sceneMatch, english, extraLanguages, permutationMatch);
+                    }
                 }
             }
         }));
+         */
+
         return map;
     }
 
