@@ -114,17 +114,18 @@ public class FileHandler {
 	
 	/**
 	 * Reads the lines of a text file and returns them in an array list
-	 * 
-	 * @param file 	the file to load
-	 * @return 		the lines of text in the text file
+	 *
+	 * @param file      the file to load
+	 * @param normalize a boolean to denote whether to normalize the file or not
+	 * @return the lines of text in the text file
 	 */
-	public static ArrayList<String> loadTextFile(File file) {
+	public static ArrayList<String> loadTextFile(File file, boolean normalize) {
 		ArrayList<String> lines = new ArrayList<>();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
 			String line;
 			while ((line = br.readLine()) != null) {
-				line = normalize(line);
+				line = normalize ? normalize(line) : line;
 				lines.add(line);
 			}
 			br.close();

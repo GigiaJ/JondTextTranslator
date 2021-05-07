@@ -38,7 +38,7 @@ public class DialogueLoader {
                 String text = findText(line);
                 dialogueList.add(
                         new Dialogue(
-                                findSpeaker(text), removeSpeaker(text), 0, findTriggerTag(line), findTalkTime(line), row
+                                findSpeaker(text), removeSpeaker(text), findColor(text), 0, findTriggerTag(line), findTalkTime(line), row
                         ));
                 row++;
             }
@@ -133,5 +133,17 @@ public class DialogueLoader {
     @ExtraInfo(UnitTested = true)
     protected static String removeSpeaker(String s) {
         return s.replaceAll("(<.*>) ", "");
+    }
+
+    /**
+     * Finds the color in the string if it exists otherwise null
+     *
+     * @param s The string to find the speaker color for
+     * @return The color of the speaker in this text otherwise null
+     */
+    @ExtraInfo(UnitTested = true)
+    protected static String findColor(String s) {
+
+        return null;
     }
 }

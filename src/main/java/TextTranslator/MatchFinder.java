@@ -20,7 +20,8 @@ public class MatchFinder {
     private final int OUTPUT_INNER_ARRAY_SIZE;
 
     private final File spreadsheetFile;
-    private static ArrayList<String> englishGameText;
+    private static ArrayList<String> englishNormalizedGameText;
+    private static ArrayList<String> englishPlainGameText;
     @SuppressWarnings("rawtypes")
     private final ArrayList[] additionalLanguageGameTexts;
     private ArrayList<CharacterSceneMatch> scenes, dialogueMatchList, dialogueContainList;
@@ -35,13 +36,14 @@ public class MatchFinder {
         args = programArgs;
         spreadsheetFile = new File(programArgs[ARGS.SPREADSHEET.getPosition()]);
         File englishLanguageFile = new File(programArgs[ARGS.ENGLISH_LANGUAGE_DUMP.getPosition()]);
-        englishGameText = FileHandler.loadTextFile(englishLanguageFile);
+        englishNormalizedGameText = FileHandler.loadTextFile(englishLanguageFile, true);
+        englishPlainGameText = FileHandler.loadTextFile(englishLanguageFile, false);
         File[] additionalLanguageFiles = new File[programArgs.length - ARGS.EXTRA_LANGUAGES.getPosition()];
         additionalLanguageGameTexts = new ArrayList[programArgs.length - ARGS.EXTRA_LANGUAGES.getPosition()];
         for (int i = ARGS.EXTRA_LANGUAGES.getPosition(); i < programArgs.length; i++) {
             additionalLanguageFiles[i - ARGS.EXTRA_LANGUAGES.getPosition()] = new File(programArgs[i]);
             additionalLanguageGameTexts[i - ARGS.EXTRA_LANGUAGES.getPosition()] =
-                    FileHandler.loadTextFile(additionalLanguageFiles[i - ARGS.EXTRA_LANGUAGES.getPosition()]);
+                    FileHandler.loadTextFile(additionalLanguageFiles[i - ARGS.EXTRA_LANGUAGES.getPosition()], false);
         }
         OUTPUT_INNER_ARRAY_SIZE = 1 + 1 + 1 + 1 + additionalLanguageGameTexts.length;
         log.info("Files loaded successfully.");
@@ -63,8 +65,8 @@ public class MatchFinder {
      * then only contain matches
      */
     protected void matchDialogue() {
-        dialogueMatchList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(scenes, englishGameText, true));
-        dialogueContainList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(scenes, englishGameText, false));
+        dialogueMatchList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(scenes, englishNormalizedGameText, true));
+        dialogueContainList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(scenes, englishNormalizedGameText, false));
         log.info("Dialogues matched successfully.");
     }
 
@@ -89,19 +91,7 @@ public class MatchFinder {
      * extra languages.
      */
     protected String[][] generateMatchOutput() {
-        return CharacterSceneMatchHandler.translate(CharacterSceneHandler.placeCommands(new String[EXCEL_SHEET_SIZE][OUTPUT_INNER_ARRAY_SIZE], scenes), dialogueMatchList, englishGameText, additionalLanguageGameTexts, true);
-    }
-
-
-    /**
-     * Generates an output that will be closer to what we want the final draft to look like.
-     *
-     * @return A 2d String array containing an empty entry, an empty entry, the text that found a match,
-     * the line that the match corresponded to according to its permutation match, and the same line but for the
-     * extra languages.
-     */
-    protected String[][] generateUpdatedOutput() {
-        return CharacterSceneMatchHandler.translate(new String[dialogueMatchList.size()][OUTPUT_INNER_ARRAY_SIZE], dialogueMatchList, englishGameText, additionalLanguageGameTexts, false);
+        return CharacterSceneMatchHandler.translate(CharacterSceneHandler.placeCommands(new String[EXCEL_SHEET_SIZE][OUTPUT_INNER_ARRAY_SIZE], scenes), dialogueMatchList, englishPlainGameText, additionalLanguageGameTexts);
     }
 
     /**
