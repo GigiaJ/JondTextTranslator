@@ -64,12 +64,20 @@ public class FileHandler {
 		final String PKN0 = "[VAR PKNICK(0000)]";
 		final String PKN1 = "[VAR PKNICK(0001)]";
 
-		final String TN0 = "[VAR TRNICK(0000)]";
-		final String TN1 = "[VAR TRNICK(0001)]";
+		final String TNA0 = "[VAR TRNAME(0000)]";
+		final String TNA1 = "[VAR TRNAME(0001)]";
+		final String TNI0 = "[VAR TRNICK(0000)]";
+		final String TNI1 = "[VAR TRNICK(0001)]";
+
 
 		final String CL0 = "[VAR COLOR(0000)]";
 		final String CL1 = "[VAR COLOR(0001)]";
 		final String CL2 = "[VAR COLOR(0002)]";
+
+		final String RETURN = "\\r";
+		final String LINE_BREAK = "\\n";
+		final String DIALOGUE_BREAK = "\\c";
+		final String INCORRECT_APOSTROPHE = "’";
 
 		final String TRAINER_PLACE_HOLDER = "@s";
 
@@ -80,16 +88,25 @@ public class FileHandler {
 			}
 		});
 		s = sb.toString();
-		while (s.contains(PKN0) || s.contains(PKN1) || s.contains(TN0) || s.contains(TN1) ||
-				s.contains(CL0) || s.contains(CL1) || s.contains(CL2)
+		while (s.contains(PKN0) || s.contains(PKN1) ||
+				s.contains(TNA0) || s.contains(TNA1) ||
+				s.contains(TNI0) || s.contains(TNI1) ||
+				s.contains(CL0) || s.contains(CL1) || s.contains(CL2) ||
+				s.contains(LINE_BREAK) || s.contains(DIALOGUE_BREAK) || s.contains(RETURN) || s.contains(INCORRECT_APOSTROPHE)
 		) {
 			s = s.replace(PKN0, "");
 			s = s.replace(PKN1, "");
-			s = s.replace(TN0, TRAINER_PLACE_HOLDER);
-			s = s.replace(TN1, TRAINER_PLACE_HOLDER);
+			s = s.replace(TNA0, TRAINER_PLACE_HOLDER);
+			s = s.replace(TNA1, TRAINER_PLACE_HOLDER);
+			s = s.replace(TNI0, TRAINER_PLACE_HOLDER);
+			s = s.replace(TNI1, TRAINER_PLACE_HOLDER);
 			s = s.replace(CL0, "");
 			s = s.replace(CL1, "");
 			s = s.replace(CL2, "");
+			s = s.replace(RETURN, "");
+			s = s.replace(LINE_BREAK, " ");
+			s = s.replace(DIALOGUE_BREAK, "");
+			s = s.replace(INCORRECT_APOSTROPHE, "'");
 		}
 
 		return s;

@@ -14,6 +14,8 @@ import java.util.ArrayList;
 public class MatchFinder {
     private final String[] args;
 
+    private Format format;
+
     private int EXCEL_SHEET_SIZE;
     private final int OUTPUT_INNER_ARRAY_SIZE;
 
@@ -106,7 +108,7 @@ public class MatchFinder {
      * Saves the generated table output as a table
      */
     protected void saveAsSpreadSheet() {
-        FileHandler.save(args[ARGS.SAVE_FILE.getPosition()], FileHandler.generateOutput(generateUpdatedOutput()));
+        FileHandler.save(args[ARGS.SAVE_FILE.getPosition()], FileHandler.generateOutput(generateMatchOutput()));
     }
 
     /**
@@ -123,10 +125,33 @@ public class MatchFinder {
 
         /**
          * Gets position in the program arguments array that this item is at
-         * @return  The program argument position
+         *
+         * @return The program argument position
          */
         int getPosition() {
             return this.position;
+        }
+    }
+
+    /**
+     * An enumeration of the output format selections
+     */
+    enum Format {
+        ExcelMatchCheck(0), ExcelSceneOutput(1), FunctionOutput(2);
+
+        private final int format;
+
+        Format(int format) {
+            this.format = format;
+        }
+
+        /**
+         * Gets the format selection
+         *
+         * @return The format this program will output in
+         */
+        int getFormat() {
+            return this.format;
         }
     }
 }
