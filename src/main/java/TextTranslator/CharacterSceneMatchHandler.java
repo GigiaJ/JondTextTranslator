@@ -38,7 +38,7 @@ public class CharacterSceneMatchHandler {
      * the inner array
      */
     @ExtraInfo(UnitTested = true)
-    public static String[][] translate(String[][] map, ArrayList<CharacterSceneMatch> sceneMatches, ArrayList<String> englishText, @SuppressWarnings("rawtypes") ArrayList[] extraLanguagesText) {
+    public static String[][] translate(String[][] map, ArrayList<CharacterSceneMatch> sceneMatches, ArrayList<String> englishText, ArrayList<ArrayList<String>> extraLanguagesText) {
         log.info("Beginning translation and assignment.");
         for (CharacterSceneMatch sceneMatch : sceneMatches)
             for (PermutationMatch permutationMatch : sceneMatch.getPermutationMatches()) {
@@ -46,7 +46,7 @@ public class CharacterSceneMatchHandler {
                     if (permutationMatch.hasLineMatches()) {
                         int row = permutationMatch.getScene().get(x).getRow() - 1;
                         StringBuilder english = new StringBuilder();
-                        String[] extraLanguages = new String[extraLanguagesText.length];
+                        String[] extraLanguages = new String[extraLanguagesText.size()];
                         setLineMatchText(english, extraLanguages, englishText, extraLanguagesText, permutationMatch);
                         assignRowEntry(map, row, english, extraLanguages, permutationMatch);
                     }
@@ -69,12 +69,12 @@ public class CharacterSceneMatchHandler {
     @ExtraInfo(UnitTested = true)
     protected static void setLineMatchText(StringBuilder english, String[] extraLanguages,
                                            ArrayList<String> englishText,
-                                           @SuppressWarnings("rawtypes") ArrayList[] extraLanguagesText,
+                                           ArrayList<ArrayList<String>> extraLanguagesText,
                                            PermutationMatch match) {
         for (int line : match.getLineMatches()) {
             english.append(englishText.get(line));
-            for (int i = 0; i < extraLanguagesText.length; i++) {
-                extraLanguages[i] = (String) extraLanguagesText[i].get(line);
+            for (int i = 0; i < extraLanguagesText.size(); i++) {
+                extraLanguages[i] = extraLanguagesText.get(i).get(line);
             }
         }
     }

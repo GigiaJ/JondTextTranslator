@@ -3,6 +3,7 @@ package TextTranslator;
 /**
  * An enumeration of languages with relevant data within
  */
+@SuppressWarnings("unused")
 public enum Language {
     ENG, SPA, GER, FRE, ITA, KOR, JPN;
 
@@ -18,7 +19,6 @@ public enum Language {
             case ITA -> 0.96;
             case KOR -> 0.80;
             case JPN -> 0.74;
-            default -> 0.80;
         };
     }
 
@@ -31,7 +31,6 @@ public enum Language {
             case ITA -> 6.99;
             case KOR -> 7.00;
             case JPN -> 7.84;
-            default -> 7.00;
         };
 
     }
@@ -45,7 +44,6 @@ public enum Language {
             case ITA -> 0.72;
             case KOR -> 0.70;
             case JPN -> 0.49;
-            default -> 0.70;
         };
     }
 

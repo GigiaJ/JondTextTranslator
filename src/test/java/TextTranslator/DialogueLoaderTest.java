@@ -6,11 +6,11 @@ import org.junit.Test;
 public class DialogueLoaderTest extends DialogueLoader {
     //Double the number of quotations. Due to how the command lines are parsed the quotation marks are repeated
     //This means "text" becomes ""text""
-    final String commandLine = "tellraw @a[score_DialogueTrigger_min=10,score_DialogueTrigger=10,tag=!Dialogue10,score_TalkTime_min=12,score_TalkTime=12] {\"\"text\"\":\"\"<...> That PokÃ©mon you\\u2019ve got there looks pretty happy. You must be a good Trainer.\"\"}";
+    final String commandLine = "tellraw @a[score_DialogueTrigger_min=97,score_DialogueTrigger=97,tag=!Dialogue97,score_TalkTime_min=5,score_TalkTime=5] [\"\"\"\",{\"\"text\"\":\"\"<\"\"},{\"\"text\"\":\"\"Team Flare Grunt\"\",\"\"color\"\":\"\"red\"\"},{\"\"text\"\":\"\"> I may have lost... I may have lost, but... Isn\\u2019t this winter wonderland beautiful?\"\"}]";
 
     @Test
     public void testFindText() {
-        String expected = "<...> That PokÃ©mon you\\u2019ve got there looks pretty happy. You must be a good Trainer.";
+        String expected = "<Team Flare Grunt> I may have lost... I may have lost, but... Isn\\u2019t this winter wonderland beautiful?";
         Assert.assertEquals(expected, findText(commandLine));
     }
 
@@ -36,5 +36,11 @@ public class DialogueLoaderTest extends DialogueLoader {
         final String speakerLine = "<CharacterName> Hi this is a test phrase";
         final String expected = "Hi this is a test phrase";
         Assert.assertEquals(expected, removeSpeaker(speakerLine));
+    }
+
+    @Test
+    public void testFindColor() {
+        final String expected = "red";
+        Assert.assertEquals(expected, findColor(commandLine));
     }
 }

@@ -7,6 +7,7 @@ import static TextTranslator.Library.ExtraInfo;
 /**
  * A class to convert scenes back into commands
  */
+@SuppressWarnings("unused")
 public class CommandMaker {
     final String RETURN = "\\r";
     final String LINE_BREAK = "\\n";
@@ -36,16 +37,16 @@ public class CommandMaker {
      * and then build a new dialogue object (which is simply a command more or less in code form) using the
      * data from the first entry in that scene and some extrapolated data from the language class.
      *
-     * @param match The permutation match to build a command or set of commands for
+     * @param index The index of the permutation match to use
      * @return A list of dialogues representing a command for use in Minecraft
      */
     @ExtraInfo(UnitTested = true)
-    private ArrayList<Dialogue> createCommands(PermutationMatch match) {
-        ArrayList<Dialogue> commands = new ArrayList<>();
+    public CharacterScene createCommands(int index) {
+        PermutationMatch match = scene.getPermutationMatches().get(index);
+        CharacterScene commands = new CharacterScene();
         String[] lines = dump.get(match.getLineMatches().get(0)).split(DIALOGUE_BREAK);
         int talkTime = 0;
         for (String line : lines) {
-            talkTime += line.chars().sum();
             commands.add(new Dialogue(
                     scene.get(match.getStart()).getSpeaker(),
                     line,
@@ -55,6 +56,7 @@ public class CommandMaker {
                     (int) (talkTime / (language.getLanguageInformationRate() * language.getLanguageSyllabicRate())),
                     -1
             ));
+            talkTime += line.toCharArray().length;
         }
         return commands;
     }

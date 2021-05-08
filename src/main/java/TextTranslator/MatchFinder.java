@@ -11,6 +11,7 @@ import java.util.ArrayList;
  * @author Jaggar
  */
 @Slf4j
+@SuppressWarnings("unused")
 public class MatchFinder {
     private final String[] args;
 
@@ -22,8 +23,7 @@ public class MatchFinder {
     private final File spreadsheetFile;
     private static ArrayList<String> englishNormalizedGameText;
     private static ArrayList<String> englishPlainGameText;
-    @SuppressWarnings("rawtypes")
-    private final ArrayList[] additionalLanguageGameTexts;
+    private final ArrayList<ArrayList<String>> additionalLanguageGameTexts;
     private ArrayList<CharacterSceneMatch> scenes, dialogueMatchList, dialogueContainList;
 
 
@@ -39,13 +39,12 @@ public class MatchFinder {
         englishNormalizedGameText = FileHandler.loadTextFile(englishLanguageFile, true);
         englishPlainGameText = FileHandler.loadTextFile(englishLanguageFile, false);
         File[] additionalLanguageFiles = new File[programArgs.length - ARGS.EXTRA_LANGUAGES.getPosition()];
-        additionalLanguageGameTexts = new ArrayList[programArgs.length - ARGS.EXTRA_LANGUAGES.getPosition()];
+        additionalLanguageGameTexts = new ArrayList<>();
         for (int i = ARGS.EXTRA_LANGUAGES.getPosition(); i < programArgs.length; i++) {
             additionalLanguageFiles[i - ARGS.EXTRA_LANGUAGES.getPosition()] = new File(programArgs[i]);
-            additionalLanguageGameTexts[i - ARGS.EXTRA_LANGUAGES.getPosition()] =
-                    FileHandler.loadTextFile(additionalLanguageFiles[i - ARGS.EXTRA_LANGUAGES.getPosition()], false);
+            additionalLanguageGameTexts.add(FileHandler.loadTextFile(additionalLanguageFiles[i - ARGS.EXTRA_LANGUAGES.getPosition()], false));
         }
-        OUTPUT_INNER_ARRAY_SIZE = 1 + 1 + 1 + 1 + additionalLanguageGameTexts.length;
+        OUTPUT_INNER_ARRAY_SIZE = 1 + 1 + 1 + 1 + additionalLanguageGameTexts.size();
         log.info("Files loaded successfully.");
     }
 
@@ -83,6 +82,28 @@ public class MatchFinder {
     }
 
     /**
+     * Returns all the languages loaded in a single array list. These have not undergone any normalization of the text
+     * and thus still contain markers for dialogue separation.
+     *
+     * @return All of the unedited language text dumps
+     */
+    protected ArrayList<ArrayList<String>> getPlainLanguageText() {
+        ArrayList<ArrayList<String>> texts = new ArrayList<>();
+        texts.add(englishPlainGameText);
+        texts.addAll(additionalLanguageGameTexts);
+        return texts;
+    }
+
+    /**
+     * Returns the scene matches for this match finder object
+     *
+     * @return the scene matches
+     */
+    protected ArrayList<CharacterSceneMatch> getSceneMatches() {
+        return dialogueMatchList;
+    }
+
+    /**
      * Generates an output useful for checking the matches by creating a 2d string array
      * containing every dialogue entry per row and all the translation data needed.
      *
@@ -102,6 +123,28 @@ public class MatchFinder {
     }
 
     /**
+     * Generates a list of languages scenes which contain the multiple languages the scene matches have been
+     * translated to in their command form (dialogue object)
+     *
+     * @return The list of language scenes
+     */
+    public ArrayList<LanguagesScene> getTranslatedCommands() {
+        ArrayList<LanguagesScene> allCommands = new ArrayList<>();
+        ArrayList<ArrayList<String>> dumps = this.getPlainLanguageText();
+        for (CharacterSceneMatch scene : this.getSceneMatches()) {
+            LanguagesScene languagesScene = new LanguagesScene();
+            for (int i = 1; i < dumps.size(); i++) {
+                CharacterScene sceneCommandsForLanguage = new CharacterScene();
+                for (int t = 0; t < scene.getPermutationMatches().size(); t++)
+                    sceneCommandsForLanguage.addAll(new CommandMaker(scene, dumps.get(i), Language.values()[i]).createCommands(t));
+                languagesScene.add(sceneCommandsForLanguage, Language.values()[i]);
+            }
+            allCommands.add(languagesScene);
+        }
+        return allCommands;
+    }
+
+    /**
      * An enumeration detailing the order of program arguments
      */
     enum ARGS {
@@ -109,7 +152,7 @@ public class MatchFinder {
 
         private final int position;
 
-        ARGS(int position){
+        ARGS(int position) {
             this.position = position;
         }
 

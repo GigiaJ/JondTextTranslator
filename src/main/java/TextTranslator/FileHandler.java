@@ -57,61 +57,46 @@ public class FileHandler {
 	 */
 	@ExtraInfo(UnitTested = true)
 	protected static String normalize(String s) {
-		String[] LINES_TO_CORRECT = {"[VAR PKNAME(0000)]", "[VAR PKNAME(0001)]", "[VAR PKNAME(0002)]",
-				"[VAR PKNAME(0003)]", "[VAR PKNAME(0004)]", "[VAR PKNAME(0005)]"
-		};
-
-		final String PKN0 = "[VAR PKNICK(0000)]";
-		final String PKN1 = "[VAR PKNICK(0001)]";
-
-		final String TNA0 = "[VAR TRNAME(0000)]";
-		final String TNA1 = "[VAR TRNAME(0001)]";
-		final String TNI0 = "[VAR TRNICK(0000)]";
-		final String TNI1 = "[VAR TRNICK(0001)]";
-
-
-		final String CL0 = "[VAR COLOR(0000)]";
-		final String CL1 = "[VAR COLOR(0001)]";
-		final String CL2 = "[VAR COLOR(0002)]";
-
-		final String RETURN = "\\r";
-		final String LINE_BREAK = "\\n";
-		final String DIALOGUE_BREAK = "\\c";
-		final String INCORRECT_APOSTROPHE = "’";
-
 		final String TRAINER_PLACE_HOLDER = "@s";
 
 		StringBuilder sb = new StringBuilder(s);
-		Arrays.stream(LINES_TO_CORRECT).forEach(string -> {
-			while (sb.indexOf(string) != -1) {
-				sb.replace(sb.indexOf(string), sb.indexOf(string) + string.length(), "Pokémon");
-			}
-		});
-		s = sb.toString();
-		while (s.contains(PKN0) || s.contains(PKN1) ||
-				s.contains(TNA0) || s.contains(TNA1) ||
-				s.contains(TNI0) || s.contains(TNI1) ||
-				s.contains(CL0) || s.contains(CL1) || s.contains(CL2) ||
-				s.contains(LINE_BREAK) || s.contains(DIALOGUE_BREAK) || s.contains(RETURN) || s.contains(INCORRECT_APOSTROPHE)
-		) {
-			s = s.replace(PKN0, "");
-			s = s.replace(PKN1, "");
-			s = s.replace(TNA0, TRAINER_PLACE_HOLDER);
-			s = s.replace(TNA1, TRAINER_PLACE_HOLDER);
-			s = s.replace(TNI0, TRAINER_PLACE_HOLDER);
-			s = s.replace(TNI1, TRAINER_PLACE_HOLDER);
-			s = s.replace(CL0, "");
-			s = s.replace(CL1, "");
-			s = s.replace(CL2, "");
-			s = s.replace(RETURN, "");
-			s = s.replace(LINE_BREAK, " ");
-			s = s.replace(DIALOGUE_BREAK, "");
-			s = s.replace(INCORRECT_APOSTROPHE, "'");
-		}
 
-		return s;
+		iterateThroughValuesAndUpdate(sb, MappedValues.getTN(), TRAINER_PLACE_HOLDER);
+		iterateThroughValuesAndUpdate(sb, MappedValues.getNullable(), "");
+		iterateThroughValuesAndUpdate(sb, MappedValues.getPKNAME(), "Pokémon");
+		updateStringBuilder(sb, MappedValues.INCORRECT_APOSTROPHE, "'");
+		updateStringBuilder(sb, MappedValues.LINE_BREAK, " ");
+
+		return sb.toString();
 	}
-	
+
+	/**
+	 * Updates the string builder with the value passed in update with based on whether the string builder contains
+	 * the mapped value in question
+	 *
+	 * @param sb         the string builder
+	 * @param value      the mapped value to check for
+	 * @param updateWith the string to update with if the mapped value is found
+	 */
+	@ExtraInfo(UnitTested = true)
+	public static void updateStringBuilder(StringBuilder sb, MappedValues value, String updateWith) {
+		while (sb.indexOf(value.getValue()) != -1) {
+			sb.replace(sb.indexOf(value.getValue()), sb.indexOf(value.getValue()) + value.getValue().length(), updateWith);
+		}
+	}
+
+	/**
+	 * Iterates through the mapped values passed and then updates the string builder using updateStringBuilder
+	 *
+	 * @param sb         the string builder
+	 * @param values     the mapped values to check for
+	 * @param updateWith the string to update with if the mapped value is found
+	 */
+	@ExtraInfo(UnitTested = true)
+	private static void iterateThroughValuesAndUpdate(StringBuilder sb, MappedValues[] values, String updateWith) {
+		Arrays.stream(values).forEach(value -> updateStringBuilder(sb, value, updateWith));
+	}
+
 	/**
 	 * Reads the lines of a text file and returns them in an array list
 	 *
@@ -191,4 +176,6 @@ public class FileHandler {
 		final String OUTPUT_EXTENSION = ".tsv";
 		return fileName + OUTPUT_EXTENSION;
 	}
+
+
 }

@@ -138,12 +138,16 @@ public class DialogueLoader {
     /**
      * Finds the color in the string if it exists otherwise null
      *
-     * @param s The string to find the speaker color for
+     * @param line The string to find the speaker color for
      * @return The color of the speaker in this text otherwise null
      */
     @ExtraInfo(UnitTested = true)
-    protected static String findColor(String s) {
-
+    protected static String findColor(String line) {
+        Matcher matchColor = Pattern.compile("\"\"color\"\":\"\"((?:(?!\"\",\"\")(?!\"\"})[^}])*)"
+        ).matcher(line);
+        if (matchColor.find()) {
+            return matchColor.group(1);
+        }
         return null;
     }
 }

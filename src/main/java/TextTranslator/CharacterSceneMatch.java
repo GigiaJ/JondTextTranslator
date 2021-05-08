@@ -12,6 +12,7 @@ import java.util.ArrayList;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@SuppressWarnings("unused")
 public class CharacterSceneMatch extends CharacterScene {
 	/** The scene object associated with this match */
 	CharacterScene scene;

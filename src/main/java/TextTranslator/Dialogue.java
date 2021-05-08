@@ -56,4 +56,13 @@ public class Dialogue {
 		this.talkTime = talkTime;
 		this.row = row;
 	}
+
+	/**
+	 * Converts the dialogue to its minecraft command form
+	 *
+	 * @return the command form of this dialogue
+	 */
+	public String toCommandForm() {
+		return null;
+	}
 }
