@@ -68,7 +68,7 @@ public class CharacterScene extends ArrayList<Dialogue> implements Scene {
 	public void removeCopies() {
 		ArrayList<Dialogue> list = new ArrayList<>();
 		for (Dialogue toCheck : this) {
-			if (!checkContains(toCheck, list)) {
+			if (!Scene.checkContains(toCheck, list)) {
 				list.add(toCheck);
 			}
 		}

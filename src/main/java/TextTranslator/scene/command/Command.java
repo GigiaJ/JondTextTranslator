@@ -30,6 +30,11 @@ public class Command extends Dialogue {
     }
 
 
+    /**
+     * Generates the start of the tellraw command
+     *
+     * @return the start of the tellraw command
+     */
     @ExtraInfo(UnitTested = true)
     private String generateCommandStart() {
         return "tellraw @a" + generateTagPortion();
@@ -70,7 +75,7 @@ public class Command extends Dialogue {
     @ExtraInfo(UnitTested = true)
     private ArrayList<String> getEntries() {
         ArrayList<String> list = new ArrayList<>();
-        list.addAll(Arrays.asList(generateSpeakerEntry()));
+        list.addAll(Arrays.asList(generateSpeakerEntries()));
         list.addAll(Arrays.asList(generateTextEntries()));
         return list;
     }
@@ -82,7 +87,7 @@ public class Command extends Dialogue {
      * @return the speaker entry for the speaker of the dialogue
      */
     @ExtraInfo(UnitTested = true)
-    private String[] generateSpeakerEntry() {
+    private String[] generateSpeakerEntries() {
         return (getColor() != null) ?
                 new String[]{
                         wrapWithEntryChars(textFieldKey() + textFieldValue("<")),

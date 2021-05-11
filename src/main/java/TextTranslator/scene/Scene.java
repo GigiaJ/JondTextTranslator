@@ -59,7 +59,7 @@ public interface Scene {
      * @return true if the list contains the dialogue otherwise false
      */
     @ExtraInfo(UnitTested = true)
-    default boolean checkContains(Dialogue toCheck, ArrayList<Dialogue> list) {
+    static boolean checkContains(Dialogue toCheck, ArrayList<Dialogue> list) {
         for (Dialogue toCheckAgainst : list) {
             if (toCheckAgainst.getText().equals(toCheck.getText())
                     && toCheckAgainst.getRow() == toCheck.getRow()

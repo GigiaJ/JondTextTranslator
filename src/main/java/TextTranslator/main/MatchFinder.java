@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.util.ArrayList;
 
+import static TextTranslator.utils.Library.ExtraInfo;
 /**
  * A class to be used in generating useful data from all the input files
  *
@@ -58,6 +59,7 @@ public class MatchFinder {
      * Loads all the dialogue for the program and assigns places it in this objects dialogues list and then
      * sets the size for the excel sheet.
      */
+    @ExtraInfo(UnitTested = true)
     protected void loadDialogues() {
         ArrayList<Dialogue> dialogues = DialogueLoader.loadDialogue(spreadsheetFile);
         scenes = CharacterSceneHandler.assignDialogueToScene(dialogues);
@@ -69,6 +71,7 @@ public class MatchFinder {
      * Matches the dialogues to their corresponding matches in the English text using both exact matches and
      * then only contain matches
      */
+    @ExtraInfo(UnitTested = true)
     protected void matchDialogue() {
         dialogueMatchList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(scenes, englishNormalizedGameText, true));
         dialogueContainList = PermutationMatchHandler.filterPermutations(CharacterSceneMatchHandler.getAllMatchingLines(scenes, englishNormalizedGameText, false));
@@ -80,6 +83,7 @@ public class MatchFinder {
      * adds the remainder of the contain match list to the exact match list and then filters any remaining problematic
      * scene entries from the final output
      */
+    @ExtraInfo(UnitTested = true)
     protected void filterMatches() {
         CharacterSceneMatchHandler.removeCollisions(dialogueMatchList, dialogueContainList, false);
         dialogueMatchList.addAll(dialogueContainList);
@@ -93,6 +97,7 @@ public class MatchFinder {
      *
      * @return All of the unedited language text dumps
      */
+    @ExtraInfo(UnitTested = true)
     protected ArrayList<ArrayList<String>> getPlainLanguageText() {
         ArrayList<ArrayList<String>> texts = new ArrayList<>();
         texts.add(englishPlainGameText);
@@ -105,6 +110,7 @@ public class MatchFinder {
      *
      * @return the scene matches
      */
+    @ExtraInfo(UnitTested = true)
     protected ArrayList<CharacterSceneMatch> getSceneMatches() {
         return dialogueMatchList;
     }
@@ -117,6 +123,7 @@ public class MatchFinder {
      * the line that the match corresponded to according to its permutation match, and the same line but for the
      * extra languages.
      */
+    @ExtraInfo(UnitTested = true)
     protected String[][] generateMatchOutput() {
         return CharacterSceneMatchHandler.translate(CharacterSceneHandler.placeCommands(new String[EXCEL_SHEET_SIZE][OUTPUT_INNER_ARRAY_SIZE], scenes), dialogueMatchList, englishPlainGameText, additionalLanguageGameTexts);
     }
@@ -124,6 +131,7 @@ public class MatchFinder {
     /**
      * Saves the generated table output as a table
      */
+    @ExtraInfo(UnitTested = true)
     protected void saveAsSpreadSheet() {
         FileHandler.save(args[ARGS.SAVE_FILE.getPosition()], FileHandler.generateOutput(generateMatchOutput()));
     }
@@ -134,6 +142,7 @@ public class MatchFinder {
      *
      * @return The list of language scenes
      */
+    @ExtraInfo(UnitTested = true)
     public ArrayList<LanguagesScene> getTranslatedCommands() {
         ArrayList<LanguagesScene> allCommands = new ArrayList<>();
         ArrayList<ArrayList<String>> dumps = this.getPlainLanguageText();
