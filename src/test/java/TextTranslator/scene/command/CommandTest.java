@@ -1,12 +1,12 @@
 package TextTranslator.scene.command;
 
-import lombok.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class CommandTest extends Command {
-    public CommandTest(@NonNull String speaker, String text, String color, int minimum, int trigger, int talkTime, int row) {
-        super(speaker, text, color, minimum, trigger, talkTime, row);
+
+    public CommandTest() {
+        super("", "", "", 0, 0, 0, 0);
     }
 
     @Test
