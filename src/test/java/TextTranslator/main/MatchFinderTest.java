@@ -40,7 +40,12 @@ public class MatchFinderTest {
     }
 
     @Test
-    public void getTranslatedCommands() {
+    public void testGetTranslatedCommands() {
+        Assert.fail();
+    }
+
+    @Test
+    public void testUpdateMCFunctionFile() {
         Assert.fail();
     }
 }

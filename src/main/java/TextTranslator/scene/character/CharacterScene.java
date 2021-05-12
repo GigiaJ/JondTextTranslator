@@ -58,7 +58,7 @@ public class CharacterScene extends ArrayList<Dialogue> implements Scene {
 	 */
 	@Override
 	public int getTrigger(int index) {
-		return this.get(index).getTrigger();
+		return this.get(index).getTriggerScore();
 	}
 
 	/**

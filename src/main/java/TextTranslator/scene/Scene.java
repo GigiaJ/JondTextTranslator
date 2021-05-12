@@ -64,7 +64,7 @@ public interface Scene {
             if (toCheckAgainst.getText().equals(toCheck.getText())
                     && toCheckAgainst.getRow() == toCheck.getRow()
                     && toCheckAgainst.getSpeaker().equals(toCheck.getSpeaker())
-                    && toCheckAgainst.getTrigger() == toCheck.getTrigger()) {
+                    && toCheckAgainst.getTriggerScore() == toCheck.getTriggerScore()) {
                 return true;
             }
         }

@@ -16,13 +16,28 @@ public class DialogueLoaderTest extends DialogueLoader {
     }
 
     @Test
-    public void testFindTriggerTag() {
-        Assert.assertTrue(findTriggerTag(commandLine) != -1);
+    public void testFindTriggerScore() {
+        Assert.assertTrue(findTriggerScore(commandLine) != -1);
     }
 
     @Test
     public void testFindTalkTime() {
         Assert.assertTrue(findTalkTime(commandLine) != -1);
+    }
+
+    @Test
+    public void testFindDialogueTag() {
+        Assert.fail();
+    }
+
+    @Test
+    public void testFindMinimumTalkTime() {
+        Assert.fail();
+    }
+
+    @Test
+    public void testFindMinimumTrigger() {
+        Assert.fail();
     }
 
     @Test

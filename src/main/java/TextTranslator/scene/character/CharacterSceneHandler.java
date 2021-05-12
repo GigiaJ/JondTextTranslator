@@ -138,9 +138,9 @@ public class CharacterSceneHandler {
      */
     @ExtraInfo(UnitTested = true)
     protected static void setSceneToCurrent(Object[] currentValues, Dialogue dialogue) {
-            currentValues[0] = dialogue.getSpeaker();
-            currentValues[1] = dialogue.getTrigger();
-            currentValues[2] = dialogue.getTalkTime();
+        currentValues[0] = dialogue.getSpeaker();
+        currentValues[1] = dialogue.getTriggerScore();
+        currentValues[2] = dialogue.getTalkTime();
     }
 
     /**
@@ -153,6 +153,6 @@ public class CharacterSceneHandler {
      */
     @ExtraInfo(UnitTested = true)
     protected static boolean isNotCurrentScene(Object[] currentValues, Dialogue dialogue) {
-        return !dialogue.getSpeaker().equals(currentValues[0]) || dialogue.getTrigger() != (int) currentValues[1];
+        return !dialogue.getSpeaker().equals(currentValues[0]) || dialogue.getTriggerScore() != (int) currentValues[1];
     }
 }

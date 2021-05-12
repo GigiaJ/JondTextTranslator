@@ -15,8 +15,8 @@ public class Command extends Dialogue {
     /**
      * Generates a new command object with all of the fields in this class as parameters.
      */
-    public Command(@NonNull String speaker, String text, String color, int minimum, int trigger, int talkTime, int row) {
-        super(speaker, text, color, minimum, trigger, talkTime, row);
+    public Command(@NonNull String speaker, String text, String color, String dialogueTag, int triggerScore, int minimumTrigger, int minimumTalkTime, int talkTime, int row, String originalLine) {
+        super(speaker, text, color, dialogueTag, triggerScore, minimumTrigger, minimumTalkTime, talkTime, row, originalLine);
     }
 
     /**
@@ -59,10 +59,10 @@ public class Command extends Dialogue {
     @ExtraInfo(UnitTested = true)
     private String generateTagPortion() {
         return BLOCK_OPENING +
-                "score_DialogueTrigger_min=" + getMinimum() + SEPARATOR +
-                "score_DialogueTrigger=" + getTrigger() + SEPARATOR +
-                "tag=!Dialgoue" + getTrigger() + SEPARATOR +
-                "score_TalkTime_min=" + getTalkTime() + SEPARATOR +
+                "score_DialogueTrigger_min=" + getMinimumTrigger() + SEPARATOR +
+                "score_DialogueTrigger=" + getTriggerScore() + SEPARATOR +
+                "tag=!Dialgoue" + getDialogueTag() + SEPARATOR +
+                "score_TalkTime_min=" + getMinimumTalkTime() + SEPARATOR +
                 "score_TalkTime=" + getTalkTime() +
                 BLOCK_CLOSING;
     }
@@ -113,9 +113,10 @@ public class Command extends Dialogue {
     private String[] generateTextEntries() {
         String[] strings = getText().split("@s");
         String[] entries = new String[strings.length + (strings.length / 2)];
-        for (int x = 0, y = 0; x < strings.length + (strings.length / 2); x = x + 2, y = x + 1) {
+        for (int x = 0, y = 1; x < strings.length + (strings.length / 2); x = x + 2, y = x + 1) {
             entries[x] = generateTextEntry(strings[x / 2]);
-            entries[y] = generatePlayerSelectorPortion();
+            if (strings.length > 1)
+                entries[y] = generatePlayerSelectorPortion();
         }
         return entries;
     }

@@ -51,6 +51,6 @@ public class CommandScene extends ArrayList<Command> implements Scene {
      */
     @Override
     public int getTrigger(int index) {
-        return this.get(index).getTrigger();
+        return this.get(index).getTriggerScore();
     }
 }

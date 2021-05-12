@@ -152,7 +152,7 @@ public class FileHandler {
 	 */
 	public static void save(String fileName, String string) {
 		try {
-			File saveFile = new File(FileHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath() + addOutputFileExtension(fileName));
+			File saveFile = new File(FileHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath() + fileName);
 			if (saveFile.createNewFile()) {
 				log.info("File created.");
 			} else {

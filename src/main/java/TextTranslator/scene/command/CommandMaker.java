@@ -49,18 +49,19 @@ public class CommandMaker {
         PermutationMatch match = scene.getPermutationMatches().get(index);
         CommandScene commands = new CommandScene();
         String[] lines = dump.get(match.getLineMatches().get(0)).split(DIALOGUE_BREAK);
-        int talkTime = 0;
         for (String line : lines) {
             commands.add(new Command(
                     scene.get(match.getStart()).getSpeaker(),
                     line,
                     scene.get(match.getStart()).getColor(),
-                    scene.get(match.getStart()).getMinimum(),
-                    scene.get(match.getStart()).getTrigger(),
-                    (int) (talkTime / (language.getLanguageInformationRate() * language.getLanguageSyllabicRate())),
-                    -1
+                    scene.get(match.getStart()).getDialogueTag(),
+                    scene.get(match.getStart()).getTriggerScore(),
+                    scene.get(match.getStart()).getMinimumTrigger(),
+                    scene.get(match.getStart()).getMinimumTalkTime(),
+                    scene.get(match.getStart()).getTalkTime(),
+                    -1,
+                    scene.get(match.getStart()).getOriginalLine()
             ));
-            talkTime += line.toCharArray().length;
         }
         return commands;
     }

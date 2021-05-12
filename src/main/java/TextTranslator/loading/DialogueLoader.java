@@ -35,11 +35,14 @@ public class DialogueLoader {
             String line;
             int row = 1;
             while ((line = br.readLine()) != null) {
+                String originalLine = line;
                 line = FileHandler.correctLine(line);
                 String text = findText(line);
                 dialogueList.add(
                         new Dialogue(
-                                findSpeaker(text), removeSpeaker(text), findColor(text), 0, findTriggerTag(line), findTalkTime(line), row
+                                findSpeaker(text), removeSpeaker(text), findColor(text), findDialogueTag(line),
+                                findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line), row,
+                                originalLine.replaceAll("\"\"", "\"")
                         ));
                 row++;
             }
@@ -85,31 +88,66 @@ public class DialogueLoader {
     /**
      * Finds the trigger tag from the command line extracted out of the excel sheet by using a
      * regex and loops through until the string to return has all of the lines of text for this command
+     *
      * @param line The line of text from an excel sheet containing a tellraw command
-     * @return		The trigger tag for this particular command
+     * @return The trigger tag for this particular command
      */
     @ExtraInfo(UnitTested = true)
-    protected static int findTriggerTag(String line) {
+    protected static int findTriggerScore(String line) {
         Matcher matchTrigger = Pattern.compile("score_DialogueTrigger=(\\d*)").matcher(line);
-        if (matchTrigger.find()) {
-            return Integer.parseInt(matchTrigger.group(1));
-        }
-        return -1;
+        return matchTrigger.find() ? Integer.parseInt(matchTrigger.group(1)) : -1;
+    }
+
+    /**
+     * Finds the minimum trigger score from the command line extracted out of the excel sheet by using a
+     * regex and loops through until the string to return has all of the lines of text for this command
+     *
+     * @param line The line of text from an excel sheet containing a tellraw command
+     * @return The minimum trigger score for this particular command
+     */
+    @ExtraInfo(UnitTested = true)
+    protected static int findMinimumTrigger(String line) {
+        Matcher matchMinTrigger = Pattern.compile("score_DialogueTrigger_min=(\\d*)").matcher(line);
+        return matchMinTrigger.find() ? Integer.parseInt(matchMinTrigger.group(1)) : -1;
+    }
+
+    /**
+     * Finds the dialogue tag from the command line extracted out of the excel sheet by using a
+     * regex and loops through until the string to return has all of the lines of text for this command
+     *
+     * @param line The line of text from an excel sheet containing a tellraw command
+     * @return The dialogue tag for this particular command
+     */
+    @ExtraInfo(UnitTested = true)
+    protected static String findDialogueTag(String line) {
+        Matcher matchDialogueTag = Pattern.compile("tag=(!Dialogue\\d*)").matcher(line);
+        return matchDialogueTag.find() ? matchDialogueTag.group(1) : null;
+    }
+
+    /**
+     * Finds the minimum talk time score from the command line extracted out of the excel sheet by using a
+     * regex and loops through until the string to return has all of the lines of text for this command
+     *
+     * @param line The line of text from an excel sheet containing a tellraw command
+     * @return The minimum talk time score for this particular command
+     */
+    @ExtraInfo(UnitTested = true)
+    protected static int findMinimumTalkTime(String line) {
+        Matcher matchMinTalkTime = Pattern.compile("score_TalkTime_min=(\\d*)").matcher(line);
+        return matchMinTalkTime.find() ? Integer.parseInt(matchMinTalkTime.group(1)) : -1;
     }
 
     /**
      * Finds the talk time from the command line extracted out of the excel sheet by using a
      * regex and loops through until the string to return has all of the lines of text for this command
+     *
      * @param line The line of text from an excel sheet containing a tellraw command
-     * @return		The trigger tag for this particular command
+     * @return The trigger tag for this particular command
      */
     @ExtraInfo(UnitTested = true)
     protected static int findTalkTime(String line) {
         Matcher matchTalkTime = Pattern.compile("score_TalkTime=(\\d*)").matcher(line);
-        if (matchTalkTime.find()) {
-            return Integer.parseInt(matchTalkTime.group(1));
-        }
-        return -1;
+        return matchTalkTime.find() ? Integer.parseInt(matchTalkTime.group(1)) : -1;
     }
 
     /**
@@ -119,10 +157,7 @@ public class DialogueLoader {
      */
     @ExtraInfo(UnitTested = true)
     protected static String findSpeaker(String s) {
-        if (s.contains("<") && s.contains(">")) {
-            return s.substring(s.indexOf("<") + 1, s.indexOf(">"));
-        }
-        return "";
+        return (s.contains("<") && s.contains(">")) ? s.substring(s.indexOf("<") + 1, s.indexOf(">")) : "";
     }
 
     /**
@@ -146,9 +181,6 @@ public class DialogueLoader {
     protected static String findColor(String line) {
         Matcher matchColor = Pattern.compile("\"\"color\"\":\"\"((?:(?!\"\",\"\")(?!\"\"})[^}])*)"
         ).matcher(line);
-        if (matchColor.find()) {
-            return matchColor.group(1);
-        }
-        return null;
+        return matchColor.find() ? matchColor.group(1) : null;
     }
 }

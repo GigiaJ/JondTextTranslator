@@ -5,6 +5,7 @@ import TextTranslator.loading.FileHandler;
 import TextTranslator.scene.LanguagesScene;
 import TextTranslator.scene.character.*;
 import TextTranslator.scene.command.CommandMaker;
+import TextTranslator.scene.command.CommandScene;
 import TextTranslator.utils.Language;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +29,8 @@ public class MatchFinder {
     private final int OUTPUT_INNER_ARRAY_SIZE;
 
     private final File spreadsheetFile;
+    private static ArrayList<String> mcFunctionText;
+    private final File mcFunctionFile;
     private static ArrayList<String> englishNormalizedGameText;
     private static ArrayList<String> englishPlainGameText;
     private final ArrayList<ArrayList<String>> additionalLanguageGameTexts;
@@ -42,7 +45,9 @@ public class MatchFinder {
     public MatchFinder(String[] programArgs) {
         args = programArgs;
         spreadsheetFile = new File(programArgs[ARGS.SPREADSHEET.getPosition()]);
+        mcFunctionFile = new File(programArgs[ARGS.MCFUNCTION.getPosition()]);
         File englishLanguageFile = new File(programArgs[ARGS.ENGLISH_LANGUAGE_DUMP.getPosition()]);
+        mcFunctionText = FileHandler.loadTextFile(mcFunctionFile, false);
         englishNormalizedGameText = FileHandler.loadTextFile(englishLanguageFile, true);
         englishPlainGameText = FileHandler.loadTextFile(englishLanguageFile, false);
         File[] additionalLanguageFiles = new File[programArgs.length - ARGS.EXTRA_LANGUAGES.getPosition()];
@@ -149,7 +154,7 @@ public class MatchFinder {
         for (CharacterSceneMatch scene : this.getSceneMatches()) {
             LanguagesScene languagesScene = new LanguagesScene();
             for (int i = 1; i < dumps.size(); i++) {
-                CharacterScene sceneCommandsForLanguage = new CharacterScene();
+                CommandScene sceneCommandsForLanguage = new CommandScene();
                 for (int t = 0; t < scene.getPermutationMatches().size(); t++)
                     sceneCommandsForLanguage.addAll(new CommandMaker(scene, dumps.get(i), Language.values()[i]).createCommands(t));
                 languagesScene.add(sceneCommandsForLanguage, Language.values()[i]);
@@ -160,10 +165,34 @@ public class MatchFinder {
     }
 
     /**
+     * Updates the entries in the passed mcfunction file with the alternate language commands
+     */
+    @ExtraInfo(UnitTested = true)
+    public void updateMCFunctionFile() {
+        String text = "";
+        for (String line : mcFunctionText) {
+            text += line + "\n";
+        }
+        ArrayList<LanguagesScene> languagesScenes = this.getTranslatedCommands();
+        for (LanguagesScene languagesScene : languagesScenes) {
+            for (int i = 0; i < languagesScene.get(Language.SPA).size(); i++) {
+                String originalLine = languagesScene.get(Language.SPA).get(i).getOriginalLine();
+                originalLine = originalLine.substring(1, originalLine.length() - 1);
+                String languageLine = languagesScene.get(Language.SPA).get(i).toCommandForm();
+                while (text.contains(originalLine)) {
+                    text = text.replace(originalLine, languageLine);
+                }
+            }
+        }
+
+        FileHandler.save("Test.mcfunction", text);
+    }
+
+    /**
      * An enumeration detailing the order of program arguments
      */
     enum ARGS {
-        SAVE_FILE(0), SPREADSHEET(1), ENGLISH_LANGUAGE_DUMP(2), EXTRA_LANGUAGES(3);
+        SAVE_FILE(0), SPREADSHEET(1), MCFUNCTION(2), ENGLISH_LANGUAGE_DUMP(3), EXTRA_LANGUAGES(4);
 
         private final int position;
 
