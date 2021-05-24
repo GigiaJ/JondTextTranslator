@@ -17,6 +17,20 @@ public class Generic extends Command {
     String text;
 
     /**
+     * Makes a new generic object with the values of the parent class as its own
+     *
+     * @param command the object that this one will get its values from
+     * @param type    the type of this command
+     * @param text    the text in this command
+     */
+    public Generic(Command command, CommandType type, String text) {
+        super(command.getDialogueTag(), command.getTriggerScore(),
+                command.getMinimumTrigger(), command.getMinimumTalkTime(), command.getTalkTime(),
+                command.getRow(), command.getOriginalLine(), type);
+        this.text = text;
+    }
+
+    /**
      * Generates a new dialogue object with all of the fields in this class as parameters.
      *
      * @param text            the actual text for this line of dialogue

@@ -3,7 +3,6 @@ package TextTranslator.scene.commands;
 import lombok.Getter;
 import lombok.Setter;
 
-@SuppressWarnings("raw-use")
 public enum CommandType {
     TELLRAW("tellraw", TellRaw.class), EXECUTE("execute", Generic.class), TP("tp", Generic.class),
     SCOREBOARD("scoreboard", Scoreboard.class),
@@ -28,4 +27,5 @@ public enum CommandType {
                 "commandWord='" + commandWord + '\'' +
                 '}';
     }
+
 }

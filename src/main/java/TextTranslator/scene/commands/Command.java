@@ -40,9 +40,6 @@ public class Command {
      */
     CommandType type;
 
-    public Command() {
-    }
-
     /**
      * Generates a new command object with all of the fields in this class as parameters.
      *

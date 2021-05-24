@@ -4,27 +4,14 @@ package TextTranslator.scene.commands;
  * A factory class to create commands
  */
 public class CommandFactory {
-
-    public static Class<?> create(CommandType type) {
+    public static Command create(CommandType type, Command command, String... args) {
         switch (type) {
-            case COMMENT:
-                break;
-            case TP:
-                break;
             case TELLRAW:
-                return CommandType.TELLRAW.getClazz();
+                return new TellRaw(command, args[0], args[1], args[2]);
             case SCOREBOARD:
-                break;
-            case SCENE_DIVIDER:
-                break;
-            case EXECUTE:
-                break;
-            case BLANK:
-                break;
-            case GIVE:
-                break;
-            case CLEAR:
-                break;
+                return new Scoreboard(command, args[0], args[1], args[2]);
+            default:
+                return new Generic(command, type, args[0]);
         }
 
     }

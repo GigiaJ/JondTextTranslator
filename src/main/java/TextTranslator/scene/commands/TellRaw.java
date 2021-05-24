@@ -32,6 +32,23 @@ public class TellRaw extends Command {
     String color;
 
     /**
+     * Makes a new tellraw object with the values of the parent class as its own
+     *
+     * @param command the object that this one will get its values from
+     * @param speaker the speaker for this line of dialogue
+     * @param text    the actual text for this line of dialogue
+     * @param color   the color of the speaker's name for this line of dialogue
+     */
+    public TellRaw(Command command, @NonNull String speaker, String text, String color) {
+        super(command.getDialogueTag(), command.getTriggerScore(),
+                command.getMinimumTrigger(), command.getMinimumTalkTime(), command.getTalkTime(),
+                command.getRow(), command.getOriginalLine(), CommandType.TELLRAW);
+        this.speaker = speaker;
+        this.text = text;
+        this.color = color;
+    }
+
+    /**
      * Generates a new dialogue object with all of the fields in this class as parameters.
      *
      * @param speaker         the speaker for this line of dialogue
