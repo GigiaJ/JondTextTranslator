@@ -90,15 +90,15 @@ public class Command extends Dialogue {
     private String[] generateSpeakerEntries() {
         return (getColor() != null) ?
                 new String[]{
-                        wrapWithEntryChars(textFieldKey() + textFieldValue("<")),
-                        wrapWithEntryChars(textFieldKey() + textFieldValue(getSpeaker()) + SEPARATOR + generateColorField()),
-                        wrapWithEntryChars(textFieldKey() + textFieldValue(">"))
+                        wrapWithEntryChars(getTextFieldKey() + getTextFieldValue("<")),
+                        wrapWithEntryChars(getTextFieldKey() + getTextFieldValue(getSpeaker()) + SEPARATOR + generateColorField()),
+                        wrapWithEntryChars(getTextFieldKey() + getTextFieldValue(">"))
                 }
                 :
                 new String[]{
-                        wrapWithEntryChars(textFieldKey() + textFieldValue("<")),
-                        wrapWithEntryChars(textFieldKey() + textFieldValue(getSpeaker())),
-                        wrapWithEntryChars(textFieldKey() + textFieldValue(">"))
+                        wrapWithEntryChars(getTextFieldKey() + getTextFieldValue("<")),
+                        wrapWithEntryChars(getTextFieldKey() + getTextFieldValue(getSpeaker())),
+                        wrapWithEntryChars(getTextFieldKey() + getTextFieldValue(">"))
                 };
 
     }
@@ -128,8 +128,8 @@ public class Command extends Dialogue {
      * @return the wrapped text as an entry
      */
     @ExtraInfo(UnitTested = true)
-    private String generateTextEntry(String text) {
-        return textFieldKey() + textFieldValue(text);
+    String generateTextEntry(String text) {
+        return getTextFieldKey() + getTextFieldValue(text);
     }
 
     /**
@@ -148,7 +148,7 @@ public class Command extends Dialogue {
      * @return the key portion of a text field
      */
     @ExtraInfo(UnitTested = true)
-    private String textFieldKey() {
+    String getTextFieldKey() {
         return wrapWithFieldIdentifier("text") + KEY_VALUE_SEPARATOR;
     }
 
@@ -158,7 +158,7 @@ public class Command extends Dialogue {
      * @param text the actual text of this section of the text in the dialogue
      * @return the text of this wrapped as a field
      */
-    private String textFieldValue(String text) {
+    String getTextFieldValue(String text) {
         return wrapWithFieldIdentifier(text);
     }
 
@@ -169,7 +169,7 @@ public class Command extends Dialogue {
      * @return a block in the tellraw command
      */
     @ExtraInfo(UnitTested = true)
-    private String wrapWithBlockChars(ArrayList<String> entries) {
+    String wrapWithBlockChars(ArrayList<String> entries) {
         StringBuilder sb = new StringBuilder(BLOCK_OPENING);
         for (int i = 0; i < entries.size(); i++) {
             sb.append(entries.get(i));
@@ -189,7 +189,7 @@ public class Command extends Dialogue {
      * @return the entry as a proper entry
      */
     @ExtraInfo(UnitTested = true)
-    private String wrapWithEntryChars(String entry) {
+    String wrapWithEntryChars(String entry) {
         final String ENTRY_OPENING = "{", ENTRY_CLOSING = "}";
         return ENTRY_OPENING + entry + ENTRY_CLOSING;
     }
@@ -201,7 +201,7 @@ public class Command extends Dialogue {
      * @return the wrapped field
      */
     @ExtraInfo(UnitTested = true)
-    private String wrapWithFieldIdentifier(String field) {
+    String wrapWithFieldIdentifier(String field) {
         final String FIELD_IDENTIFIER = "\"";
         return FIELD_IDENTIFIER + field + FIELD_IDENTIFIER;
     }

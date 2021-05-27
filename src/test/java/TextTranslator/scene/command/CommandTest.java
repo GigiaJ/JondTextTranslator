@@ -46,7 +46,8 @@ public class CommandTest extends Command {
 
     @Test
     public void testGenerateTextEntry() {
-        Assert.fail();
+        String expected = "\"text\":\"test\"";
+        Assert.assertEquals(expected, generateTextEntry("test"));
     }
 
     @Test
@@ -56,13 +57,15 @@ public class CommandTest extends Command {
     }
 
     @Test
-    public void testTextFieldKey() {
-        Assert.fail();
+    public void testGetTextFieldKey() {
+        String expected = "\"text\"";
+        Assert.assertEquals(expected, getTextFieldKey());
     }
 
     @Test
-    public void testTextFieldValue() {
-        Assert.fail();
+    public void testGetTextFieldValue() {
+        String expected = "\"test\"";
+        Assert.assertEquals(expected, getTextFieldValue("test"));
     }
 
     @Test
@@ -72,12 +75,14 @@ public class CommandTest extends Command {
 
     @Test
     public void testWrapWithEntryChars() {
-        Assert.fail();
+        String expected = "{\"text\":\"test\"}";
+        Assert.assertEquals(expected, "\"text\":\"test\"");
     }
 
     @Test
     public void testWrapWithFieldIdentifier() {
-        Assert.fail();
+        String expected = "\"test\"";
+        Assert.assertEquals(expected, wrapWithFieldIdentifier("test"));
     }
 
 
