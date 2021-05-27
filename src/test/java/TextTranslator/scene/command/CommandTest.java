@@ -51,7 +51,8 @@ public class CommandTest extends Command {
 
     @Test
     public void testGenerateColorField() {
-        Assert.fail();
+        String expected = "\"color:" + this.getColor() + "\"";
+        Assert.assertEquals(expected, generateColorField());
     }
 
     @Test

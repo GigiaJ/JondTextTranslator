@@ -138,7 +138,7 @@ public class Command extends Dialogue {
      * @return a color field
      */
     @ExtraInfo(UnitTested = true)
-    private String generateColorField() {
+    String generateColorField() {
         return wrapWithFieldIdentifier("color") + KEY_VALUE_SEPARATOR + wrapWithFieldIdentifier(getColor());
     }
 
