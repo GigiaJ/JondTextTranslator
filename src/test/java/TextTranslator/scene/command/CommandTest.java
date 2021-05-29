@@ -36,7 +36,12 @@ public class CommandTest extends Command {
 
     @Test
     public void testGenerateSpeakerEntries() {
-        Assert.fail();
+        //String entry = "{\"text\":\"<\"},{\"text\":\"Sina\",\"color\":\"red\"},{\"text\":\"> You there!\"}";
+        //Generate command here?
+        String[] expected = {"{\"text\":\"<\"}", "{\"text\":\"Sina\",\"color\":\"red\"}", "{\"text\":\"> You there!\"}"};
+        for (int i = 0; i < expected.length; i++) {
+            Assert.assertEquals(expected[i], generateSpeakerEntries()[i]);
+        }
     }
 
     @Test

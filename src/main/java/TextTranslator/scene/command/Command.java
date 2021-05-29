@@ -87,7 +87,7 @@ public class Command extends Dialogue {
      * @return the speaker entry for the speaker of the dialogue
      */
     @ExtraInfo(UnitTested = true)
-    private String[] generateSpeakerEntries() {
+    String[] generateSpeakerEntries() {
         return (getColor() != null) ?
                 new String[]{
                         wrapWithEntryChars(getTextFieldKey() + getTextFieldValue("<")),
