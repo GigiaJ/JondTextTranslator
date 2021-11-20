@@ -20,6 +20,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.projectlombok:lombok:1.18.18'
+
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
     testCompile 'junit:junit:4.12'

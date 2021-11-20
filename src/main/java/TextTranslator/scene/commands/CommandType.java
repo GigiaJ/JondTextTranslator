@@ -7,7 +7,7 @@ public enum CommandType {
     TELLRAW("tellraw", TellRaw.class), EXECUTE("execute", Generic.class), TP("tp", Generic.class),
     SCOREBOARD("scoreboard", Scoreboard.class),
     CLEAR("clear", Generic.class), GIVE("give", Generic.class), COMMENT("#", Generic.class),
-    BLANK("\n", Generic.class), SCENE_DIVIDER("~~~", Generic.class);
+    BLANK("", Generic.class), SCENE_DIVIDER("#~~~", Generic.class);
 
     @Setter
     @Getter

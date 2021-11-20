@@ -99,9 +99,9 @@ public class CharacterSceneMatchHandlerTest extends CharacterSceneMatchHandler i
     @Test
     public void testGetMatchingLines() {
         CharacterScene mockScene = new CharacterScene();
-        mockScene.add(new Dialogue("Mom", "This", null, 1, 1, 1, 1));
-        mockScene.add(new Dialogue("Mom", "is", null, 1, 1, 15, 2));
-        mockScene.add(new Dialogue("Mom", "a", null, 1, 1, 27, 3));
+        mockScene.add(new Dialogue("Mom", "This", "red", null, 1, 1, 1, 1, 1));
+        mockScene.add(new Dialogue("Mom", "is", "red", null, 1, 1, 1, 15, 2));
+        mockScene.add(new Dialogue("Mom", "a", "red", null, 1, 1, 1, 27, 3));
         Assert.assertFalse(getMatchingLines(mockScene, mockEnglishText, true).getPermutationMatches().isEmpty());
     }
 

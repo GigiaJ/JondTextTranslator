@@ -10,6 +10,7 @@ public class Main {
 	public static void main(String[] args) {
 		args = new String[]{"Test.tsv", "C:\\Users\\Jaggar\\Downloads\\englishSheet.csv", "C:\\Users\\Jaggar\\Downloads\\dialogue.mcfunction", "C:\\Users\\Jaggar\\Downloads\\eng_story.txt", "C:\\Users\\Jaggar\\Downloads\\spa_story.txt"};
 		MatchFinder finder = new MatchFinder(args);
+		finder.loadCommands();
 		finder.loadDialogues();
 		finder.matchDialogue();
 		finder.filterMatches();

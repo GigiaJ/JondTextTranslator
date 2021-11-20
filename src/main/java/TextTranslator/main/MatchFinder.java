@@ -6,6 +6,8 @@ import TextTranslator.scene.LanguagesScene;
 import TextTranslator.scene.character.*;
 import TextTranslator.scene.command.CommandMaker;
 import TextTranslator.scene.command.CommandScene;
+import TextTranslator.scene.commands.Command;
+import TextTranslator.scene.commands.CommandLoader;
 import TextTranslator.utils.Language;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,6 +60,14 @@ public class MatchFinder {
         }
         OUTPUT_INNER_ARRAY_SIZE = 1 + 1 + 1 + 1 + additionalLanguageGameTexts.size();
         log.info("Files loaded successfully.");
+    }
+
+    /**
+     * Loads all of the commands for the program and places it in this objects command list
+     */
+    protected void loadCommands() {
+        ArrayList<Command> dialogues = CommandLoader.loadCommands(mcFunctionFile);
+        log.info("Commands loaded successfully.");
     }
 
     /**

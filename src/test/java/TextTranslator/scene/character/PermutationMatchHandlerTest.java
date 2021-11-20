@@ -104,9 +104,9 @@ public class PermutationMatchHandlerTest extends PermutationMatchHandler {
     public void testCombinations() {
         CharacterScene mockScene = new CharacterScene();
         mockScene.addAll(Arrays.asList(
-                new Dialogue("Mom", "This is a test.", null, 1, 1, 1, 1),
-                new Dialogue("Mom", "This is also a test.", null, 1, 1, 10, 2),
-                new Dialogue("Dad", "Not mom speaking now", null, 1, 1, 30, 3)
+                new Dialogue("Mom", "This is a test.", "red", null, 1, 1, 1, 1, 1),
+                new Dialogue("Mom", "This is also a test.", "red", null, 1, 1, 1, 10, 2),
+                new Dialogue("Dad", "Not mom speaking now", "red", null, 1, 1, 1, 30, 3)
         ));
 
         ArrayList<PermutationMatch> expectedList = new ArrayList<>(Arrays.asList(

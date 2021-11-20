@@ -1,6 +1,6 @@
-package TextTranslator.loading;
+package TextTranslator.scene.commands;
 
-import TextTranslator.scene.character.Dialogue;
+import TextTranslator.loading.FileHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -15,21 +15,21 @@ import java.util.regex.Pattern;
 import static TextTranslator.utils.Library.ExtraInfo;
 
 /**
- * A class for loading the dialogue efficiently
+ * A class for loading the commands efficiently
  *
  * @author Jaggar
  */
 @Slf4j
-public class DialogueLoader {
+public class CommandLoader {
     /**
      * Gets the all lines and their values based on Jond's formatting *UNFINISHED*
      *
      * @param file the file to iterate through
-     * @return a list of dialogue data
+     * @return a list of mcfunction data
      */
     @ExtraInfo
-    public static ArrayList<Dialogue> loadDialogue(File file) {
-        ArrayList<Dialogue> dialogueList = new ArrayList<>();
+    public static ArrayList<Command> loadCommands(File file) {
+        ArrayList<Command> commandList = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
             String line;
@@ -38,33 +38,36 @@ public class DialogueLoader {
                 String originalLine = line;
                 line = FileHandler.correctLine(line);
                 String text = findText(line);
-                dialogueList.add(
-                        new Dialogue(
-                                findSpeaker(text), removeSpeaker(text), findColor(text), findDialogueTag(line),
-                                findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line), row,
-                                originalLine.replaceAll("\"\"", "\"")
+                commandList.add(
+                        CommandFactory.create(CommandFactory.identifyCommandType(line), new Command(findDialogueTag(line),
+                                        findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line), row,
+                                        originalLine.replaceAll("\"\"", "\""), null),
+                                text,
+                                findSpeaker(text), removeSpeaker(text), findColor(text),
+                                findScoreboardTarget(text), findScoreboardAction(text), findScoreboardSubAction(text)
                         ));
                 row++;
             }
             br.close();
         } catch (NumberFormatException | IOException e) {
-            log.error("Dialogue failed to be parsed from the line." , e);
+            log.error("Dialogue failed to be parsed from the line.", e);
         }
         log.info("Dialogue loaded successfully from: " + file.toString());
-        return dialogueList;
+        return commandList;
     }
 
     /**
-     * Finds the text from the command line extracted out of the excel sheet using a regex and loops through until
-     * the string to return has all of the lines of text for this command
-     * @param line The line of text from an excel sheet containing a tellraw command
-     * @return		The text for this particular command
+     * ,
+     * Finds the text from the command line extracted out of the input file using a regex and loops through until
+     * the string to return has all of the lines of te
+     *
+     * @return The text for this particular command
      */
     @ExtraInfo(UnitTested = true)
     protected static String findText(String line) {
         //(?:"text":")((?:(?!",")(?!"})[^}])*)		 actual pattern
         //(?:""text"":"")((?:(?!"","")(?!""})[^}])*) adjusted pattern
-        //Patterns in the excel sheet have extra quotation marks when they are read so we adjust the pattern to
+        //Patterns in the input file have extra quotation marks when they are read so we adjust the pattern to
         //account for this discrepancy
         Matcher matchText = Pattern.compile("\"\"text\"\":\"\"((?:(?!\"\",\"\")(?!\"\"})[^}])*)"
         ).matcher(line);
@@ -86,11 +89,11 @@ public class DialogueLoader {
     }
 
     /**
-     * Finds the trigger tag from the command line extracted out of the excel sheet by using a
+     * Finds the trigger score from the command line extracted out of the input file by using a
      * regex and loops through until the string to return has all of the lines of text for this command
      *
-     * @param line The line of text from an excel sheet containing a tellraw command
-     * @return The trigger tag for this particular command
+     * @param line The line of text from an input file
+     * @return The trigger score for this particular command
      */
     @ExtraInfo(UnitTested = true)
     protected static int findTriggerScore(String line) {
@@ -99,10 +102,10 @@ public class DialogueLoader {
     }
 
     /**
-     * Finds the minimum trigger score from the command line extracted out of the excel sheet by using a
+     * Finds the minimum trigger score from the command line extracted out of the input file by using a
      * regex and loops through until the string to return has all of the lines of text for this command
      *
-     * @param line The line of text from an excel sheet containing a tellraw command
+     * @param line The line of text from an input file containing a tellraw command
      * @return The minimum trigger score for this particular command
      */
     @ExtraInfo(UnitTested = true)
@@ -112,10 +115,10 @@ public class DialogueLoader {
     }
 
     /**
-     * Finds the dialogue tag from the command line extracted out of the excel sheet by using a
+     * Finds the dialogue tag from the command line extracted out of the input file by using a
      * regex and loops through until the string to return has all of the lines of text for this command
      *
-     * @param line The line of text from an excel sheet containing a tellraw command
+     * @param line The line of text from an input file
      * @return The dialogue tag for this particular command
      */
     @ExtraInfo(UnitTested = true)
@@ -125,10 +128,10 @@ public class DialogueLoader {
     }
 
     /**
-     * Finds the minimum talk time score from the command line extracted out of the excel sheet by using a
+     * Finds the minimum talk time score from the command line extracted out of the input file by using a
      * regex and loops through until the string to return has all of the lines of text for this command
      *
-     * @param line The line of text from an excel sheet containing a tellraw command
+     * @param line The line of text from an input file
      * @return The minimum talk time score for this particular command
      */
     @ExtraInfo(UnitTested = true)
@@ -138,10 +141,10 @@ public class DialogueLoader {
     }
 
     /**
-     * Finds the talk time from the command line extracted out of the excel sheet by using a
+     * Finds the talk time from the command line extracted out of the input file by using a
      * regex and loops through until the string to return has all of the lines of text for this command
      *
-     * @param line The line of text from an excel sheet containing a tellraw command
+     * @param line The line of text from an input file
      * @return The talk time for this particular command
      */
     @ExtraInfo(UnitTested = true)
@@ -152,7 +155,8 @@ public class DialogueLoader {
 
     /**
      * Finds the speaker within the string passed to this method found by the <method>findText</method>
-     * @param s		The text for the dialogue
+     *
+     * @param s The text for the dialogue
      * @return The speaker of the dialogue
      */
     @ExtraInfo(UnitTested = true)
@@ -181,6 +185,45 @@ public class DialogueLoader {
     protected static String findColor(String line) {
         Matcher matchColor = Pattern.compile("\"\"color\"\":\"\"((?:(?!\"\",\"\")(?!\"\"})[^}])*)"
         ).matcher(line);
-        return matchColor.find() ? matchColor.group(1) : null;
+        return matchColor.find() ? matchColor.group(1) : "";
+    }
+
+    /**
+     * Finds the scoreboard sub action from the command line extracted out of the input file by using a
+     * regex and loops through until the string to return has all of the lines of text for this command
+     *
+     * @param line The line of text from an input file
+     * @return The scoreboard target for this particular command
+     */
+    @ExtraInfo(UnitTested = false)
+    private static String findScoreboardSubAction(String line) {
+        Matcher matchScoreboard = Pattern.compile("scoreboard (.*)@a(?:\\[.*])(.*)").matcher(line);
+        return matchScoreboard.find() ? matchScoreboard.group(1).split(" ")[1] : null;
+    }
+
+    /**
+     * Finds the scoreboard action from the command line extracted out of the input file by using a
+     * regex and loops through until the string to return has all of the lines of text for this command
+     *
+     * @param line The line of text from an input file
+     * @return The scoreboard target for this particular command
+     */
+    @ExtraInfo(UnitTested = false)
+    private static String findScoreboardAction(String line) {
+        Matcher matchScoreboard = Pattern.compile("scoreboard (.*)@a(?:\\[.*])(.*)").matcher(line);
+        return matchScoreboard.find() ? matchScoreboard.group(2) : null;
+    }
+
+    /**
+     * Finds the scoreboard target from the command line extracted out of the input file by using a
+     * regex and loops through until the string to return has all of the lines of text for this command
+     *
+     * @param line The line of text from an input file
+     * @return The scoreboard target for this particular command
+     */
+    @ExtraInfo(UnitTested = false)
+    private static String findScoreboardTarget(String line) {
+        Matcher matchScoreboard = Pattern.compile("scoreboard (.*)@a(?:\\[.*])(.*)").matcher(line);
+        return matchScoreboard.find() ? matchScoreboard.group(1).split(" ")[0] : null;
     }
 }

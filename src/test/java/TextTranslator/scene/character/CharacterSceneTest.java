@@ -7,18 +7,18 @@ import java.util.Arrays;
 
 public class CharacterSceneTest extends CharacterScene {
     private static final CharacterScene mockList = new CharacterScene(Arrays.asList(
-            new Dialogue("Mom", "This is a text", null, 3, 3, 3, 35),
-            new Dialogue("Mom", "This is a text also", null, 3, 3, 3, 35),
-            new Dialogue("Mom", "This is a text also", null, 3, 3, 3, 33),
-            new Dialogue("Mom", "This is a text also", null, 3, 10, 3, 36),
-            new Dialogue("Mom", "This is a text also", null, 3, 10, 3, 35),
-            new Dialogue("Dad", "This is a text also", null, 3, 3, 3, 35)));
+            new Dialogue("Mom", "This is a text", "red", null, 3, 3, 3, 3, 35),
+            new Dialogue("Mom", "This is a text also", "red", null, 3, 3, 3, 3, 35),
+            new Dialogue("Mom", "This is a text also", "red", null, 3, 3, 3, 3, 33),
+            new Dialogue("Mom", "This is a text also", "red", null, 3, 3, 10, 3, 36),
+            new Dialogue("Mom", "This is a text also", "red", null, 3, 3, 10, 3, 35),
+            new Dialogue("Dad", "This is a text also", "red", null, 3, 3, 3, 3, 35)));
 
     @Test
     public void testRemoveCopies() {
         CharacterScene expected = new CharacterScene(Arrays.asList(
-                new Dialogue("Mom", "This is a text", null, 3, 3, 3, 35),
-                new Dialogue("Mom", "This is a text also", null, 3, 10, 3, 36)));
+                new Dialogue("Mom", "This is a text", "red", null, 3, 3, 3, 3, 35),
+                new Dialogue("Mom", "This is a text also", "red", null, 3, 3, 10, 3, 36)));
 
         mockList.removeCopies();
 
