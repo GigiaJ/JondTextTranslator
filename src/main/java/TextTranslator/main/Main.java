@@ -11,11 +11,13 @@ public class Main {
 		args = new String[]{"Test.tsv", "C:\\Users\\Jaggar\\Downloads\\englishSheet.csv", "C:\\Users\\Jaggar\\Downloads\\dialogue.mcfunction", "C:\\Users\\Jaggar\\Downloads\\eng_story.txt", "C:\\Users\\Jaggar\\Downloads\\spa_story.txt"};
 		MatchFinder finder = new MatchFinder(args);
 		finder.loadCommands();
-		finder.loadDialogues();
+		//finder.loadDialogues();
 		finder.matchDialogue();
 		finder.filterMatches();
+		finder.remergeTriggerSets();
 		finder.saveAsSpreadSheet();
-		finder.updateMCFunctionFile();
+		finder.generateMCFunctionFile();
+		//finder.updateMCFunctionFile();
 	}
 
 

@@ -215,14 +215,15 @@ public class CharacterSceneMatchHandler {
     /**
      * Gets the matching lines for the given scenes dialogue by iterating through  a generated permutations list
      * of dialogue texts
-     * @param scene         The scene to get the matching lines for
-     * @param textDump      The English text dump lines
-     * @param exactMatch    Whether or not the results should be an exact match or a partial match
-     * @return              The character scene passed as a Character Scene Match object containing the permutations
-     *                      that have matches and their respective matching line numbers in the English text dump
+     *
+     * @param scene      The scene to get the matching lines for
+     * @param textDump   The English text dump lines
+     * @param exactMatch Whether or not the results should be an exact match or a partial match
+     * @return The character scene passed as a Character Scene Match object containing the permutations
+     * that have matches and their respective matching line numbers in the English text dump
      */
-    @ExtraInfo(UnitTested = true, Review=true)
-    protected static CharacterSceneMatch getMatchingLines(CharacterScene scene, ArrayList<String> textDump, boolean exactMatch) {
+    @ExtraInfo(UnitTested = true, Review = true)
+    public static CharacterSceneMatch getMatchingLines(CharacterScene scene, ArrayList<String> textDump, boolean exactMatch) {
         CharacterSceneMatch sceneMatch = new CharacterSceneMatch(scene);
         ArrayList<PermutationMatch> permutationsList = PermutationMatchHandler.combinations(scene,
                 new ArrayList<>(), 0);

@@ -1,4 +1,4 @@
-package TextTranslator.scene.commands;
+package TextTranslator.scene.command;
 
 import TextTranslator.loading.FileHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -35,16 +35,15 @@ public class CommandLoader {
             String line;
             int row = 1;
             while ((line = br.readLine()) != null) {
-                String originalLine = line;
                 line = FileHandler.correctLine(line);
                 String text = findText(line);
                 commandList.add(
                         CommandFactory.create(CommandFactory.identifyCommandType(line), new Command(findDialogueTag(line),
                                         findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line), row,
-                                        originalLine.replaceAll("\"\"", "\""), null),
-                                text,
+                                        line, null),
+                                line,
                                 findSpeaker(text), removeSpeaker(text), findColor(text),
-                                findScoreboardTarget(text), findScoreboardAction(text), findScoreboardSubAction(text)
+                                findScoreboardCommand(line), findScoreboardAction(line), findPostMainTargetSelector(line)
                         ));
                 row++;
             }
@@ -65,13 +64,9 @@ public class CommandLoader {
      */
     @ExtraInfo(UnitTested = true)
     protected static String findText(String line) {
-        //(?:"text":")((?:(?!",")(?!"})[^}])*)		 actual pattern
-        //(?:""text"":"")((?:(?!"","")(?!""})[^}])*) adjusted pattern
-        //Patterns in the input file have extra quotation marks when they are read so we adjust the pattern to
-        //account for this discrepancy
-        Matcher matchText = Pattern.compile("\"\"text\"\":\"\"((?:(?!\"\",\"\")(?!\"\"})[^}])*)"
+        Matcher matchText = Pattern.compile("\"text\":\"((?:(?!\",\")(?!\"})[^}])*)"
         ).matcher(line);
-        Matcher matchSelector = Pattern.compile("(\"\"selector\"\":\"\"@)").matcher(line);
+        Matcher matchSelector = Pattern.compile("(\"selector\":\"@)").matcher(line);
         int lastStart = 0;
         StringBuilder s = new StringBuilder();
         while (matchText.find()) {
@@ -183,22 +178,23 @@ public class CommandLoader {
      */
     @ExtraInfo(UnitTested = true)
     protected static String findColor(String line) {
-        Matcher matchColor = Pattern.compile("\"\"color\"\":\"\"((?:(?!\"\",\"\")(?!\"\"})[^}])*)"
+        Matcher matchColor = Pattern.compile("\"color\":\"((?:(?!\",\")(?!\"})[^}])*)"
         ).matcher(line);
         return matchColor.find() ? matchColor.group(1) : "";
     }
 
     /**
-     * Finds the scoreboard sub action from the command line extracted out of the input file by using a
-     * regex and loops through until the string to return has all of the lines of text for this command
+     * Finds the content following the target selector from the command line
+     * extracted out of the input file by using a regex and loops through until
+     * the string to return has all of the lines of text for this command
      *
      * @param line The line of text from an input file
-     * @return The scoreboard target for this particular command
+     * @return The string following the target selector for this particular command
      */
     @ExtraInfo(UnitTested = false)
-    private static String findScoreboardSubAction(String line) {
-        Matcher matchScoreboard = Pattern.compile("scoreboard (.*)@a(?:\\[.*])(.*)").matcher(line);
-        return matchScoreboard.find() ? matchScoreboard.group(1).split(" ")[1] : null;
+    private static String findPostMainTargetSelector(String line) {
+        Matcher matchPostTargetSelector = Pattern.compile("@a\\[.*\\d{1,3}](.*)").matcher(line);
+        return matchPostTargetSelector.find() ? matchPostTargetSelector.group(1) : null;
     }
 
     /**
@@ -219,11 +215,12 @@ public class CommandLoader {
      * regex and loops through until the string to return has all of the lines of text for this command
      *
      * @param line The line of text from an input file
-     * @return The scoreboard target for this particular command
+     * @return The scoreboard command for this particular command line
      */
     @ExtraInfo(UnitTested = false)
-    private static String findScoreboardTarget(String line) {
+    private static String findScoreboardCommand(String line) {
         Matcher matchScoreboard = Pattern.compile("scoreboard (.*)@a(?:\\[.*])(.*)").matcher(line);
         return matchScoreboard.find() ? matchScoreboard.group(1).split(" ")[0] : null;
     }
+
 }

@@ -4,15 +4,16 @@ import TextTranslator.loading.DialogueLoader;
 import TextTranslator.loading.FileHandler;
 import TextTranslator.scene.LanguagesScene;
 import TextTranslator.scene.character.*;
-import TextTranslator.scene.command.CommandMaker;
-import TextTranslator.scene.command.CommandScene;
-import TextTranslator.scene.commands.Command;
-import TextTranslator.scene.commands.CommandLoader;
+import TextTranslator.scene.command.*;
+import TextTranslator.scene.dialogue.DialogueMaker;
+import TextTranslator.scene.dialogue.DialogueScene;
 import TextTranslator.utils.Language;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static TextTranslator.utils.Library.ExtraInfo;
 /**
@@ -37,7 +38,7 @@ public class MatchFinder {
     private static ArrayList<String> englishPlainGameText;
     private final ArrayList<ArrayList<String>> additionalLanguageGameTexts;
     private ArrayList<CharacterSceneMatch> scenes, dialogueMatchList, dialogueContainList;
-
+    private ArrayList<CommandTriggerSet> commandTriggerSets;
 
     /**
      * Creates a MatchFinder object from the program arguments and loads the text files associated
@@ -65,9 +66,34 @@ public class MatchFinder {
     /**
      * Loads all of the commands for the program and places it in this objects command list
      */
+    @ExtraInfo(UnitTested = false)
     protected void loadCommands() {
-        ArrayList<Command> dialogues = CommandLoader.loadCommands(mcFunctionFile);
+        ArrayList<Command> commands = CommandLoader.loadCommands(mcFunctionFile);
+        EXCEL_SHEET_SIZE = commands.size();
+        ArrayList<ArrayList<Command>> groups = CommandSorter.group(commands);
+        commandTriggerSets = new ArrayList<>();
+        groups.forEach(group -> commandTriggerSets.add(CommandSorter.split(group)));
+        scenes = new ArrayList<>();
+        commandTriggerSets.forEach(set -> {
+                    set.getCharacterScene().forEach(scene -> scenes.add(new CharacterSceneMatch(new CharacterScene(new ArrayList<>(Collections.singletonList(scene))))));
+                }
+        );
         log.info("Commands loaded successfully.");
+    }
+
+    /**
+     * Merges the separated and newly matched scenes into the respective trigger set
+     */
+    protected void remergeTriggerSets() {
+        commandTriggerSets.forEach(set -> {
+            CharacterSceneMatch mergedScene = new CharacterSceneMatch(new CharacterScene(new ArrayList<>()));
+            dialogueMatchList.forEach(scene -> {
+                if (set.getCharacterScene().getScene().contains(scene.getScene().get(0))) {
+                    mergedScene.merge(scene);
+                }
+            });
+            set.setCharacterScene(mergedScene);
+        });
     }
 
     /**
@@ -76,7 +102,7 @@ public class MatchFinder {
      */
     @ExtraInfo(UnitTested = true)
     protected void loadDialogues() {
-        ArrayList<Dialogue> dialogues = DialogueLoader.loadDialogue(spreadsheetFile);
+        ArrayList<TellRaw> dialogues = DialogueLoader.loadDialogue(spreadsheetFile);
         scenes = CharacterSceneHandler.assignDialogueToScene(dialogues);
         EXCEL_SHEET_SIZE = dialogues.size();
         log.info("Dialogues loaded successfully. Command excel sheet size is " + EXCEL_SHEET_SIZE + ".");
@@ -164,14 +190,31 @@ public class MatchFinder {
         for (CharacterSceneMatch scene : this.getSceneMatches()) {
             LanguagesScene languagesScene = new LanguagesScene();
             for (int i = 1; i < dumps.size(); i++) {
-                CommandScene sceneCommandsForLanguage = new CommandScene();
+                DialogueScene sceneCommandsForLanguage = new DialogueScene();
                 for (int t = 0; t < scene.getPermutationMatches().size(); t++)
-                    sceneCommandsForLanguage.addAll(new CommandMaker(scene, dumps.get(i), Language.values()[i]).createCommands(t));
+                    sceneCommandsForLanguage.addAll(new DialogueMaker(scene, dumps.get(i), Language.values()[i]).createCommands(t));
                 languagesScene.add(sceneCommandsForLanguage, Language.values()[i]);
             }
             allCommands.add(languagesScene);
         }
         return allCommands;
+    }
+
+    /**
+     * Generates a new MCFunction file from the CommandTriggerSets
+     */
+    public void generateMCFunctionFile() {
+        ArrayList<ArrayList<Command>> triggerSetCommands = new ArrayList<>();
+        commandTriggerSets.forEach(set -> {
+            ArrayList<Command> commands = new ArrayList<>();
+            commands.addAll(set.getCommands());
+            commands.addAll(set.getCharacterScene());
+            commands.sort(Comparator.comparingInt(Command::getRow));
+            triggerSetCommands.add(commands);
+        });
+        String[] text = {""};
+        triggerSetCommands.forEach(set -> set.forEach(command -> text[0] += command.getOriginalLine() + "\n"));
+        FileHandler.save("Test.mcfunction", text[0]);
     }
 
     /**

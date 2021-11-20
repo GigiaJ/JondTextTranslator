@@ -1,6 +1,6 @@
 package TextTranslator.loading;
 
-import TextTranslator.scene.character.Dialogue;
+import TextTranslator.scene.command.TellRaw;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -28,8 +28,8 @@ public class DialogueLoader {
      * @return a list of dialogue data
      */
     @ExtraInfo
-    public static ArrayList<Dialogue> loadDialogue(File file) {
-        ArrayList<Dialogue> dialogueList = new ArrayList<>();
+    public static ArrayList<TellRaw> loadDialogue(File file) {
+        ArrayList<TellRaw> dialogueList = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
             String line;
@@ -39,7 +39,7 @@ public class DialogueLoader {
                 line = FileHandler.correctLine(line);
                 String text = findText(line);
                 dialogueList.add(
-                        new Dialogue(
+                        new TellRaw(
                                 findSpeaker(text), removeSpeaker(text), findColor(text), findDialogueTag(line),
                                 findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line), row,
                                 originalLine.replaceAll("\"\"", "\"")

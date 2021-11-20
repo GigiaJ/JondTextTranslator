@@ -1,4 +1,4 @@
-package TextTranslator.scene.commands;
+package TextTranslator.scene.command;
 
 import org.junit.Assert;
 import org.junit.Test;

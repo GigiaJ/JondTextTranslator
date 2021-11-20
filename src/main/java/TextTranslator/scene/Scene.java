@@ -1,6 +1,6 @@
 package TextTranslator.scene;
 
-import TextTranslator.scene.character.Dialogue;
+import TextTranslator.scene.command.TellRaw;
 
 import java.util.ArrayList;
 
@@ -59,8 +59,8 @@ public interface Scene {
      * @return true if the list contains the dialogue otherwise false
      */
     @ExtraInfo(UnitTested = true)
-    static boolean checkContains(Dialogue toCheck, ArrayList<Dialogue> list) {
-        for (Dialogue toCheckAgainst : list) {
+    static boolean checkContains(TellRaw toCheck, ArrayList<TellRaw> list) {
+        for (TellRaw toCheckAgainst : list) {
             if (toCheckAgainst.getText().equals(toCheck.getText())
                     && toCheckAgainst.getRow() == toCheck.getRow()
                     && toCheckAgainst.getSpeaker().equals(toCheck.getSpeaker())

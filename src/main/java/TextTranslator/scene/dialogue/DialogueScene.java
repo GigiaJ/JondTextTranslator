@@ -1,4 +1,4 @@
-package TextTranslator.scene.command;
+package TextTranslator.scene.dialogue;
 
 import TextTranslator.scene.Scene;
 
@@ -7,12 +7,12 @@ import java.util.List;
 
 import static TextTranslator.utils.Library.ExtraInfo;
 
-public class CommandScene extends ArrayList<Command> implements Scene {
+public class DialogueScene extends ArrayList<Dialogue> implements Scene {
 
-    public CommandScene() {
+    public DialogueScene() {
     }
 
-    public CommandScene(List<Command> list) {
+    public DialogueScene(List<Dialogue> list) {
         super(list);
     }
 
@@ -25,7 +25,7 @@ public class CommandScene extends ArrayList<Command> implements Scene {
     @ExtraInfo(UnitTested = true)
     public ArrayList<String> getText() {
         ArrayList<String> text = new ArrayList<>();
-        for (Command command : this) {
+        for (Dialogue command : this) {
             text.add(command.toCommandForm());
         }
         return text;

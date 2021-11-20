@@ -1,7 +1,7 @@
 package TextTranslator.scene;
 
 
-import TextTranslator.scene.command.CommandScene;
+import TextTranslator.scene.dialogue.DialogueScene;
 import TextTranslator.utils.Language;
 
 import static TextTranslator.utils.Library.ExtraInfo;
@@ -10,13 +10,13 @@ import static TextTranslator.utils.Library.ExtraInfo;
  * A class to populate with the different languages for a given scene
  */
 public class LanguagesScene {
-    private CommandScene englishScenes;
-    private CommandScene spanishScenes;
-    private CommandScene germanScenes;
-    private CommandScene frenchScenes;
-    private CommandScene italianScene;
-    private CommandScene koreanScene;
-    private CommandScene japaneseScene;
+    private DialogueScene englishScenes;
+    private DialogueScene spanishScenes;
+    private DialogueScene germanScenes;
+    private DialogueScene frenchScenes;
+    private DialogueScene italianScene;
+    private DialogueScene koreanScene;
+    private DialogueScene japaneseScene;
 
     public LanguagesScene() {
     }
@@ -28,7 +28,7 @@ public class LanguagesScene {
      * @param language The language to determine what list to add to
      */
     @ExtraInfo(UnitTested = true)
-    public void add(CommandScene scene, Language language) {
+    public void add(DialogueScene scene, Language language) {
         switch (language) {
             case ENG -> englishScenes = scene;
             case SPA -> spanishScenes = scene;
@@ -47,7 +47,7 @@ public class LanguagesScene {
      * @return The scene for the language passed
      */
     @ExtraInfo(UnitTested = true)
-    public CommandScene get(Language language) {
+    public DialogueScene get(Language language) {
         return switch (language) {
             case ENG -> englishScenes;
             case SPA -> spanishScenes;

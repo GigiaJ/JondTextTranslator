@@ -1,4 +1,4 @@
-package TextTranslator.scene.command;
+package TextTranslator.scene.dialogue;
 
 import TextTranslator.scene.character.CharacterSceneMatch;
 import TextTranslator.scene.character.PermutationMatch;
@@ -12,7 +12,7 @@ import static TextTranslator.utils.Library.ExtraInfo;
  * A class to convert scenes back into commands
  */
 @SuppressWarnings("unused")
-public class CommandMaker {
+public class DialogueMaker {
     final String RETURN = "\\r";
     final String LINE_BREAK = "\\n";
     final String DIALOGUE_BREAK = "\\\\c";
@@ -30,7 +30,7 @@ public class CommandMaker {
      * @param dump     The text dump unedited by our searching method
      * @param language The language of the text dump
      */
-    public CommandMaker(CharacterSceneMatch scene, ArrayList<String> dump, Language language) {
+    public DialogueMaker(CharacterSceneMatch scene, ArrayList<String> dump, Language language) {
         this.scene = scene;
         this.dump = dump;
         this.language = language;
@@ -45,12 +45,12 @@ public class CommandMaker {
      * @return A list of dialogues representing a command for use in Minecraft
      */
     @ExtraInfo(UnitTested = true)
-    public CommandScene createCommands(int index) {
+    public DialogueScene createCommands(int index) {
         PermutationMatch match = scene.getPermutationMatches().get(index);
-        CommandScene commands = new CommandScene();
+        DialogueScene commands = new DialogueScene();
         String[] lines = dump.get(match.getLineMatches().get(0)).split(DIALOGUE_BREAK);
         for (String line : lines) {
-            commands.add(new Command(
+            commands.add(new Dialogue(
                     scene.get(match.getStart()).getSpeaker(),
                     line,
                     scene.get(match.getStart()).getColor(),

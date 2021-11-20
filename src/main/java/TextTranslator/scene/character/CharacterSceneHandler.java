@@ -1,5 +1,6 @@
 package TextTranslator.scene.character;
 
+import TextTranslator.scene.command.TellRaw;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class CharacterSceneHandler {
         for (int i = 0; i < map.length; i++) {
             int mapRow = i + 1;
             enterRowData(map, i, iterateThroughAllScenesAndDialogueUntilMatch(scenes,
-                    row -> (row == mapRow), Dialogue::getRow));
+                    row -> (row == mapRow), TellRaw::getRow));
         }
         return map;
     }
@@ -48,10 +49,10 @@ public class CharacterSceneHandler {
      * @return A dialogue matching the search constraints otherwise null
      */
     @ExtraInfo(UnitTested = true)
-    public static <T> Dialogue iterateThroughAllScenesAndDialogueUntilMatch(ArrayList<CharacterSceneMatch> scenes,
-                                                                            Predicate<T> checkObjects,
-                                                                            Function<Dialogue, T> objectFunction) {
-        final Dialogue[] d = {null};
+    public static <T> TellRaw iterateThroughAllScenesAndDialogueUntilMatch(ArrayList<CharacterSceneMatch> scenes,
+                                                                           Predicate<T> checkObjects,
+                                                                           Function<TellRaw, T> objectFunction) {
+        final TellRaw[] d = {null};
         scenes.stream().takeWhile(t -> (d[0] == null)).forEach(scene -> d[0] = iterateThroughScene(scene, checkObjects,
                 objectFunction));
         return d[0];
@@ -60,16 +61,17 @@ public class CharacterSceneHandler {
     /**
      * Iterates through the scene into every dialogue object and checks one of the parameters inside them against a passed
      * value. If the value matches returns the tested dialogue in the scene.
-     * @param scene             The scene to iterate through
-     * @param checkObjects      The predicate that should be used to test the two values
-     * @param objectFunction    The second value to be obtained from the dialogue
-     * @param <T>               The generic typing of the parameter to be extracted from the dialogue
+     *
+     * @param scene          The scene to iterate through
+     * @param checkObjects   The predicate that should be used to test the two values
+     * @param objectFunction The second value to be obtained from the dialogue
+     * @param <T>            The generic typing of the parameter to be extracted from the dialogue
      * @return A dialogue matching the search constraints otherwise null
      */
     @ExtraInfo(UnitTested = true)
-    public static <T> Dialogue iterateThroughScene(CharacterScene scene, Predicate<T> checkObjects,
-                                                   Function<Dialogue, T> objectFunction) {
-        for (Dialogue dialogue : scene) {
+    public static <T> TellRaw iterateThroughScene(CharacterScene scene, Predicate<T> checkObjects,
+                                                  Function<TellRaw, T> objectFunction) {
+        for (TellRaw dialogue : scene) {
             if (checkObjects.test(objectFunction.apply(dialogue))) {
                 return dialogue;
             }
@@ -84,8 +86,10 @@ public class CharacterSceneHandler {
      * @param dialogue  The dialogue to enter the data from
      */
     @ExtraInfo(UnitTested = true)
-    public static void enterRowData(String[][] map, int index, Dialogue dialogue) {
-        ArrayList<String> v = new ArrayList<>(Arrays.asList((map[index] != null) ? dialogue.getText() : "DUPLICATE", String.valueOf(dialogue.getRow())));
+    public static void enterRowData(String[][] map, int index, TellRaw dialogue) {
+        int row = dialogue == null ? index : dialogue.getRow();
+        String text = dialogue == null ? "" : dialogue.getText();
+        ArrayList<String> v = new ArrayList<>(Arrays.asList((map[index] != null) ? text : "DUPLICATE", String.valueOf(row)));
         for (int x = 2; x < map[index].length; x++) {
             v.add("");
         }
@@ -97,19 +101,19 @@ public class CharacterSceneHandler {
      * re-orders that scene to put the dialogue in correct order
      *
      * @param dialogueList        the list of dialogue to assign to scenes
-     * @return 					the scenes containing the matching dialogue
+     * @return the scenes containing the matching dialogue
      */
     @ExtraInfo(UnitTested = true)
-    public static ArrayList<CharacterSceneMatch> assignDialogueToScene(ArrayList<Dialogue> dialogueList) {
+    public static ArrayList<CharacterSceneMatch> assignDialogueToScene(ArrayList<TellRaw> dialogueList) {
         ArrayList<CharacterSceneMatch> scenes = new ArrayList<>();
         Object[] currentValues = new Object[]{"", 0, 0};
         CharacterSceneMatch scene = new CharacterSceneMatch(new CharacterScene());
-        for (Dialogue dialogue : dialogueList) {
+        for (TellRaw dialogue : dialogueList) {
             if (currentSceneIsEmpty(currentValues)) {
                 setSceneToCurrent(currentValues, dialogue);
             }
             if (isNotCurrentScene(currentValues, dialogue)) {
-                scene.sort(Comparator.comparingInt(Dialogue::getTalkTime));
+                scene.sort(Comparator.comparingInt(TellRaw::getTalkTime));
                 scene.removeCopies();
                 scenes.add(scene);
                 setSceneToCurrent(currentValues, dialogue);
@@ -137,7 +141,7 @@ public class CharacterSceneHandler {
      * @param dialogue          The dialogue to set the current values to
      */
     @ExtraInfo(UnitTested = true)
-    protected static void setSceneToCurrent(Object[] currentValues, Dialogue dialogue) {
+    protected static void setSceneToCurrent(Object[] currentValues, TellRaw dialogue) {
         currentValues[0] = dialogue.getSpeaker();
         currentValues[1] = dialogue.getTriggerScore();
         currentValues[2] = dialogue.getTalkTime();
@@ -152,7 +156,7 @@ public class CharacterSceneHandler {
      * @return Whether the dialogue is in the current scene or not
      */
     @ExtraInfo(UnitTested = true)
-    protected static boolean isNotCurrentScene(Object[] currentValues, Dialogue dialogue) {
+    protected static boolean isNotCurrentScene(Object[] currentValues, TellRaw dialogue) {
         return !dialogue.getSpeaker().equals(currentValues[0]) || dialogue.getTriggerScore() != (int) currentValues[1];
     }
 }

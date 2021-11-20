@@ -1,13 +1,14 @@
-package TextTranslator.scene.commands;
+package TextTranslator.scene.command;
 
 import lombok.Getter;
 import lombok.Setter;
 
 public enum CommandType {
-    TELLRAW("tellraw", TellRaw.class), EXECUTE("execute", Generic.class), TP("tp", Generic.class),
-    SCOREBOARD("scoreboard", Scoreboard.class),
-    CLEAR("clear", Generic.class), GIVE("give", Generic.class), COMMENT("#", Generic.class),
-    BLANK("", Generic.class), SCENE_DIVIDER("#~~~", Generic.class);
+    TELLRAW("tellraw", TellRaw.class), EXECUTE("execute", Generic.class),
+    TP("tp", Generic.class),
+    SCOREBOARD("scoreboard", Scoreboard.class), CLEAR("clear", Generic.class),
+    GIVE("give", Generic.class), SCENE_DIVIDER("#----", Generic.class),
+    COMMENT("#", Generic.class), BLANK("", Generic.class);
 
     @Setter
     @Getter
@@ -23,7 +24,7 @@ public enum CommandType {
 
     @Override
     public String toString() {
-        return "CommandType{" +
+        return "CommandType{" + name() + ", " +
                 "commandWord='" + commandWord + '\'' +
                 '}';
     }

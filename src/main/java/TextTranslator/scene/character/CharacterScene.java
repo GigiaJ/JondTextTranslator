@@ -1,6 +1,7 @@
 package TextTranslator.scene.character;
 
 import TextTranslator.scene.Scene;
+import TextTranslator.scene.command.TellRaw;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -16,24 +17,25 @@ import static TextTranslator.utils.Library.ExtraInfo;
  *
  * @author Jaggar
  */
-public class CharacterScene extends ArrayList<Dialogue> implements Scene {
+public class CharacterScene extends ArrayList<TellRaw> implements Scene {
 
 	public CharacterScene() {
 	}
 
-	public CharacterScene(List<Dialogue> list) {
+	public CharacterScene(List<TellRaw> list) {
 		super(list);
 	}
 
 	/**
 	 * Returns all the text in this objects list in order of appearance in the excel sheet
+	 *
 	 * @return the text in order of appearance in the commands excel sheet
 	 */
 	@ExtraInfo(UnitTested = true)
 	@Override
 	public ArrayList<String> getText() {
 		ArrayList<String> text = new ArrayList<>();
-		for (Dialogue dialogue : this) {
+		for (TellRaw dialogue : this) {
 			text.add(dialogue.getText());
 		}
 		return text;
@@ -66,8 +68,8 @@ public class CharacterScene extends ArrayList<Dialogue> implements Scene {
 	 */
 	@ExtraInfo(UnitTested = true)
 	public void removeCopies() {
-		ArrayList<Dialogue> list = new ArrayList<>();
-		for (Dialogue toCheck : this) {
+		ArrayList<TellRaw> list = new ArrayList<>();
+		for (TellRaw toCheck : this) {
 			if (!Scene.checkContains(toCheck, list)) {
 				list.add(toCheck);
 			}

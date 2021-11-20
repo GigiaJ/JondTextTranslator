@@ -30,6 +30,18 @@ public class CharacterSceneMatch extends CharacterScene {
 	}
 
 	/**
+	 * Merges this CharacterSceneMatch object with another
+	 *
+	 * @param scene
+	 */
+	public void merge(CharacterSceneMatch scene) {
+		this.add(scene.getScene().get(0));
+		for (int i = 0; i < scene.getPermutationMatches().size(); i++) {
+			this.addPermutationMatch(scene.getPermutationMatches().get(i));
+		}
+	}
+
+	/**
 	 * Adds to the list of permutations and their matches
 	 *
 	 * @param match the permutation match to add

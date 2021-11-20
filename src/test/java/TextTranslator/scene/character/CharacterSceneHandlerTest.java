@@ -1,5 +1,6 @@
 package TextTranslator.scene.character;
 
+import TextTranslator.scene.command.TellRaw;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class CharacterSceneHandlerTest extends CharacterSceneHandler {
                 new CharacterSceneMatch(new CharacterScene())));
 
         for (int i = 1; i < mockScenes.size() + 1; i++)
-            mockScenes.get(i - 1).add(new Dialogue("Mom", "Sample Text", "red", null, i, i, i, i, i));
+            mockScenes.get(i - 1).add(new TellRaw("Mom", "Sample Text", "red", null, i, i, i, i, i));
 
         String[][] expectedCommandOutput = new String[4][5];
         for (int i = 1; i <= expectedCommandOutput.length; i++)
@@ -37,11 +38,11 @@ public class CharacterSceneHandlerTest extends CharacterSceneHandler {
 
         for (CharacterSceneMatch scene : mockScenes) {
             for (int i = 1; i <= EXPECTED_ROW + 1; i++) {
-                scene.add(new Dialogue("Mom", "Sample Text", "red", null, i, i, i, i, i));
+                scene.add(new TellRaw("Mom", "Sample Text", "red", null, i, i, i, i, i));
             }
         }
 
-        Dialogue toCheck = iterateThroughAllScenesAndDialogueUntilMatch(mockScenes, row -> (row == EXPECTED_ROW), Dialogue::getRow);
+        TellRaw toCheck = iterateThroughAllScenesAndDialogueUntilMatch(mockScenes, row -> (row == EXPECTED_ROW), TellRaw::getRow);
 
         Assert.assertEquals(EXPECTED_ROW, toCheck.getRow());
     }
@@ -52,10 +53,10 @@ public class CharacterSceneHandlerTest extends CharacterSceneHandler {
         CharacterSceneMatch mockScene = new CharacterSceneMatch(new CharacterScene());
 
         for (int i = 1; i <= EXPECTED_ROW + 1; i++) {
-            mockScene.add(new Dialogue("Mom", "Sample Text", "red", null, i, i, i, i, i));
+            mockScene.add(new TellRaw("Mom", "Sample Text", "red", null, i, i, i, i, i));
         }
 
-        Dialogue toCheck = iterateThroughScene(mockScene, row -> (row == EXPECTED_ROW), Dialogue::getRow);
+        TellRaw toCheck = iterateThroughScene(mockScene, row -> (row == EXPECTED_ROW), TellRaw::getRow);
         if (toCheck != null) {
             Assert.assertEquals(EXPECTED_ROW, toCheck.getRow());
         } else {
@@ -67,7 +68,7 @@ public class CharacterSceneHandlerTest extends CharacterSceneHandler {
     public void testEnterRowData() {
         final int OUTPUT_SIZE = 4;
         String[][] mockOutput = new String[OUTPUT_SIZE][5];
-        Dialogue mockDialogue = new Dialogue("Speaker", "Random Text", "Red", null, 2, 2, 2, 10, OUTPUT_SIZE);
+        TellRaw mockDialogue = new TellRaw("Speaker", "Random Text", "Red", null, 2, 2, 2, 10, OUTPUT_SIZE);
         String[] expectedEntry = {mockDialogue.getText(), String.valueOf(mockDialogue.getRow()), "", "", ""};
         for (int i = 1; i <= mockOutput.length - 1; i++)
             mockOutput[i - 1] = new String[]{"Sample Text", String.valueOf(i), "", "", ""};
@@ -81,19 +82,19 @@ public class CharacterSceneHandlerTest extends CharacterSceneHandler {
 
     @Test
     public void testAssignDialogueToScene() {
-        Dialogue dialogue1 = new Dialogue("Mom", "This is a text", "red", null, 3, 3, 3, 3, 31),
+        TellRaw dialogue1 = new TellRaw("Mom", "This is a text", "red", null, 3, 3, 3, 3, 31),
                 dialogue2 =
-                        new Dialogue("Mom", "This is a text also", "red", null, 3, 3, 3, 3, 35),
+                        new TellRaw("Mom", "This is a text also", "red", null, 3, 3, 3, 3, 35),
                 dialogue3 =
-                        new Dialogue("Mom", "This is a text also", "red", null, 3, 3, 3, 3, 39),
+                        new TellRaw("Mom", "This is a text also", "red", null, 3, 3, 3, 3, 39),
                 dialogue4 =
-                        new Dialogue("Dad", "This is a text also", "red", null, 3, 3, 3, 3, 50),
+                        new TellRaw("Dad", "This is a text also", "red", null, 3, 3, 3, 3, 50),
                 dialogue5 =
-                        new Dialogue("Mom", "This is a text also", "red", null, 3, 3, 10, 3, 10),
+                        new TellRaw("Mom", "This is a text also", "red", null, 3, 3, 10, 3, 10),
                 dialogue6 =
-                        new Dialogue("Mom", "This is a text also", "red", null, 3, 3, 10, 3, 15);
+                        new TellRaw("Mom", "This is a text also", "red", null, 3, 3, 10, 3, 15);
 
-        ArrayList<Dialogue> mockDialogueList = new ArrayList<>(
+        ArrayList<TellRaw> mockDialogueList = new ArrayList<>(
                 Arrays.asList(dialogue1, dialogue2, dialogue3, dialogue4, dialogue5, dialogue6));
 
         ArrayList<CharacterSceneMatch> expectedList = new ArrayList<>(Arrays.asList(
@@ -125,7 +126,7 @@ public class CharacterSceneHandlerTest extends CharacterSceneHandler {
     public void testSetSceneToCurrent() {
         Object[] mockValues = {"CurrentSpeaker", 2, 10};
         Object[] expectedValues = {"DifferentSpeaker", 3, 15};
-        Dialogue mockDialogue = new Dialogue("DifferentSpeaker", "Random Text", "red", null, 2, 2, 3, 15, 5);
+        TellRaw mockDialogue = new TellRaw("DifferentSpeaker", "Random Text", "red", null, 2, 2, 3, 15, 5);
         setSceneToCurrent(mockValues, mockDialogue);
         Assert.assertArrayEquals(mockValues, expectedValues);
     }
@@ -136,7 +137,7 @@ public class CharacterSceneHandlerTest extends CharacterSceneHandler {
         int mockTrigger = 2;
         int mockTalkTime = 10;
         Object[] mockValues = {mockSpeaker, mockTrigger, mockTalkTime};
-        Dialogue mockDialogue = new Dialogue(mockSpeaker, "Random Text", "red", null, 2, 2, mockTrigger, mockTalkTime, 5);
+        TellRaw mockDialogue = new TellRaw(mockSpeaker, "Random Text", "red", null, 2, 2, mockTrigger, mockTalkTime, 5, "");
         boolean checkScene = isNotCurrentScene(mockValues, mockDialogue);
         Assert.assertFalse(checkScene);
     }
