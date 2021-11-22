@@ -60,7 +60,7 @@ public class CharacterScene extends ArrayList<TellRaw> implements Scene {
 	 */
 	@Override
 	public int getTrigger(int index) {
-		return this.get(index).getTriggerScore();
+		return this.get(index).getMainTargetSelector().getDialogueTrigger();
 	}
 
 	/**

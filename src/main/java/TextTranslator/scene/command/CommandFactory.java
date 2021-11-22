@@ -17,7 +17,7 @@ public class CommandFactory {
      */
     public static Command create(CommandType type, Command command, String... args) {
         return switch (type) {
-            case TELLRAW -> new TellRaw(command, args[1], args[2], args[3]);
+            case TELLRAW -> new TellRaw(command, new TellRawText(args[1], args[2], args[3]));
             case SCOREBOARD -> new Scoreboard(command, args[4], args[5], args[6]);
             default -> new Generic(command, type, args[0], args[6]);
         };

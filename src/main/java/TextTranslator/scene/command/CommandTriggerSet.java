@@ -27,4 +27,6 @@ public class CommandTriggerSet {
         this.commands = commands;
         this.characterScene = characterScene;
     }
+
+
 }

@@ -1,6 +1,8 @@
 package TextTranslator.loading;
 
+import TextTranslator.scene.command.TargetSelector;
 import TextTranslator.scene.command.TellRaw;
+import TextTranslator.scene.command.TellRawText;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -40,8 +42,10 @@ public class DialogueLoader {
                 String text = findText(line);
                 dialogueList.add(
                         new TellRaw(
-                                findSpeaker(text), removeSpeaker(text), findColor(text), findDialogueTag(line),
-                                findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line), row,
+                                new TellRawText(findSpeaker(text), removeSpeaker(text), findColor(text)),
+                                new TargetSelector(findDialogueTag(line),
+                                findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line)),
+                                row,
                                 originalLine.replaceAll("\"\"", "\"")
                         ));
                 row++;

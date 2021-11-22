@@ -11,54 +11,37 @@ public class TellRaw extends Command {
 
     /**
      * Makes a new tellraw object with the values of the parent class as its own
-     *
-     * @param command the object that this one will get its values from
-     * @param speaker the speaker for this line of dialogue
-     * @param text    the actual text for this line of dialogue
-     * @param color   the color of the speaker's name for this line of dialogue
+     * @param tellRawText            the text associated with the tellraw
+     * @param command                the object that this one will get its values from
      */
-    public TellRaw(Command command, @NonNull String speaker, String text, String color) {
-        super(command.getDialogueTag(), command.getTriggerScore(),
-                command.getMinimumTrigger(), command.getMinimumTalkTime(), command.getTalkTime(),
-                command.getRow(), command.getOriginalLine(), CommandType.TELLRAW);
-        this.args = new String[]{speaker, text, color};
+    public TellRaw(Command command,  TellRawText tellRawText) {
+        super(command.getMainTargetSelector(), command.getRow(), command.getOriginalLine(), CommandType.TELLRAW);
+        this.args = new String[]{tellRawText.getSpeaker(), tellRawText.getText(), tellRawText.getColor()};
     }
 
     /**
      * Generates a new dialogue object with all of the fields in this class as parameters.
      *
-     * @param speaker         the speaker for this line of dialogue
-     * @param text            the actual text for this line of dialogue
-     * @param color           the color of the speaker's name for this line of dialogue
-     * @param dialogueTag     the dialogue tag value
-     * @param triggerScore    the dialogue trigger score
-     * @param minimumTrigger  the minimum dialogue trigger score for this command to execute
-     * @param minimumTalkTime the minimum talk time for this command to execute at
-     * @param talkTime        the talk time for this command
-     * @param row             the row from the source of this command
-     * @param originalLine    the original text for this command from the source
+     * @param mainTargetSelector     the target selector for this tell raw
+     * @param tellRawText            the text associated with the tellraw
+     * @param row                    the row from the source of this command
+     * @param originalLine           the original text for this command from the source
      */
-    public TellRaw(@NonNull String speaker, String text, String color, String dialogueTag, int triggerScore, int minimumTrigger, int minimumTalkTime, int talkTime, int row, String originalLine) {
-        super(dialogueTag, triggerScore, minimumTrigger, minimumTalkTime, talkTime, row, originalLine, CommandType.TELLRAW);
-        this.args = new String[]{speaker, text, color};
+    public TellRaw(TellRawText tellRawText, TargetSelector mainTargetSelector, int row, String originalLine) {
+        super(mainTargetSelector, row, originalLine, CommandType.TELLRAW);
+        this.args = new String[]{tellRawText.getSpeaker(), tellRawText.getText(), tellRawText.getColor()};
     }
 
     /**
      * Generates a new dialogue object with most of the fields in this class as parameters.
      *
-     * @param speaker         the speaker for this line of dialogue
-     * @param text            the actual text for this line of dialogue
-     * @param color           the color of the speaker's name for this line of dialogue
-     * @param dialogueTag     the dialogue tag value
-     * @param triggerScore    the dialogue trigger score
-     * @param minimumTrigger  the minimum dialogue trigger score for this command to execute
-     * @param minimumTalkTime the minimum talk time for this command to execute at
-     * @param talkTime        the talk time for this command
-     * @param row             the row from the source of this command
+     * @param tellRawText            the text associated with the tellraw
+     * @param mainTargetSelector     the target selector for this tell raw
+     * @param row                    the row from the source of this command
      */
-    public TellRaw(@NonNull String speaker, String text, String color, String dialogueTag, int triggerScore, int minimumTrigger, int minimumTalkTime, int talkTime, int row) {
-        super(dialogueTag, triggerScore, minimumTrigger, minimumTalkTime, talkTime, row, null, CommandType.TELLRAW);
-        this.args = new String[]{speaker, text, color};
+    public TellRaw(TellRawText tellRawText, TargetSelector mainTargetSelector, int row) {
+        super(mainTargetSelector, row, null, CommandType.TELLRAW);
+        this.args = new String[]{tellRawText.getSpeaker(), tellRawText.getText(), tellRawText.getColor()};
     }
 
     /**

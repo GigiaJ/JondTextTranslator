@@ -15,8 +15,7 @@ public class Scoreboard extends Command {
      * @param postTargetSelector the string data following the target selector
      */
     public Scoreboard(Command command, String operation, String action, String postTargetSelector) {
-        super(command.getDialogueTag(), command.getTriggerScore(),
-                command.getMinimumTrigger(), command.getMinimumTalkTime(), command.getTalkTime(),
+        super(command.getMainTargetSelector(),
                 command.getRow(), command.getOriginalLine(), CommandType.SCOREBOARD);
         this.args = new String[]{operation, action, postTargetSelector};
     }
@@ -24,19 +23,15 @@ public class Scoreboard extends Command {
     /**
      * Generates a new command object with all of the fields in this class as parameters.
      *
-     * @param dialogueTag        the dialogue tag value
-     * @param triggerScore       the dialogue trigger score
-     * @param minimumTrigger     the minimum dialogue trigger score for this command to execute
-     * @param minimumTalkTime    the minimum talk time for this command to execute at
-     * @param talkTime           the talk time for this command
+     * @param mainTargetSelector the main target selector for this command
      * @param row                the row from the source of this command
      * @param originalLine       the original text for this command from the source
      * @param operation          the scoreboard command being used
      * @param action             the action to invoke for this operation
      * @param postTargetSelector the string data following the target selector
      */
-    public Scoreboard(String dialogueTag, int triggerScore, int minimumTrigger, int minimumTalkTime, int talkTime, int row, String originalLine, String operation, String action, String postTargetSelector) {
-        super(dialogueTag, triggerScore, minimumTrigger, minimumTalkTime, talkTime, row, originalLine, CommandType.SCOREBOARD);
+    public Scoreboard(TargetSelector mainTargetSelector, int row, String originalLine, String operation, String action, String postTargetSelector) {
+        super(mainTargetSelector, row, originalLine, CommandType.SCOREBOARD);
         this.args = new String[]{operation, action, postTargetSelector};
     }
 

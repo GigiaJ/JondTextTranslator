@@ -1,6 +1,9 @@
 package TextTranslator.scene.character;
 
 import TextTranslator.scene.MockSceneAndTexts;
+import TextTranslator.scene.command.TargetSelector;
+import TextTranslator.scene.command.TellRaw;
+import TextTranslator.scene.command.TellRawText;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -99,9 +102,12 @@ public class CharacterSceneMatchHandlerTest extends CharacterSceneMatchHandler i
     @Test
     public void testGetMatchingLines() {
         CharacterScene mockScene = new CharacterScene();
-        mockScene.add(new Dialogue("Mom", "This", "red", null, 1, 1, 1, 1, 1));
-        mockScene.add(new Dialogue("Mom", "is", "red", null, 1, 1, 1, 15, 2));
-        mockScene.add(new Dialogue("Mom", "a", "red", null, 1, 1, 1, 27, 3));
+        mockScene.add(new TellRaw(new TellRawText("Mom", "This", "red"), new TargetSelector(null, 1, 1, 1, 1),
+                1));
+        mockScene.add(new TellRaw(new TellRawText("Mom", "is", "red"),
+                new TargetSelector(null, 1, 1, 1, 15), 2));
+        mockScene.add(new TellRaw(new TellRawText("Mom", "a", "red"),
+                new TargetSelector(null, 1, 1, 1, 27), 3));
         Assert.assertFalse(getMatchingLines(mockScene, mockEnglishText, true).getPermutationMatches().isEmpty());
     }
 

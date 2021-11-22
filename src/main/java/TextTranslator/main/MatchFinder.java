@@ -177,28 +177,6 @@ public class MatchFinder {
         FileHandler.save(args[ARGS.SAVE_FILE.getPosition()], FileHandler.generateOutput(generateMatchOutput()));
     }
 
-    /**
-     * Generates a list of languages scenes which contain the multiple languages the scene matches have been
-     * translated to in their command form (dialogue object)
-     *
-     * @return The list of language scenes
-     */
-    @ExtraInfo(UnitTested = true)
-    public ArrayList<LanguagesScene> getTranslatedCommands() {
-        ArrayList<LanguagesScene> allCommands = new ArrayList<>();
-        ArrayList<ArrayList<String>> dumps = this.getPlainLanguageText();
-        for (CharacterSceneMatch scene : this.getSceneMatches()) {
-            LanguagesScene languagesScene = new LanguagesScene();
-            for (int i = 1; i < dumps.size(); i++) {
-                DialogueScene sceneCommandsForLanguage = new DialogueScene();
-                for (int t = 0; t < scene.getPermutationMatches().size(); t++)
-                    sceneCommandsForLanguage.addAll(new DialogueMaker(scene, dumps.get(i), Language.values()[i]).createCommands(t));
-                languagesScene.add(sceneCommandsForLanguage, Language.values()[i]);
-            }
-            allCommands.add(languagesScene);
-        }
-        return allCommands;
-    }
 
     /**
      * Generates a new MCFunction file from the CommandTriggerSets
@@ -208,18 +186,20 @@ public class MatchFinder {
         commandTriggerSets.forEach(set -> {
             ArrayList<Command> commands = new ArrayList<>();
             commands.addAll(set.getCommands());
-            commands.addAll(set.getCharacterScene());
+            commands.addAll(DialogueMaker.generateLanguageTellRaws(set.getCharacterScene(), this.getPlainLanguageText()));
             commands.sort(Comparator.comparingInt(Command::getRow));
             triggerSetCommands.add(commands);
         });
         String[] text = {""};
-        triggerSetCommands.forEach(set -> set.forEach(command -> text[0] += command.getOriginalLine() + "\n"));
+        triggerSetCommands.forEach(set -> set.forEach(command ->
+                text[0] += command.getOriginalLine() + "\n"));
         FileHandler.save("Test.mcfunction", text[0]);
     }
 
     /**
      * Updates the entries in the passed mcfunction file with the alternate language commands
      */
+    /*
     @ExtraInfo(UnitTested = true)
     public void updateMCFunctionFile() {
         String text = "";
@@ -240,7 +220,7 @@ public class MatchFinder {
 
         FileHandler.save("Test.mcfunction", text);
     }
-
+    */
     /**
      * An enumeration detailing the order of program arguments
      */

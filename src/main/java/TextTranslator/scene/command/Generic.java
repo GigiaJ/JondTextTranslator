@@ -14,8 +14,7 @@ public class Generic extends Command {
      * @param postTargetSelector the string data following the target selector
      */
     public Generic(Command command, CommandType type, String text, String postTargetSelector) {
-        super(command.getDialogueTag(), command.getTriggerScore(),
-                command.getMinimumTrigger(), command.getMinimumTalkTime(), command.getTalkTime(),
+        super(command.getMainTargetSelector(),
                 command.getRow(), command.getOriginalLine(), type);
         this.args = new String[]{text, postTargetSelector};
     }
@@ -23,20 +22,16 @@ public class Generic extends Command {
     /**
      * Generates a new dialogue object with all of the fields in this class as parameters.
      *
-     * @param text               the actual text for this line of dialogue
-     * @param dialogueTag        the dialogue tag value
-     * @param triggerScore       the dialogue trigger score
-     * @param minimumTrigger     the minimum dialogue trigger score for this command to execute
-     * @param minimumTalkTime    the minimum talk time for this command to execute at
-     * @param talkTime           the talk time for this command
+     * @param text               the text of this command
+     * @param mainTargetSelector the main target selector for this command
      * @param row                the row from the source of this command
      * @param originalLine       the original text for this command from the source
      * @param text               the text that this command has
      * @param type               the type of this command
      * @param postTargetSelector the string data following the target selector
      */
-    public Generic(String dialogueTag, int triggerScore, int minimumTrigger, int minimumTalkTime, int talkTime, int row, String originalLine, String text, CommandType type, String postTargetSelector) {
-        super(dialogueTag, triggerScore, minimumTrigger, minimumTalkTime, talkTime, row, originalLine, type);
+    public Generic(TargetSelector mainTargetSelector, int row, String originalLine, String text, CommandType type, String postTargetSelector) {
+        super(mainTargetSelector, row, originalLine, type);
         this.args = new String[]{text, postTargetSelector};
     }
 

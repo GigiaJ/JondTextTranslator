@@ -38,13 +38,20 @@ public class CommandLoader {
                 line = FileHandler.correctLine(line);
                 String text = findText(line);
                 commandList.add(
-                        CommandFactory.create(CommandFactory.identifyCommandType(line), new Command(findDialogueTag(line),
-                                        findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line), row,
-                                        line, null),
+                        CommandFactory.create(
+                                CommandFactory.identifyCommandType(line),
+                                new Command(
+                                    new TargetSelector(
+                                            findDialogueTag(line),
+                                            findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line)
+                                    ),
+                                    row, line, null
+                                ),
                                 line,
                                 findSpeaker(text), removeSpeaker(text), findColor(text),
                                 findScoreboardCommand(line), findScoreboardAction(line), findPostMainTargetSelector(line)
-                        ));
+                        )
+                );
                 row++;
             }
             br.close();

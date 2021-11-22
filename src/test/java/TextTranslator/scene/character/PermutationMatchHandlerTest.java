@@ -1,5 +1,8 @@
 package TextTranslator.scene.character;
 
+import TextTranslator.scene.command.TargetSelector;
+import TextTranslator.scene.command.TellRaw;
+import TextTranslator.scene.command.TellRawText;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -104,9 +107,9 @@ public class PermutationMatchHandlerTest extends PermutationMatchHandler {
     public void testCombinations() {
         CharacterScene mockScene = new CharacterScene();
         mockScene.addAll(Arrays.asList(
-                new Dialogue("Mom", "This is a test.", "red", null, 1, 1, 1, 1, 1),
-                new Dialogue("Mom", "This is also a test.", "red", null, 1, 1, 1, 10, 2),
-                new Dialogue("Dad", "Not mom speaking now", "red", null, 1, 1, 1, 30, 3)
+                new TellRaw(new TellRawText("Mom", "This is a test.", "red"), new TargetSelector(null, 1, 1, 1, 1), 1),
+                new TellRaw( new TellRawText("Mom", "This is also a test.", "red"), new TargetSelector(null, 1, 1, 1, 10), 2),
+                new TellRaw( new TellRawText("Dad", "Not mom speaking now", "red"), new TargetSelector(null, 1, 1, 1, 30), 3)
         ));
 
         ArrayList<PermutationMatch> expectedList = new ArrayList<>(Arrays.asList(
