@@ -185,8 +185,7 @@ public class MatchFinder {
         ArrayList<ArrayList<Command>> triggerSetCommands = new ArrayList<>();
         commandTriggerSets.forEach(set -> {
             ArrayList<Command> commands = new ArrayList<>();
-            commands.addAll(set.getCommands());
-            commands.addAll(DialogueMaker.generateLanguageTellRaws(set.getCharacterScene(), this.getPlainLanguageText()));
+            commands.addAll(DialogueMaker.generateLanguageTellRaws(set.getCommands(), set.getCharacterScene(), this.getPlainLanguageText()));
             commands.sort(Comparator.comparingInt(Command::getRow));
             triggerSetCommands.add(commands);
         });
@@ -195,6 +194,8 @@ public class MatchFinder {
                 text[0] += command.getOriginalLine() + "\n"));
         FileHandler.save("Test.mcfunction", text[0]);
     }
+
+
 
     /**
      * Updates the entries in the passed mcfunction file with the alternate language commands
