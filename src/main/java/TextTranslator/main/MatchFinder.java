@@ -184,10 +184,9 @@ public class MatchFinder {
     public void generateMCFunctionFile() {
         ArrayList<ArrayList<Command>> triggerSetCommands = new ArrayList<>();
         commandTriggerSets.forEach(set -> {
-            ArrayList<Command> commands = new ArrayList<>();
-            commands.addAll(DialogueMaker.generateLanguageTellRaws(set.getCommands(), set.getCharacterScene(), this.getPlainLanguageText()));
-            commands.sort(Comparator.comparingInt(Command::getRow));
-            triggerSetCommands.add(commands);
+            set.getCommands().sort(Comparator.comparingInt(Command::getRow));
+            DialogueMaker.generateLanguageTellRaws(set, this.getPlainLanguageText());
+            triggerSetCommands.add(set.getCommands());
         });
         String[] text = {""};
         triggerSetCommands.forEach(set -> set.forEach(command ->

@@ -14,10 +14,13 @@ import java.util.ArrayList;
  */
 @Data
 public class CommandTriggerSet {
+
     /**
-     * The non-tellraw commands
+     * The list of commands for this set
      */
     ArrayList<Command> commands;
+    /**
+
     /**
      * The tellraw commands as a character scene object
      */

@@ -55,9 +55,8 @@ public class CommandSorter {
         for (Command command : group) {
             if (command instanceof TellRaw) {
                 tellRaws.add((TellRaw) command);
-            } else {
-                commands.add(command);
             }
+            commands.add(command);
         }
         return new CommandTriggerSet(commands, new CharacterSceneMatch(tellRaws));
     }

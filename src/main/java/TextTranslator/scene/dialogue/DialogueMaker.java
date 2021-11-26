@@ -1,12 +1,8 @@
 package TextTranslator.scene.dialogue;
 
-import TextTranslator.scene.LanguagesScene;
 import TextTranslator.scene.character.CharacterScene;
-import TextTranslator.scene.character.CharacterSceneMatch;
 import TextTranslator.scene.character.PermutationMatch;
-import TextTranslator.scene.command.Command;
-import TextTranslator.scene.command.TargetSelector;
-import TextTranslator.scene.command.TellRawText;
+import TextTranslator.scene.command.*;
 import TextTranslator.utils.Language;
 
 import java.util.ArrayList;
@@ -30,51 +26,69 @@ public class DialogueMaker {
      * @return A list of dialogues representing a command for use in Minecraft
      */
     @ExtraInfo(UnitTested = true)
-    public static CharacterScene createCommands(ArrayList<Command> commands, CharacterSceneMatch characterSceneMatch, ArrayList<String> dump, Language language, int index) {
-        PermutationMatch match = characterSceneMatch.getPermutationMatches().get(index);
+    public static CharacterScene createCommands(CommandTriggerSet set, ArrayList<String> dump, Language language, int index) {
+        PermutationMatch match = set.getCharacterScene().getPermutationMatches().get(index);
         CharacterScene characterScene = new CharacterScene();
         String[] lines = dump.get(match.getLineMatches().get(0)).split(DIALOGUE_BREAK);
-        int count = 0;
-        int calculatedTalkTime = 0;
-        TargetSelector currentTargetSelector = characterSceneMatch.get(index).getMainTargetSelector();
+        TargetSelector currentTargetSelector = set.getCharacterScene().get(index).getMainTargetSelector();
         for (String line : lines) {
             Dialogue dialogue = new Dialogue(
-                    new TellRawText(characterSceneMatch.get(index).getSpeaker(), line, characterSceneMatch.get(index).getColor()),
-                    adjustTargetSelector(currentTargetSelector, line, language, calculatedTalkTime),
+                    new TellRawText(set.getCharacterScene().get(index).getSpeaker(), line, set.getCharacterScene().get(index).getColor()),
+                    currentTargetSelector,
                     //characterSceneMatch.get(index).getMainTargetSelector(), //Remake the target selector with updated values
                     //Set an offset to determine future target selector values
-                    characterSceneMatch.getRow() + count,
-                    characterSceneMatch.get(index).getOriginalLine());
+                    0,
+                    set.getCharacterScene().get(index).getOriginalLine());
             dialogue.setOriginalLine(dialogue.toCommandForm());
             characterScene.add(dialogue);
-            count++;
-            calculatedTalkTime += line.toCharArray().length;
         }
 
         return characterScene;
     }
 
-    private static TargetSelector adjustTargetSelector(TargetSelector targetSelector, String line, Language language, int calculatedTalkTime) {
-        return new TargetSelector(targetSelector.getDialogueTag(), targetSelector.getDialogueTrigger(),
+    private static void adjustTargetSelector(Command command, Language language, int calculatedTalkTime) {
+        TargetSelector targetSelector = command.getMainTargetSelector();
+        command.setMainTargetSelector(new TargetSelector(targetSelector.getDialogueTag(), targetSelector.getDialogueTrigger(),
                 targetSelector.getDialogueTriggerMin(), targetSelector.getTalkTimeMin(),
-                (int) (calculatedTalkTime / (language.getLanguageInformationRate() * language.getLanguageSyllabicRate())));
+                (int) (calculatedTalkTime / (language.getLanguageInformationRate() * language.getLanguageSyllabicRate()))));
     }
 
-    private static void adjustRowNumber(ArrayList<Command> commands, int row, int rowOffset) {
-        for (Command command : commands) {
-            if (command.getRow() >= row)
-                command.setRow(command.getRow() + rowOffset);
-        }
-    }
-
-
-    public static CharacterScene generateLanguageTellRaws(ArrayList<Command> commands, CharacterSceneMatch characterSceneMatch, ArrayList<ArrayList<String>> dumps) {
-        CharacterScene characterScene = new CharacterScene();
+    public static void generateLanguageTellRaws(CommandTriggerSet set, ArrayList<ArrayList<String>> dumps) {
         for (int i = 1; i < dumps.size(); i++) {
-            for (int t = 0; t < characterSceneMatch.getPermutationMatches().size(); t++)
-                characterScene.addAll(DialogueMaker.createCommands(commands, characterSceneMatch, dumps.get(i), Language.values()[i], t));
+            for (int t = 0; t < set.getCharacterScene().getPermutationMatches().size(); t++) {
+                appendNewScenes(set, DialogueMaker.createCommands(set, dumps.get(i), Language.values()[i], t), Language.values()[i]);
+            }
         }
-        return characterScene;
+    }
+
+    public static void appendNewScenes(CommandTriggerSet set, CharacterScene characterScene, Language language) {
+        int calculatedTalkTime = 0;
+        for (int x = 0; x < set.getCommands().size(); x++) {
+            String line = "";
+            if (set.getCommands().get(x) instanceof TellRaw || set.getCommands().get(x) instanceof Dialogue) {
+                //Set a first calculated still
+                //Perhaps modify the talktimes within the characterscenematch even to ensure no mishaps
+                if (set.getCommands().get(x).getMainTargetSelector().getTalkTime() == characterScene.get(0).getMainTargetSelector().getTalkTime()) {
+                    if (x > 0) {
+                        calculatedTalkTime = set.getCommands().get(x-1).getMainTargetSelector().getTalkTime();
+                    }
+                    for (int y = 0; y < characterScene.size(); y++) {
+                        set.getCommands().add(x+y, characterScene.get(y));
+                        adjustTargetSelector(characterScene.get(y), language, calculatedTalkTime);
+                        calculatedTalkTime += ((Dialogue) set.getCommands().get(x)).getText().toCharArray().length;
+                    }
+                    set.getCommands().remove(x+characterScene.size());
+                    x = x + (characterScene.size() - 1);
+                }
+            }
+
+            if (set.getCommands().get(x).getMainTargetSelector().getTalkTime() >= characterScene.get(0).getMainTargetSelector().getTalkTime()) {
+                adjustTargetSelector(set.getCommands().get(x), language, calculatedTalkTime);
+                if (x > 0 && set.getCommands().get(x-1) instanceof Dialogue) {
+                    calculatedTalkTime += 2;
+                }
+            }
+        }
     }
 
     /**
