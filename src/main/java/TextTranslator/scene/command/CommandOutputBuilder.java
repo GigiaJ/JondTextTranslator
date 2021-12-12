@@ -37,6 +37,10 @@ public abstract class CommandOutputBuilder {
                 "tag=" + targetSelector.dialogueTag() + SEPARATOR +
                 "score_TalkTime_min=" + targetSelector.talkTimeMin() + SEPARATOR +
                 "score_TalkTime=" + targetSelector.talkTime() +
+                ((targetSelector.starterPick() != -1) ?
+                        (SEPARATOR + "score_StarterPick=" + targetSelector.starterPick() + SEPARATOR) : "") +
+                ((targetSelector.starterPickMin() != -1) ?
+                        ("score_StarterPick_min=" + targetSelector.starterPickMin()) : "") +
                 BLOCK_CLOSING;
     }
 

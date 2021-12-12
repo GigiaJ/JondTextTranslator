@@ -11,6 +11,12 @@ package TextTranslator.scene.command;
  * @param dialogueTriggerMin    the minimum dialogue trigger score for this command to execute
  * @param talkTimeMin           the minimum talk time for this command to execute at
  * @param talkTime              the talk time for this command
+ * @param starterPickMin A value containing the starter selection made by a player
+ * @param starterPick    A value containing the starter selection made by a player
  *
  */
-public record TargetSelector(String dialogueTag, int dialogueTrigger, int dialogueTriggerMin, int talkTimeMin, int talkTime){}
+public record TargetSelector(String dialogueTag, int dialogueTrigger, int dialogueTriggerMin, int talkTimeMin, int talkTime, int starterPickMin, int starterPick){
+    public TargetSelector(String dialogueTag, int dialogueTrigger, int dialogueTriggerMin, int talkTimeMin, int talkTime) {
+        this(dialogueTag, dialogueTrigger, dialogueTriggerMin, talkTimeMin, talkTime,-1, -1);
+    }
+}

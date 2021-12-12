@@ -43,7 +43,8 @@ public class CommandLoader {
                                 row,
                                 new TargetSelector(
                                             findDialogueTag(line),
-                                            findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line)),
+                                            findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line),
+                                        findMinimumStarterPick(line), findStarterPick(line)),
                                 line,
                                 findSpeaker(text), removeSpeaker(text), findColor(text),
                                 findScoreboardCommand(line), findScoreboardAction(line), findPostMainTargetSelector(line))
@@ -150,6 +151,33 @@ public class CommandLoader {
         Matcher matchTalkTime = Pattern.compile("score_TalkTime=(\\d*)").matcher(line);
         return matchTalkTime.find() ? Integer.parseInt(matchTalkTime.group(1)) : -1;
     }
+
+    /**
+     * Finds the starter pick from the command line extracted out of the input file by using a
+     * regex and loops through until the string to return has all of the lines of text for this command
+     *
+     * @param line The line of text from an input file
+     * @return The starter pick for this particular command
+     */
+    @ExtraInfo(UnitTested = true)
+    protected static int findStarterPick(String line) {
+        Matcher matchStarterPick = Pattern.compile("score_StarterPick=(\\d*)").matcher(line);
+        return matchStarterPick.find() ? Integer.parseInt(matchStarterPick.group(1)) : -1;
+    }
+
+    /**
+     * Finds the starter pick from the command line extracted out of the input file by using a
+     * regex and loops through until the string to return has all of the lines of text for this command
+     *
+     * @param line The line of text from an input file
+     * @return The starter pick for this particular command
+     */
+    @ExtraInfo(UnitTested = true)
+    protected static int findMinimumStarterPick(String line) {
+        Matcher matchStarterPickMin = Pattern.compile("score_StarterPick_min=(\\d*)").matcher(line);
+        return matchStarterPickMin.find() ? Integer.parseInt(matchStarterPickMin.group(1)) : -1;
+    }
+
 
     /**
      * Finds the speaker within the string passed to this method found by the <method>findText</method>
