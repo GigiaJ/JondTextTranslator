@@ -121,7 +121,7 @@ public class CommandLoader {
      */
     @ExtraInfo(UnitTested = true)
     protected static String findDialogueTag(String line) {
-        Matcher matchDialogueTag = Pattern.compile("tag=(!Dialogue\\d*)").matcher(line);
+        Matcher matchDialogueTag = Pattern.compile("tag=(\\w*\\d|\\W\\w*\\d*)").matcher(line);
         return matchDialogueTag.find() ? matchDialogueTag.group(1) : null;
     }
 
@@ -209,7 +209,7 @@ public class CommandLoader {
      */
     @ExtraInfo(UnitTested = false)
     private static String findScoreboardAction(String line) {
-        Matcher matchScoreboard = Pattern.compile("scoreboard (.*)@a(?:\\[.*])(.*)").matcher(line);
+        Matcher matchScoreboard = Pattern.compile("scoreboard (\\w*) (\\w*) @a(?:\\[.*])(.*)").matcher(line);
         return matchScoreboard.find() ? matchScoreboard.group(2) : null;
     }
 
@@ -222,8 +222,8 @@ public class CommandLoader {
      */
     @ExtraInfo(UnitTested = false)
     private static String findScoreboardCommand(String line) {
-        Matcher matchScoreboard = Pattern.compile("scoreboard (.*)@a(?:\\[.*])(.*)").matcher(line);
-        return matchScoreboard.find() ? matchScoreboard.group(1).split(" ")[0] : null;
+        Matcher matchScoreboard = Pattern.compile("scoreboard (\\w*) (\\w*) @a(?:\\[.*])(.*)").matcher(line);
+        return matchScoreboard.find() ? matchScoreboard.group(1) : null;
     }
 
 }

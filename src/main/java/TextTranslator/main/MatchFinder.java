@@ -192,33 +192,6 @@ public class MatchFinder {
         FileHandler.save("Test.mcfunction", text[0]);
     }
 
-
-
-    /**
-     * Updates the entries in the passed mcfunction file with the alternate language commands
-     */
-    /*
-    @ExtraInfo(UnitTested = true)
-    public void updateMCFunctionFile() {
-        String text = "";
-        for (String line : mcFunctionText) {
-            text += line + "\n";
-        }
-        ArrayList<LanguagesScene> languagesScenes = this.getTranslatedCommands();
-        for (LanguagesScene languagesScene : languagesScenes) {
-            for (int i = 0; i < languagesScene.get(Language.SPA).size(); i++) {
-                String originalLine = languagesScene.get(Language.SPA).get(i).getOriginalLine();
-                originalLine = originalLine.substring(1, originalLine.length() - 1);
-                String languageLine = languagesScene.get(Language.SPA).get(i).toCommandForm();
-                while (text.contains(originalLine)) {
-                    text = text.replace(originalLine, languageLine);
-                }
-            }
-        }
-
-        FileHandler.save("Test.mcfunction", text);
-    }
-    */
     /**
      * An enumeration detailing the order of program arguments
      */

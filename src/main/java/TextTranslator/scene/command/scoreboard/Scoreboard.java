@@ -11,20 +11,6 @@ import TextTranslator.scene.command.TargetSelector;
 public class Scoreboard extends Command {
 
     /**
-     * Makes a new scoreboard object with the values of the parent class as its own
-     *
-     * @param command            the object that this one will get its values from
-     * @param operation          the scoreboard command being used
-     * @param action             the action to invoke for this operation
-     * @param postTargetSelector the string data following the target selector
-     */
-    public Scoreboard(Command command, String operation, String action, String postTargetSelector) {
-        super(command.getMainTargetSelector(),
-                command.getRow(), command.getOriginalLine(), CommandType.SCOREBOARD);
-        this.args = new String[]{operation, action, postTargetSelector};
-    }
-
-    /**
      * Generates a new command object with all of the fields in this class as parameters.
      *
      * @param mainTargetSelector the main target selector for this command
@@ -47,7 +33,7 @@ public class Scoreboard extends Command {
     @Override
     public String toCommandForm() {
         return ScoreboardOutputBuilder.getInstance().generateCommandStart(this.getMainTargetSelector(), this.getScoreboardCommand(), this.getScoreboardAction())
-                + " "  + this.getPostTargetSelector();
+                + this.getPostTargetSelector();
     }
 
     /**

@@ -34,7 +34,7 @@ public abstract class CommandOutputBuilder {
         return BLOCK_OPENING +
                 "score_DialogueTrigger_min=" + targetSelector.dialogueTriggerMin() + SEPARATOR +
                 "score_DialogueTrigger=" + targetSelector.dialogueTrigger() + SEPARATOR +
-                "tag=!Dialgoue" + targetSelector.dialogueTag() + SEPARATOR +
+                "tag=" + targetSelector.dialogueTag() + SEPARATOR +
                 "score_TalkTime_min=" + targetSelector.talkTimeMin() + SEPARATOR +
                 "score_TalkTime=" + targetSelector.talkTime() +
                 BLOCK_CLOSING;

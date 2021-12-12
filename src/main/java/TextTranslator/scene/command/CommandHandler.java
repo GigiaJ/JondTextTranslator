@@ -48,7 +48,6 @@ public class CommandHandler {
         TargetSelector targetSelector = command.getMainTargetSelector();
         command.setMainTargetSelector(new TargetSelector(targetSelector.dialogueTag(), targetSelector.dialogueTrigger(),
                 targetSelector.dialogueTriggerMin(), languageSpecificTalkTime, languageSpecificTalkTime));
-        //command.setOriginalLine(command.toCommandForm());
     }
 
     public static void generateLanguageTellRaws(CommandTriggerSet set, ArrayList<ArrayList<String>> dumps) {
