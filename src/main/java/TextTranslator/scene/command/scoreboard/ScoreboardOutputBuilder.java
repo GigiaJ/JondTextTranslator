@@ -32,7 +32,7 @@ public class ScoreboardOutputBuilder extends CommandOutputBuilder {
     @ExtraInfo(UnitTested = false)
     public String generateCommandStart(TargetSelector targetSelector, String scoreboardCommand, String scoreboardAction) {
         return CommandType.SCOREBOARD.getCommandWord() + " "  +
-                scoreboardCommand + " " +
+                scoreboardCommand +
                 scoreboardAction + " " +
                 TargetSelectorType.ALL_PLAYERS.getValue() +
                 CommandOutputBuilder.generateTagPortion(targetSelector);

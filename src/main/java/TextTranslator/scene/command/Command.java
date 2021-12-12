@@ -43,6 +43,6 @@ public abstract class Command {
         this.type = type;
     }
 
-    protected abstract String toCommandForm();
+    public abstract String toCommandForm();
 
 }

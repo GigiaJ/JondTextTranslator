@@ -20,7 +20,7 @@ public abstract class CommandOutputBuilder {
      */
     @ExtraInfo(UnitTested = true)
     protected static String generatePlayerSelectorPortion(TargetSelector targetSelector) {
-        return wrapWithEntryChars(wrapWithFieldIdentifier("selector") + wrapWithFieldIdentifier("@p" + generateTagPortion(targetSelector)));
+        return wrapWithEntryChars(wrapWithFieldIdentifier("selector") + wrapWithFieldIdentifier(TargetSelectorType.NEAREST_PLAYER.getValue() + generateTagPortion(targetSelector)));
     }
 
     /**

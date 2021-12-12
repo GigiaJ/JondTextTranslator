@@ -31,6 +31,7 @@ public class TellrawOutputBuilder extends CommandOutputBuilder {
 
     /**
      * Generates the start of the tellraw command
+     *
      * @param targetSelector    the target selector for this command
      * @return the start of the tellraw command
      */
@@ -89,7 +90,7 @@ public class TellrawOutputBuilder extends CommandOutputBuilder {
         String[] entries = new String[strings.length + (strings.length / 2)];
         for (int x = 0, y = 1; x < strings.length + (strings.length / 2); x = x + 2, y = x + 1) {
             entries[x] = generateTextEntry(strings[x / 2]);
-            if (strings.length > 1)
+            if (strings.length > 1 && y < entries.length)
                 entries[y] = generatePlayerSelectorPortion(targetSelector);
         }
         return entries;

@@ -188,7 +188,7 @@ public class MatchFinder {
         });
         String[] text = {""};
         triggerSetCommands.forEach(set -> set.forEach(command ->
-                text[0] += command.getOriginalLine() + "\n"));
+                text[0] += command.toCommandForm() + "\n"));
         FileHandler.save("Test.mcfunction", text[0]);
     }
 

@@ -3,6 +3,7 @@ package TextTranslator.scene.command;
 import TextTranslator.scene.character.CharacterScene;
 import TextTranslator.scene.character.PermutationMatch;
 import TextTranslator.scene.command.dialogue.TellRaw;
+import TextTranslator.scene.command.dialogue.TellRawText;
 import TextTranslator.utils.Language;
 import static TextTranslator.utils.Library.ExtraInfo;
 
@@ -28,11 +29,15 @@ public class CommandHandler {
         CharacterScene characterScene = new CharacterScene();
         String[] lines = dump.get(match.getLineMatches().get(0)).split(DIALOGUE_BREAK);
         TargetSelector currentTargetSelector = set.getCharacterScene().get(index).getMainTargetSelector();
+
         for (String line : lines) {
-            set.getCharacterScene().get(index).setText(line);
-            set.getCharacterScene().get(index).setCharacterCount(set.getCharacterScene().get(index).getText().toCharArray().length);
-            set.getCharacterScene().get(index).setOriginalLine(set.getCharacterScene().get(index).toCommandForm());
-            characterScene.add(set.getCharacterScene().get(index));
+            TellRaw tellRaw = new TellRaw(new TellRawText(set.getCharacterScene().get(index).getSpeaker(),
+                            line,
+                            set.getCharacterScene().get(index).getColor()),
+                    currentTargetSelector, 0,
+                    set.getCharacterScene().get(index).getOriginalLine());
+            tellRaw.setCharacterCount(line.toCharArray().length);
+            characterScene.add(tellRaw);
         }
 
         return characterScene;
@@ -43,7 +48,7 @@ public class CommandHandler {
         TargetSelector targetSelector = command.getMainTargetSelector();
         command.setMainTargetSelector(new TargetSelector(targetSelector.dialogueTag(), targetSelector.dialogueTrigger(),
                 targetSelector.dialogueTriggerMin(), languageSpecificTalkTime, languageSpecificTalkTime));
-        command.setOriginalLine(command.toCommandForm());
+        //command.setOriginalLine(command.toCommandForm());
     }
 
     public static void generateLanguageTellRaws(CommandTriggerSet set, ArrayList<ArrayList<String>> dumps) {
@@ -65,7 +70,7 @@ public class CommandHandler {
                     if (set.getCommands().get(x).getMainTargetSelector().talkTime() == characterScene.get(0).getMainTargetSelector().talkTime()) {
                             for (int y = 0; y < characterScene.size(); y++) {
                                 set.getCommands().remove(x + y);
-                                calculatedTalkTime += ((TellRaw) characterScene.get(y)).getCharacterCount();
+                                calculatedTalkTime += characterScene.get(y).getCharacterCount();
                                 set.getCommands().add(x + y, characterScene.get(y));
                                 adjustTargetSelector(characterScene.get(y), language, calculatedTalkTime);
                             }
@@ -73,15 +78,18 @@ public class CommandHandler {
                     }
                 }
             }
-            if (set.getCommands().get(x).getMainTargetSelector().talkTime() <= characterScene.get(0).getMainTargetSelector().talkTime() ||
-                    set.getCommands().get(x).getMainTargetSelector().talkTimeMin() <= characterScene.get(0).getMainTargetSelector().talkTimeMin()) {
-                if (x > 0 && set.getCommands().get(x - 1) instanceof TellRaw) {
-                    calculatedTalkTime += 2;
-                }
-                if (!(set.getCommands().get(x) instanceof TellRaw)) {
-                    adjustTargetSelector(set.getCommands().get(x), language, calculatedTalkTime);
+            else {
+                if (set.getCommands().get(x).getMainTargetSelector().talkTime() <= characterScene.get(0).getMainTargetSelector().talkTime() ||
+                        set.getCommands().get(x).getMainTargetSelector().talkTimeMin() <= characterScene.get(0).getMainTargetSelector().talkTimeMin()) {
+                    if (x > 0) {
+                        if (set.getCommands().get(x).getMainTargetSelector().talkTimeMin() > 1) {
+                            calculatedTalkTime += 7;
+                            adjustTargetSelector(set.getCommands().get(x), language, calculatedTalkTime);
+                        }
+                    }
                 }
             }
+
         }
     }
 }
