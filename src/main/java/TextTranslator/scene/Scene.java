@@ -1,6 +1,6 @@
 package TextTranslator.scene;
 
-import TextTranslator.scene.command.TellRaw;
+import TextTranslator.scene.command.dialogue.TellRaw;
 
 import java.util.ArrayList;
 
@@ -64,7 +64,7 @@ public interface Scene {
             if (toCheckAgainst.getText().equals(toCheck.getText())
                     && toCheckAgainst.getRow() == toCheck.getRow()
                     && toCheckAgainst.getSpeaker().equals(toCheck.getSpeaker())
-                    && toCheckAgainst.getMainTargetSelector().getDialogueTrigger() == toCheck.getMainTargetSelector().getDialogueTrigger()) {
+                    && toCheckAgainst.getMainTargetSelector().dialogueTrigger() == toCheck.getMainTargetSelector().dialogueTriggerMin()) {
                 return true;
             }
         }

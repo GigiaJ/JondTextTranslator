@@ -13,18 +13,25 @@ plugins {
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
+compileJava {
+    options.warnings = false
+    options.deprecation = false
+    options.compilerArgs += ["-Xdoclint:none", "-Xlint:none", "-nowarn"]
+    options.compilerArgs += ["-Xlint"]
+    options.compilerArgs += ["--enable-preview"]
+}
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
     implementation 'org.projectlombok:lombok:1.18.18'
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'

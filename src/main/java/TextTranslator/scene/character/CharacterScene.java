@@ -1,7 +1,7 @@
 package TextTranslator.scene.character;
 
 import TextTranslator.scene.Scene;
-import TextTranslator.scene.command.TellRaw;
+import TextTranslator.scene.command.dialogue.TellRaw;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class CharacterScene extends ArrayList<TellRaw> implements Scene {
 	 */
 	@Override
 	public int getTrigger(int index) {
-		return this.get(index).getMainTargetSelector().getDialogueTrigger();
+		return this.get(index).getMainTargetSelector().dialogueTrigger();
 	}
 
 	/**

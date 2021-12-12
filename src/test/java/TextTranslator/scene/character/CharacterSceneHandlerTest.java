@@ -1,6 +1,6 @@
 package TextTranslator.scene.character;
 
-import TextTranslator.scene.command.TellRaw;
+import TextTranslator.scene.command.dialogue.TellRaw;
 import org.junit.Assert;
 import org.junit.Test;
 

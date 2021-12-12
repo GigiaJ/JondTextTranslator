@@ -2,6 +2,7 @@ package TextTranslator.scene.command;
 
 import TextTranslator.scene.character.CharacterScene;
 import TextTranslator.scene.character.CharacterSceneMatch;
+import TextTranslator.scene.command.dialogue.TellRaw;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;

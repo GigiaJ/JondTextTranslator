@@ -8,7 +8,7 @@ public class Main {
 	 *             For better detail look at MatchFinder.ARGS
 	 */
 	public static void main(String[] args) {
-		final String USER = "Jaggar";
+		final String USER = "Gigia";
 		args = new String[]{"Test.tsv", "C:\\Users\\"+ USER +"\\Downloads\\englishSheet.csv", "C:\\Users\\"+ USER +"\\Downloads\\dialogue.mcfunction",
 				"C:\\Users\\"+ USER +"\\Downloads\\eng_story.txt", "C:\\Users\\"+ USER +"\\Downloads\\spa_story.txt"};
 		MatchFinder finder = new MatchFinder(args);

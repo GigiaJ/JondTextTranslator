@@ -1,6 +1,6 @@
 package TextTranslator.scene.character;
 
-import TextTranslator.scene.command.TellRaw;
+import TextTranslator.scene.command.dialogue.TellRaw;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public class CharacterSceneHandler {
                 setSceneToCurrent(currentValues, dialogue);
             }
             if (isNotCurrentScene(currentValues, dialogue)) {
-                scene.sort(Comparator.comparingInt(t -> t.getMainTargetSelector().getTalkTime()));
+                scene.sort(Comparator.comparingInt(t -> t.getMainTargetSelector().talkTime()));
                 scene.removeCopies();
                 scenes.add(scene);
                 setSceneToCurrent(currentValues, dialogue);
@@ -143,8 +143,8 @@ public class CharacterSceneHandler {
     @ExtraInfo(UnitTested = true)
     protected static void setSceneToCurrent(Object[] currentValues, TellRaw dialogue) {
         currentValues[0] = dialogue.getSpeaker();
-        currentValues[1] = dialogue.getMainTargetSelector().getDialogueTrigger();
-        currentValues[2] = dialogue.getMainTargetSelector().getTalkTime();
+        currentValues[1] = dialogue.getMainTargetSelector().dialogueTrigger();
+        currentValues[2] = dialogue.getMainTargetSelector().talkTime();
     }
 
     /**
@@ -157,6 +157,6 @@ public class CharacterSceneHandler {
      */
     @ExtraInfo(UnitTested = true)
     protected static boolean isNotCurrentScene(Object[] currentValues, TellRaw dialogue) {
-        return !dialogue.getSpeaker().equals(currentValues[0]) || dialogue.getMainTargetSelector().getDialogueTrigger() != (int) currentValues[1];
+        return !dialogue.getSpeaker().equals(currentValues[0]) || dialogue.getMainTargetSelector().dialogueTrigger() != (int) currentValues[1];
     }
 }

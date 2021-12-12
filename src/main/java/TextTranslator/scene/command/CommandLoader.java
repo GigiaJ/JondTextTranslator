@@ -40,25 +40,21 @@ public class CommandLoader {
                 commandList.add(
                         CommandFactory.create(
                                 CommandFactory.identifyCommandType(line),
-                                new Command(
-                                    new TargetSelector(
+                                row,
+                                new TargetSelector(
                                             findDialogueTag(line),
-                                            findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line)
-                                    ),
-                                    row, line, null
-                                ),
+                                            findTriggerScore(line), findMinimumTrigger(line), findMinimumTalkTime(line), findTalkTime(line)),
                                 line,
                                 findSpeaker(text), removeSpeaker(text), findColor(text),
-                                findScoreboardCommand(line), findScoreboardAction(line), findPostMainTargetSelector(line)
-                        )
-                );
+                                findScoreboardCommand(line), findScoreboardAction(line), findPostMainTargetSelector(line))
+                        );
                 row++;
             }
             br.close();
         } catch (NumberFormatException | IOException e) {
-            log.error("Dialogue failed to be parsed from the line.", e);
+            log.error("Command failed to be parsed from the line.", e);
         }
-        log.info("Dialogue loaded successfully from: " + file.toString());
+        log.info("Command loaded successfully from: " + file.toString());
         return commandList;
     }
 

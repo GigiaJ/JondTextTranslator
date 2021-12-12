@@ -1,5 +1,8 @@
 package TextTranslator.scene.command;
 
+import TextTranslator.scene.command.generic.Generic;
+import TextTranslator.scene.command.scoreboard.Scoreboard;
+import TextTranslator.scene.command.dialogue.TellRaw;
 import lombok.Getter;
 import lombok.Setter;
 

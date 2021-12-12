@@ -1,6 +1,9 @@
-package TextTranslator.scene.command;
+package TextTranslator.scene.command.dialogue;
 
-import lombok.NonNull;
+import TextTranslator.scene.command.Command;
+import TextTranslator.scene.command.CommandType;
+import TextTranslator.scene.command.TargetSelector;
+import TextTranslator.utils.Library.ExtraInfo;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,7 +19,7 @@ public class TellRaw extends Command {
      */
     public TellRaw(Command command,  TellRawText tellRawText) {
         super(command.getMainTargetSelector(), command.getRow(), command.getOriginalLine(), CommandType.TELLRAW);
-        this.args = new String[]{tellRawText.getSpeaker(), tellRawText.getText(), tellRawText.getColor()};
+        this.args = new String[]{tellRawText.speaker(), tellRawText.text(), tellRawText.color(), "-1"};
     }
 
     /**
@@ -29,7 +32,7 @@ public class TellRaw extends Command {
      */
     public TellRaw(TellRawText tellRawText, TargetSelector mainTargetSelector, int row, String originalLine) {
         super(mainTargetSelector, row, originalLine, CommandType.TELLRAW);
-        this.args = new String[]{tellRawText.getSpeaker(), tellRawText.getText(), tellRawText.getColor()};
+        this.args = new String[]{tellRawText.speaker(), tellRawText.text(), tellRawText.color(), "-1"};
     }
 
     /**
@@ -39,9 +42,23 @@ public class TellRaw extends Command {
      * @param mainTargetSelector     the target selector for this tell raw
      * @param row                    the row from the source of this command
      */
-    public TellRaw(TellRawText tellRawText, TargetSelector mainTargetSelector, int row) {
+    public TellRaw(TargetSelector mainTargetSelector, int row, TellRawText tellRawText) {
         super(mainTargetSelector, row, null, CommandType.TELLRAW);
-        this.args = new String[]{tellRawText.getSpeaker(), tellRawText.getText(), tellRawText.getColor()};
+        this.args = new String[]{tellRawText.speaker(), tellRawText.text(), tellRawText.color(), "-1"};
+    }
+
+    /**
+     * Converts the command to its minecraft command text based form
+     *
+     * @return the text based command form of this command
+     */
+    @ExtraInfo(UnitTested = true)
+    @Override
+    public String toCommandForm() {
+        return TellrawOutputBuilder.getInstance().generateCommandStart(this.getMainTargetSelector())
+                + TellrawOutputBuilder.wrapWithBlockChars(
+                TellrawOutputBuilder.getInstance().getEntries(new TellRawText(this.getSpeaker(), this.getText(), this.getColor()),
+                        this.getMainTargetSelector()));
     }
 
     /**
@@ -84,5 +101,19 @@ public class TellRaw extends Command {
      */
     public void setColor(String s) {
         this.args[2] = s;
+    }
+
+    /**
+     * Retrieves the character count associated with this tellraw command by adjusting the generic args variable
+     */
+    public int getCharacterCount() {
+        return Integer.parseInt(args[3]);
+    }
+
+    /**
+     * Sets the character count associated with this tellraw command by adjusting the generic args variable
+     */
+    public void setCharacterCount(int i) {
+        args[3] = String.valueOf(i);
     }
 }

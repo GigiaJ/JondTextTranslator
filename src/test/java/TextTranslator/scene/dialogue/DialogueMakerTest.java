@@ -1,14 +1,11 @@
 package TextTranslator.scene.dialogue;
 
 import TextTranslator.scene.MockSceneAndTexts;
-import TextTranslator.scene.character.CharacterSceneMatch;
 import TextTranslator.scene.command.TargetSelector;
-import TextTranslator.scene.command.TellRawText;
-import TextTranslator.utils.Language;
+import TextTranslator.scene.command.dialogue.TellrawOutputBuilder;
+import TextTranslator.scene.command.dialogue.TellRawText;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 public class DialogueMakerTest implements MockSceneAndTexts {
 
@@ -60,7 +57,7 @@ public class DialogueMakerTest implements MockSceneAndTexts {
         Dialogue command = generateCommand();
         String[] expected = {"{\"text\":\"<\"}", "{\"text\":\"Mom\",\"color\":\"red\"}", "{\"text\":\"> This is a string.\"}"};
         for (int i = 0; i < expected.length; i++) {
-            Assert.assertEquals(expected[i], DialogueMaker.generateSpeakerEntries(command.getSpeaker(), command.getColor())[i]);
+            Assert.assertEquals(expected[i], TellrawOutputBuilder.generateSpeakerEntries(command.getSpeaker(), command.getColor())[i]);
         }
     }
 
@@ -73,28 +70,28 @@ public class DialogueMakerTest implements MockSceneAndTexts {
     public void testGenerateTextEntry() {
         Dialogue command = generateCommand();
         String expected = "\"text\":\"test\"";
-        Assert.assertEquals(expected, DialogueMaker.generateTextEntry("test"));
+        Assert.assertEquals(expected, TellrawOutputBuilder.generateTextEntry("test"));
     }
 
     @Test
     public void testGenerateColorField() {
         Dialogue command = generateCommand();
         String expected = "\"color:" + command.getColor() + "\"";
-        Assert.assertEquals(expected, DialogueMaker.generateColorField(command.getColor()));
+        Assert.assertEquals(expected, TellrawOutputBuilder.generateColorField(command.getColor()));
     }
 
     @Test
     public void testGetTextFieldKey() {
         Dialogue command = generateCommand();
         String expected = "\"text\"";
-        Assert.assertEquals(expected, DialogueMaker.getTextFieldKey());
+        Assert.assertEquals(expected, TellrawOutputBuilder.getTextFieldKey());
     }
 
     @Test
     public void testGetTextFieldValue() {
         Dialogue command = generateCommand();
         String expected = "\"test\"";
-        Assert.assertEquals(expected, DialogueMaker.getTextFieldValue("test"));
+        Assert.assertEquals(expected, TellrawOutputBuilder.getTextFieldValue("test"));
     }
 
     @Test
@@ -112,7 +109,7 @@ public class DialogueMakerTest implements MockSceneAndTexts {
     public void testWrapWithFieldIdentifier() {
         Dialogue command = generateCommand();
         String expected = "\"test\"";
-        Assert.assertEquals(expected, DialogueMaker.wrapWithFieldIdentifier("test"));
+        Assert.assertEquals(expected, TellrawOutputBuilder.wrapWithFieldIdentifier("test"));
     }
 
 

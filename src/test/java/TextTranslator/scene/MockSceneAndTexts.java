@@ -4,8 +4,8 @@ import TextTranslator.scene.character.CharacterScene;
 import TextTranslator.scene.character.CharacterSceneMatch;
 import TextTranslator.scene.character.PermutationMatch;
 import TextTranslator.scene.command.TargetSelector;
-import TextTranslator.scene.command.TellRaw;
-import TextTranslator.scene.command.TellRawText;
+import TextTranslator.scene.command.dialogue.TellRaw;
+import TextTranslator.scene.command.dialogue.TellRawText;
 
 import java.util.ArrayList;
 import java.util.Arrays;

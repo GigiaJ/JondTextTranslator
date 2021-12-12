@@ -1,8 +1,8 @@
 package TextTranslator.loading;
 
 import TextTranslator.scene.command.TargetSelector;
-import TextTranslator.scene.command.TellRaw;
-import TextTranslator.scene.command.TellRawText;
+import TextTranslator.scene.command.dialogue.TellRaw;
+import TextTranslator.scene.command.dialogue.TellRawText;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;

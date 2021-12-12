@@ -2,8 +2,8 @@ package TextTranslator.scene;
 
 import TextTranslator.scene.character.CharacterScene;
 import TextTranslator.scene.command.TargetSelector;
-import TextTranslator.scene.command.TellRaw;
-import TextTranslator.scene.command.TellRawText;
+import TextTranslator.scene.command.dialogue.TellRaw;
+import TextTranslator.scene.command.dialogue.TellRawText;
 import org.junit.Assert;
 import org.junit.Test;
 

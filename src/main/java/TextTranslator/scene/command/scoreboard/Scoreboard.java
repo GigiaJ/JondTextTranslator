@@ -1,5 +1,9 @@
-package TextTranslator.scene.command;
+package TextTranslator.scene.command.scoreboard;
 
+
+import TextTranslator.scene.command.Command;
+import TextTranslator.scene.command.CommandType;
+import TextTranslator.scene.command.TargetSelector;
 
 /**
  * A class representing a minecraft command
@@ -33,6 +37,17 @@ public class Scoreboard extends Command {
     public Scoreboard(TargetSelector mainTargetSelector, int row, String originalLine, String operation, String action, String postTargetSelector) {
         super(mainTargetSelector, row, originalLine, CommandType.SCOREBOARD);
         this.args = new String[]{operation, action, postTargetSelector};
+    }
+
+    /**
+     * Converts the command to its minecraft command text based form
+     *
+     * @return the text based command form of this command
+     */
+    @Override
+    public String toCommandForm() {
+        return ScoreboardOutputBuilder.getInstance().generateCommandStart(this.getMainTargetSelector(), this.getScoreboardCommand(), this.getScoreboardAction())
+                + " "  + this.getPostTargetSelector();
     }
 
     /**

@@ -2,12 +2,10 @@ package TextTranslator.main;
 
 import TextTranslator.loading.DialogueLoader;
 import TextTranslator.loading.FileHandler;
-import TextTranslator.scene.LanguagesScene;
 import TextTranslator.scene.character.*;
 import TextTranslator.scene.command.*;
-import TextTranslator.scene.dialogue.DialogueMaker;
-import TextTranslator.scene.dialogue.DialogueScene;
-import TextTranslator.utils.Language;
+import TextTranslator.scene.command.CommandHandler;
+import TextTranslator.scene.command.dialogue.TellRaw;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -185,7 +183,7 @@ public class MatchFinder {
         ArrayList<ArrayList<Command>> triggerSetCommands = new ArrayList<>();
         commandTriggerSets.forEach(set -> {
             set.getCommands().sort(Comparator.comparingInt(Command::getRow));
-            DialogueMaker.generateLanguageTellRaws(set, this.getPlainLanguageText());
+            CommandHandler.generateLanguageTellRaws(set, this.getPlainLanguageText());
             triggerSetCommands.add(set.getCommands());
         });
         String[] text = {""};
