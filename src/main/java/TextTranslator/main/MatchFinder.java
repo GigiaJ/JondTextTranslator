@@ -5,7 +5,9 @@ import TextTranslator.loading.FileHandler;
 import TextTranslator.scene.character.*;
 import TextTranslator.scene.command.*;
 import TextTranslator.scene.command.CommandHandler;
+import TextTranslator.scene.command.dialogue.LanguageData;
 import TextTranslator.scene.command.dialogue.TellRaw;
+import TextTranslator.utils.Language;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -86,8 +88,9 @@ public class MatchFinder {
         commandTriggerSets.forEach(set -> {
             CharacterSceneMatch mergedScene = new CharacterSceneMatch(new CharacterScene(new ArrayList<>()));
             dialogueMatchList.forEach(scene -> {
-                if (set.getCharacterScene().getScene().contains(scene.getScene().get(0))) {
-                    mergedScene.merge(scene);
+                int index = set.getCharacterScene().getScene().indexOf(scene.getScene().get(0));
+                if (index != -1) {
+                    mergedScene.subsume(set.getCharacterScene(), scene, index, 0);
                 }
             });
             set.setCharacterScene(mergedScene);
@@ -182,13 +185,16 @@ public class MatchFinder {
     public void generateMCFunctionFile() {
         ArrayList<ArrayList<Command>> triggerSetCommands = new ArrayList<>();
         commandTriggerSets.forEach(set -> {
-            set.getCommands().sort(Comparator.comparingInt(Command::getRow));
-            CommandHandler.generateLanguageTellRaws(set, this.getPlainLanguageText());
+            set.getCommands().sort(Comparator.comparingInt(o -> o.getMainTargetSelector().talkTime()));
+            CommandHandler.generateLanguageCommands(set, this.getPlainLanguageText());
             triggerSetCommands.add(set.getCommands());
         });
         String[] text = {""};
-        triggerSetCommands.forEach(set -> set.forEach(command ->
-                text[0] += command.toCommandForm() + "\n"));
+        triggerSetCommands.forEach(set -> {
+            set.sort(Comparator.comparingInt(Command::getRow));
+            set.forEach(command ->
+                    text[0] += command.toCommandForm(Language.ENG) + "\n");
+        });
         FileHandler.save("Test.mcfunction", text[0]);
     }
 

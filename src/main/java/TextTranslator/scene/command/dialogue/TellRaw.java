@@ -3,7 +3,9 @@ package TextTranslator.scene.command.dialogue;
 import TextTranslator.scene.command.Command;
 import TextTranslator.scene.command.CommandType;
 import TextTranslator.scene.command.TargetSelector;
+import TextTranslator.utils.Language;
 import TextTranslator.utils.Library.ExtraInfo;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -12,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TellRaw extends Command {
 
+    @Getter
+    private final String speaker, text, color;
+
     /**
      * Makes a new tellraw object with the values of the parent class as its own
      * @param tellRawText            the text associated with the tellraw
@@ -19,7 +24,9 @@ public class TellRaw extends Command {
      */
     public TellRaw(Command command,  TellRawText tellRawText) {
         super(command.getMainTargetSelector(), command.getRow(), command.getOriginalLine(), CommandType.TELLRAW);
-        this.args = new String[]{tellRawText.speaker(), tellRawText.text(), tellRawText.color(), "-1"};
+        this.speaker = tellRawText.speaker();
+        this.text = tellRawText.text();
+        this.color = tellRawText.color();
     }
 
     /**
@@ -32,7 +39,9 @@ public class TellRaw extends Command {
      */
     public TellRaw(TellRawText tellRawText, TargetSelector mainTargetSelector, int row, String originalLine) {
         super(mainTargetSelector, row, originalLine, CommandType.TELLRAW);
-        this.args = new String[]{tellRawText.speaker(), tellRawText.text(), tellRawText.color(), "-1"};
+        this.speaker = tellRawText.speaker();
+        this.text = tellRawText.text();
+        this.color = tellRawText.color();
     }
 
     /**
@@ -44,7 +53,9 @@ public class TellRaw extends Command {
      */
     public TellRaw(TargetSelector mainTargetSelector, int row, TellRawText tellRawText) {
         super(mainTargetSelector, row, null, CommandType.TELLRAW);
-        this.args = new String[]{tellRawText.speaker(), tellRawText.text(), tellRawText.color(), "-1"};
+        this.speaker = tellRawText.speaker();
+        this.text = tellRawText.text();
+        this.color = tellRawText.color();
     }
 
     /**
@@ -54,66 +65,20 @@ public class TellRaw extends Command {
      */
     @ExtraInfo(UnitTested = true)
     @Override
-    public String toCommandForm() {
-        return TellrawOutputBuilder.getInstance().generateCommandStart(this.getMainTargetSelector())
+    public String toCommandForm(Language language) {
+
+        return TellrawOutputBuilder.getInstance().generateCommandStart(
+                new TargetSelector(this.getMainTargetSelector().dialogueTag(),
+                        this.getMainTargetSelector().dialogueTrigger(),
+                        this.getMainTargetSelector().dialogueTriggerMin(),
+                        this.getLanguageData().getTalkTime(language), this.getLanguageData().getTalkTime(language))
+        )
                 + TellrawOutputBuilder.wrapWithBlockChars(
-                TellrawOutputBuilder.getInstance().getEntries(new TellRawText(this.getSpeaker(), this.getText(), this.getColor()),
+                TellrawOutputBuilder.getInstance().getEntries(new TellRawText(this.getSpeaker(), this.getLanguageData().getLine(language), this.getColor()),
                         this.getMainTargetSelector()));
     }
 
-    /**
-     * Gets the speaker of the tellraw command by checking the generic args variable
-     */
-    public String getSpeaker() {
-        return args[0];
-    }
-
-    /**
-     * Sets the speaker of the tellraw command by adjusting the generic args variable
-     */
-    public void setSpeaker(String s) {
-        this.args[0] = s;
-    }
-
-    /**
-     * Gets the speaker of the tellraw command by checking the generic args variable
-     */
-    public String getText() {
-        return args[1];
-    }
-
-    /**
-     * Sets the text of the tellraw command by adjusting the generic args variable
-     */
-    public void setText(String s) {
-        this.args[1] = s;
-    }
-
-    /**
-     * Gets the speaker of the tellraw command by checking the generic args variable
-     */
-    public String getColor() {
-        return args[2];
-    }
-
-    /**
-     * Sets the color of the tellraw command by adjusting the generic args variable
-     */
-    public void setColor(String s) {
-        this.args[2] = s;
-    }
-
-    /**
-     * Retrieves the character count associated with this tellraw command by adjusting the generic args variable
-     */
-    public int getCharacterCount() {
-        return Integer.parseInt(args[3]);
-    }
-
-    /**
-     * Sets the character count associated with this tellraw command by adjusting the generic args variable
-     */
-    public void setCharacterCount(int i) {
-        args[3] = String.valueOf(i);
+    public String toString() {
+        return getText();
     }
 }

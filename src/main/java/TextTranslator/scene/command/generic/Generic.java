@@ -3,12 +3,18 @@ package TextTranslator.scene.command.generic;
 import TextTranslator.scene.command.Command;
 import TextTranslator.scene.command.CommandType;
 import TextTranslator.scene.command.TargetSelector;
-import TextTranslator.scene.command.scoreboard.ScoreboardOutputBuilder;
+import TextTranslator.scene.command.dialogue.LanguageData;
+import TextTranslator.scene.command.dialogue.TellrawOutputBuilder;
+import TextTranslator.utils.Language;
+import lombok.Getter;
 
 /**
  * A class representing a command with generic functionality
  */
 public class Generic extends Command {
+
+    @Getter
+    private final String postTargetSelector;
 
     /**
      * Generates a new dialogue object with all of the fields in this class as parameters.
@@ -21,7 +27,7 @@ public class Generic extends Command {
      */
     public Generic(TargetSelector mainTargetSelector, int row, CommandType type, String originalLine,  String postTargetSelector) {
         super(mainTargetSelector, row, originalLine, type);
-        this.args = new String[]{postTargetSelector};
+        this.postTargetSelector = postTargetSelector;
     }
 
     /**
@@ -30,7 +36,7 @@ public class Generic extends Command {
      * @return the text based command form of this command
      */
     @Override
-    public String toCommandForm() {
+    public String toCommandForm(Language language) {
         switch(getType()) {
             case COMMENT, SCENE_DIVIDER -> {
                 return this.getOriginalLine();
@@ -39,28 +45,16 @@ public class Generic extends Command {
                 return "";
             }
             default -> {
-                return GenericOutputBuilder.getInstance().generateCommandStart(this.getMainTargetSelector(), this.getType())
+                return GenericOutputBuilder.getInstance().generateCommandStart(
+                        new TargetSelector(this.getMainTargetSelector().dialogueTag(),
+                                this.getMainTargetSelector().dialogueTrigger(),
+                                this.getMainTargetSelector().dialogueTriggerMin(),
+                                this.getLanguageData().getTalkTime(language),
+                                this.getLanguageData().getTalkTime(language)),
+                        this.getType())
                         + " "  + this.getPostTargetSelector();
             }
         }
 
     }
-
-    /**
-     * Retrieves the string data that follows the target selector
-     *
-     * @return the string following the target selector denoted by @a[info here]
-     */
-    public String getPostTargetSelector() {
-        return this.args[0];
-    }
-
-    /**
-     * Sets the string data following the target selector
-     */
-    public void setPostTargetSelector(String s) {
-        args[0] = s;
-    }
-
-
 }

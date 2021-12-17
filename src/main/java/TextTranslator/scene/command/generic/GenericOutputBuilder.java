@@ -4,7 +4,6 @@ import TextTranslator.scene.command.CommandOutputBuilder;
 import TextTranslator.scene.command.CommandType;
 import TextTranslator.scene.command.TargetSelector;
 import TextTranslator.scene.command.TargetSelectorType;
-import TextTranslator.scene.command.scoreboard.ScoreboardOutputBuilder;
 
 import static TextTranslator.utils.Library.ExtraInfo;
 

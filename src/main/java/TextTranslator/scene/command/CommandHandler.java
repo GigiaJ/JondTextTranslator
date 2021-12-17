@@ -8,6 +8,7 @@ import TextTranslator.utils.Language;
 import static TextTranslator.utils.Library.ExtraInfo;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static TextTranslator.scene.command.CommandOutputBuilder.DIALOGUE_BREAK;
 
@@ -36,31 +37,56 @@ public class CommandHandler {
                             set.getCharacterScene().get(index).getColor()),
                     currentTargetSelector, 0,
                     set.getCharacterScene().get(index).getOriginalLine());
-            tellRaw.setCharacterCount(line.toCharArray().length);
             characterScene.add(tellRaw);
         }
 
         return characterScene;
     }
 
+    public static String bindLanguageLines(CommandTriggerSet set, ArrayList<String> dump, Language language, int index, String previousLine) {
+        PermutationMatch match = set.getCharacterScene().getPermutationMatches().get(index);
+        String line = dump.get(match.getLineMatches().get(0));
+        if (!line.equals(previousLine)) {
+            set.getCharacterScene().get(index).getLanguageData().addLine(line, language);
+        }
+        return line;
+    }
+
+    /*
     private static void adjustTargetSelector(Command command, Language language, int calculatedTalkTime) {
         int languageSpecificTalkTime = (int) (calculatedTalkTime / (language.getLanguageInformationRate() * language.getLanguageSyllabicRate()));
         TargetSelector targetSelector = command.getMainTargetSelector();
         command.setMainTargetSelector(new TargetSelector(targetSelector.dialogueTag(), targetSelector.dialogueTrigger(),
                 targetSelector.dialogueTriggerMin(), languageSpecificTalkTime, languageSpecificTalkTime));
     }
+    */
 
-    public static void generateLanguageTellRaws(CommandTriggerSet set, ArrayList<ArrayList<String>> dumps) {
-        for (int i = 1; i < dumps.size(); i++) {
+
+    public static void generateLanguageCommands(CommandTriggerSet set, ArrayList<ArrayList<String>> dumps) {
+        for (int i = 0; i < dumps.size(); i++) {
+            String previousLine = "";
             for (int t = 0; t < set.getCharacterScene().getPermutationMatches().size(); t++) {
-                appendNewScenes(set, createCommands(set, dumps.get(0), Language.values()[0], t), Language.values()[0]);
+                previousLine = bindLanguageLines(set, dumps.get(i), Language.values()[i], t, previousLine);
+                appendNewScenes(set, Language.values()[i]);
             }
         }
     }
 
-    public static void appendNewScenes(CommandTriggerSet set, CharacterScene characterScene, Language language) {
-        int calculatedTalkTime = 0;
+    public static void appendNewScenes(CommandTriggerSet set, Language language) {
+        int talkTimeAccumulator = -1;
         for (int x = 0; x < set.getCommands().size(); x++) {
+            if (set.getCommands().get(x) instanceof TellRaw) {
+                int languageAdjustedTalkTime = (int) (set.getCommands().get(x).getLanguageData().getCharacterCount(language)
+                        / (language.getLanguageInformationRate() * language.getLanguageSyllabicRate()));
+                talkTimeAccumulator += languageAdjustedTalkTime;
+            }
+            else {
+                int talkTime = set.getCommands().get(x).getMainTargetSelector().talkTime();
+                talkTimeAccumulator += (talkTime == -1) ? 0 : talkTime;
+            }
+            set.getCommands().get(x).getLanguageData().setTalkTime(language,
+                    talkTimeAccumulator);
+            /*
             if (set.getCommands().get(x) instanceof TellRaw) {
                 if (((TellRaw) set.getCommands().get(x)).getCharacterCount() != -1) {
                     calculatedTalkTime += ((TellRaw) set.getCommands().get(x)).getCharacterCount();
@@ -89,6 +115,7 @@ public class CommandHandler {
                 }
             }
 
+             */
         }
     }
 }

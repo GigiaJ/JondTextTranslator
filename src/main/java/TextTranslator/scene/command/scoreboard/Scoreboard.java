@@ -4,11 +4,17 @@ package TextTranslator.scene.command.scoreboard;
 import TextTranslator.scene.command.Command;
 import TextTranslator.scene.command.CommandType;
 import TextTranslator.scene.command.TargetSelector;
+import TextTranslator.scene.command.dialogue.TellrawOutputBuilder;
+import TextTranslator.utils.Language;
+import lombok.Getter;
 
 /**
  * A class representing a minecraft command
  */
 public class Scoreboard extends Command {
+
+    @Getter
+    private final String operation, action, postTargetSelector;
 
     /**
      * Generates a new command object with all of the fields in this class as parameters.
@@ -22,7 +28,9 @@ public class Scoreboard extends Command {
      */
     public Scoreboard(TargetSelector mainTargetSelector, int row, String originalLine, String operation, String action, String postTargetSelector) {
         super(mainTargetSelector, row, originalLine, CommandType.SCOREBOARD);
-        this.args = new String[]{operation, action, postTargetSelector};
+        this.operation = operation;
+        this.action = action;
+        this.postTargetSelector = postTargetSelector;
     }
 
     /**
@@ -31,58 +39,13 @@ public class Scoreboard extends Command {
      * @return the text based command form of this command
      */
     @Override
-    public String toCommandForm() {
-        return ScoreboardOutputBuilder.getInstance().generateCommandStart(this.getMainTargetSelector(), this.getScoreboardCommand(), this.getScoreboardAction())
+    public String toCommandForm(Language language) {
+        return ScoreboardOutputBuilder.getInstance().generateCommandStart(
+                new TargetSelector(this.getMainTargetSelector().dialogueTag(),
+                        this.getMainTargetSelector().dialogueTrigger(),
+                        this.getMainTargetSelector().dialogueTriggerMin(),
+                        this.getLanguageData().getTalkTime(language), this.getLanguageData().getTalkTime(language)),
+                this.getOperation(), this.getAction())
                 + this.getPostTargetSelector();
     }
-
-    /**
-     * Retrieves the scoreboard command for this object from within the generic argument variable
-     *
-     * @return the text associated with this command
-     */
-    public String getScoreboardCommand() {
-        return args[0];
-    }
-
-    /**
-     * Sets the scoreboard command for this object by adjusting the generic args variable
-     */
-    public void setScoreboardCommand(String s) {
-        args[0] = s;
-    }
-
-    /**
-     * Retrieves the action for this object's scoreboard operation from within the generic argument variable
-     *
-     * @return the text associated with this command
-     */
-    public String getScoreboardAction() {
-        return args[1];
-    }
-
-    /**
-     * Sets the action of the object's scoreboard operation by adjusting the generic args variable
-     */
-    public void setScoreboardAction(String s) {
-        args[1] = s;
-    }
-
-    /**
-     * Retrieves the string data that follows the target selector
-     *
-     * @return the string following the target selector denoted by @LETTER[info here]
-     */
-    public String getPostTargetSelector() {
-        return this.args[2];
-    }
-
-    /**
-     * Sets the string data following the target selector
-     */
-    public void setPostTargetSelector(String s) {
-        args[2] = s;
-    }
-
-
 }

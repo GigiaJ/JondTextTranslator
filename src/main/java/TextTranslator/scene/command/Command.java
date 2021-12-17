@@ -1,6 +1,9 @@
 package TextTranslator.scene.command;
 
+import TextTranslator.scene.command.dialogue.LanguageData;
+import TextTranslator.utils.Language;
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,9 +27,9 @@ public abstract class Command {
      */
     private CommandType type;
     /**
-     * The command type specific values
+     * The language data related to this command object
      */
-    protected String[] args;
+    private LanguageData languageData;
 
     /**
      * Generates a new command object with all of the fields in this class as parameters.
@@ -41,8 +44,9 @@ public abstract class Command {
         this.row = row;
         this.originalLine = originalLine;
         this.type = type;
+        this.languageData = new LanguageData();
     }
 
-    public abstract String toCommandForm();
+    public abstract String toCommandForm(Language language);
 
 }
