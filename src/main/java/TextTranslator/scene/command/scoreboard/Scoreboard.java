@@ -3,6 +3,7 @@ package TextTranslator.scene.command.scoreboard;
 
 import TextTranslator.scene.command.Command;
 import TextTranslator.scene.command.CommandType;
+import TextTranslator.scene.command.Pair;
 import TextTranslator.scene.command.TargetSelector;
 import TextTranslator.scene.command.dialogue.TellrawOutputBuilder;
 import TextTranslator.utils.Language;
@@ -40,11 +41,12 @@ public class Scoreboard extends Command {
      */
     @Override
     public String toCommandForm(Language language) {
+        Pair<String, Integer> pair = this.getLanguageData().getAndRemovePair(language);
         return ScoreboardOutputBuilder.getInstance().generateCommandStart(
                 new TargetSelector(this.getMainTargetSelector().dialogueTag(),
                         this.getMainTargetSelector().dialogueTrigger(),
                         this.getMainTargetSelector().dialogueTriggerMin(),
-                        this.getLanguageData().getTalkTime(language), this.getLanguageData().getTalkTime(language)),
+                        pair.b(), pair.b()),
                 this.getOperation(), this.getAction())
                 + this.getPostTargetSelector();
     }

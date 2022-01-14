@@ -2,6 +2,7 @@ package TextTranslator.scene.command.generic;
 
 import TextTranslator.scene.command.Command;
 import TextTranslator.scene.command.CommandType;
+import TextTranslator.scene.command.Pair;
 import TextTranslator.scene.command.TargetSelector;
 import TextTranslator.scene.command.dialogue.LanguageData;
 import TextTranslator.scene.command.dialogue.TellrawOutputBuilder;
@@ -45,12 +46,13 @@ public class Generic extends Command {
                 return "";
             }
             default -> {
+                Pair<String, Integer> pair = this.getLanguageData().getAndRemovePair(language);
                 return GenericOutputBuilder.getInstance().generateCommandStart(
                         new TargetSelector(this.getMainTargetSelector().dialogueTag(),
                                 this.getMainTargetSelector().dialogueTrigger(),
                                 this.getMainTargetSelector().dialogueTriggerMin(),
-                                this.getLanguageData().getTalkTime(language),
-                                this.getLanguageData().getTalkTime(language)),
+                                pair.b(),
+                                pair.b()),
                         this.getType())
                         + " "  + this.getPostTargetSelector();
             }

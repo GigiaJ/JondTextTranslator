@@ -2,13 +2,14 @@ package TextTranslator.scene.command;
 
 import TextTranslator.scene.character.CharacterScene;
 import TextTranslator.scene.character.PermutationMatch;
+import TextTranslator.scene.command.dialogue.LanguageData;
 import TextTranslator.scene.command.dialogue.TellRaw;
 import TextTranslator.scene.command.dialogue.TellRawText;
 import TextTranslator.utils.Language;
 import static TextTranslator.utils.Library.ExtraInfo;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
 import static TextTranslator.scene.command.CommandOutputBuilder.DIALOGUE_BREAK;
 
@@ -43,49 +44,61 @@ public class CommandHandler {
         return characterScene;
     }
 
-    public static String bindLanguageLines(CommandTriggerSet set, ArrayList<String> dump, Language language, int index, String previousLine) {
-        PermutationMatch match = set.getCharacterScene().getPermutationMatches().get(index);
-        String line = dump.get(match.getLineMatches().get(0));
-        if (!line.equals(previousLine)) {
-            set.getCharacterScene().get(index).getLanguageData().addLine(line, language);
+    public static void bindLanguageLines(CommandTriggerSet set, ArrayList<String> dump, Language language, int matchIndex) {
+        List<PermutationMatch> matches = set.getCharacterScene().getPermutationMatches().stream().filter(e-> e.getStart() <= matchIndex && matchIndex <= e.getEnd()).toList();
+        PermutationMatch match = (matches.isEmpty()) ? null : matches.get(0);
+        if (match == null) {
+            return;
         }
-        return line;
-    }
+        int lineNumber = match.getLineMatches().get(0);
+        String[] lines = dump.get(lineNumber).split("\\\\c");
+        try {
+            //Todo Write a loop here for non-English language splitting
+            set.getCharacterScene().get(matchIndex).getLanguageData().addLine(lines[matchIndex - match.getStart()], language);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            set.getCharacterScene().get(matchIndex).getLanguageData().addLine("MATCH NOT CORRECTLY ASSIGNED WITHIN THIS DIALOGUE SERIES", language);
+        }
 
-    /*
-    private static void adjustTargetSelector(Command command, Language language, int calculatedTalkTime) {
-        int languageSpecificTalkTime = (int) (calculatedTalkTime / (language.getLanguageInformationRate() * language.getLanguageSyllabicRate()));
-        TargetSelector targetSelector = command.getMainTargetSelector();
-        command.setMainTargetSelector(new TargetSelector(targetSelector.dialogueTag(), targetSelector.dialogueTrigger(),
-                targetSelector.dialogueTriggerMin(), languageSpecificTalkTime, languageSpecificTalkTime));
     }
-    */
 
 
     public static void generateLanguageCommands(CommandTriggerSet set, ArrayList<ArrayList<String>> dumps) {
-        for (int i = 0; i < dumps.size(); i++) {
-            String previousLine = "";
-            for (int t = 0; t < set.getCharacterScene().getPermutationMatches().size(); t++) {
-                previousLine = bindLanguageLines(set, dumps.get(i), Language.values()[i], t, previousLine);
-                appendNewScenes(set, Language.values()[i]);
-            }
+        for (int t = 0; t < set.getCharacterScene().size(); t++) {
+            bindLanguageLines(set, dumps.get(0), Language.values()[0], t);
         }
+        appendNewScenes(set, Language.values()[0]);
+        /*
+        for (int i = 0; i < dumps.size(); i++) {
+            for (int t = 0, x = 0; t < set.getCharacterScene().getPermutationMatches().size(); t++) {
+                x = bindLanguageLines(set, dumps.get(i), Language.values()[i], t, x);
+            }
+            appendNewScenes(set, Language.values()[i]);
+        }
+         */
     }
 
     public static void appendNewScenes(CommandTriggerSet set, Language language) {
         int talkTimeAccumulator = -1;
+        int previousTalkTime = 0;
         for (int x = 0; x < set.getCommands().size(); x++) {
             if (set.getCommands().get(x) instanceof TellRaw) {
-                int languageAdjustedTalkTime = (int) (set.getCommands().get(x).getLanguageData().getCharacterCount(language)
-                        / (language.getLanguageInformationRate() * language.getLanguageSyllabicRate()));
-                talkTimeAccumulator += languageAdjustedTalkTime;
+                if (set.getCommands().get(x).getLanguageData().getLines(language) != null && !set.getCommands().get(x).getLanguageData().getLines(language).isEmpty()) {
+                    for (int i = 0; i < set.getCommands().get(x).getLanguageData().getLines(language).size(); i++) {
+                        int languageAdjustedTalkTime = getAdjustedTalkTime(set.getCommands().get(x).getLanguageData(), language, i);
+                        talkTimeAccumulator += languageAdjustedTalkTime;
+                        set.getCommands().get(x).getLanguageData().setTalkTime(language,
+                                talkTimeAccumulator, i);
+                    }
+                }
             }
             else {
-                int talkTime = set.getCommands().get(x).getMainTargetSelector().talkTime();
+                int talkTime = set.getCommands().get(x).getMainTargetSelector().talkTime() - previousTalkTime;
                 talkTimeAccumulator += (talkTime == -1) ? 0 : talkTime;
+                previousTalkTime = set.getCommands().get(x).getMainTargetSelector().talkTime();
+                set.getCommands().get(x).getLanguageData().setTalkTime(language,
+                        talkTimeAccumulator, 0);
             }
-            set.getCommands().get(x).getLanguageData().setTalkTime(language,
-                    talkTimeAccumulator);
+
             /*
             if (set.getCommands().get(x) instanceof TellRaw) {
                 if (((TellRaw) set.getCommands().get(x)).getCharacterCount() != -1) {
@@ -118,4 +131,12 @@ public class CommandHandler {
              */
         }
     }
+
+    private static int getAdjustedTalkTime(LanguageData languageData, Language language, int index) {
+            Pair<String, Integer> pair = languageData.getLines(language).get(index);
+            return (int) (LanguageData.getCharacterCount(pair)
+                    / (language.getLanguageInformationRate() * language.getLanguageSyllabicRate()));
+    }
+
+
 }

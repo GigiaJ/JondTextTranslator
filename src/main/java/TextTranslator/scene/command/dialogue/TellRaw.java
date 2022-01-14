@@ -2,10 +2,12 @@ package TextTranslator.scene.command.dialogue;
 
 import TextTranslator.scene.command.Command;
 import TextTranslator.scene.command.CommandType;
+import TextTranslator.scene.command.Pair;
 import TextTranslator.scene.command.TargetSelector;
 import TextTranslator.utils.Language;
 import TextTranslator.utils.Library.ExtraInfo;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,6 +18,9 @@ public class TellRaw extends Command {
 
     @Getter
     private final String speaker, text, color;
+    @Getter
+    @Setter
+    private int[] matchingLines;
 
     /**
      * Makes a new tellraw object with the values of the parent class as its own
@@ -66,15 +71,15 @@ public class TellRaw extends Command {
     @ExtraInfo(UnitTested = true)
     @Override
     public String toCommandForm(Language language) {
-
+        Pair<String, Integer> linePair = this.getLanguageData().getAndRemovePair(language);
         return TellrawOutputBuilder.getInstance().generateCommandStart(
                 new TargetSelector(this.getMainTargetSelector().dialogueTag(),
                         this.getMainTargetSelector().dialogueTrigger(),
                         this.getMainTargetSelector().dialogueTriggerMin(),
-                        this.getLanguageData().getTalkTime(language), this.getLanguageData().getTalkTime(language))
+                        linePair.b(), linePair.b())
         )
                 + TellrawOutputBuilder.wrapWithBlockChars(
-                TellrawOutputBuilder.getInstance().getEntries(new TellRawText(this.getSpeaker(), this.getLanguageData().getLine(language), this.getColor()),
+                TellrawOutputBuilder.getInstance().getEntries(new TellRawText(this.getSpeaker(), linePair.a(), this.getColor()),
                         this.getMainTargetSelector()));
     }
 

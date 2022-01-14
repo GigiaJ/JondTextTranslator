@@ -75,9 +75,10 @@ public class MatchFinder {
         groups.forEach(group -> commandTriggerSets.add(CommandSorter.split(group)));
         scenes = new ArrayList<>();
         commandTriggerSets.forEach(set -> {
-                    set.getCharacterScene().forEach(scene -> scenes.add(new CharacterSceneMatch(new CharacterScene(new ArrayList<>(Collections.singletonList(scene))))));
+                    scenes.add(set.getCharacterScene());
                 }
         );
+        scenes.forEach(scene -> scene.sort(Comparator.comparingInt(o -> o.getMainTargetSelector().talkTime())));
         log.info("Commands loaded successfully.");
     }
 
@@ -86,15 +87,15 @@ public class MatchFinder {
      */
     protected void remergeTriggerSets() {
         commandTriggerSets.forEach(set -> {
-            CharacterSceneMatch mergedScene = new CharacterSceneMatch(new CharacterScene(new ArrayList<>()));
-            dialogueMatchList.forEach(scene -> {
-                int index = set.getCharacterScene().getScene().indexOf(scene.getScene().get(0));
-                if (index != -1) {
-                    mergedScene.subsume(set.getCharacterScene(), scene, index, 0);
-                }
-            });
-            set.setCharacterScene(mergedScene);
-        });
+            if (!set.getCharacterScene().isEmpty()) {
+                dialogueMatchList.forEach(scene -> {
+                    if (set.getCharacterScene().getRow()
+                            == scene.getRow()) {
+                        set.setCharacterScene(scene);
+                    }
+                });
+            }});
+
     }
 
     /**
@@ -128,7 +129,7 @@ public class MatchFinder {
     @ExtraInfo(UnitTested = true)
     protected void filterMatches() {
         CharacterSceneMatchHandler.removeCollisions(dialogueMatchList, dialogueContainList, false);
-        dialogueMatchList.addAll(dialogueContainList);
+        //dialogueMatchList.addAll(dialogueContainList);
         PermutationMatchHandler.filterPermutations(dialogueMatchList);
         log.info("Scene matches filtered successfully.");
     }
@@ -192,10 +193,22 @@ public class MatchFinder {
         String[] text = {""};
         triggerSetCommands.forEach(set -> {
             set.sort(Comparator.comparingInt(Command::getRow));
-            set.forEach(command ->
-                    text[0] += command.toCommandForm(Language.ENG) + "\n");
+            text[0] += generateLanguageSpecificCommandOutputLine(set, Language.ENG);
         });
         FileHandler.save("Test.mcfunction", text[0]);
+    }
+
+    private String generateLanguageSpecificCommandOutputLine(ArrayList<Command> set, Language language) {
+        StringBuilder output = new StringBuilder();
+        for (Command command : set) {
+            while (command instanceof TellRaw && command.getLanguageData().getLines(language) != null &&!command.getLanguageData().getLines(language).isEmpty()) {
+                output.append(command.toCommandForm(language)).append("\n");
+            }
+            if (!(command instanceof TellRaw)) {
+                output.append(command.toCommandForm(language)).append("\n");
+            }
+        }
+        return output.toString();
     }
 
     /**

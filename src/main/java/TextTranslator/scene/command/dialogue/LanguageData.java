@@ -1,16 +1,21 @@
 package TextTranslator.scene.command.dialogue;
 
+import TextTranslator.scene.command.Pair;
 import TextTranslator.utils.Language;
 import TextTranslator.utils.Library.ExtraInfo;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * A class designed to store both language specific lines and language specific talk time values for commands
  */
 public class LanguageData {
 
-    private String englishLine, spanishLine, germanLine, frenchLine, italianLine, koreanLine, japaneseLine;
+    public static final String NO_MATCH = "Matching line not found";
+    private static final int NO_VALUE = -1;
 
-    private int englishTalkTime, spanishTalkTime, germanTalkTime, frenchTalkTime, italianTalkTime, koreanTalkTime, japaneseTalkTime;
+    private final Hashtable<Language, ArrayList<Pair<String, Integer>>> linesAndTalkTimes = new Hashtable<>();
 
     /**
      * Adds a line to the passed language's respective variable
@@ -20,15 +25,21 @@ public class LanguageData {
      */
     @ExtraInfo(UnitTested = false)
     public void addLine(String line, Language language) {
-        switch (language) {
-            case ENG -> englishLine = line;
-            case SPA -> spanishLine = line;
-            case GER -> germanLine = line;
-            case FRE -> frenchLine = line;
-            case ITA -> italianLine = line;
-            case KOR -> koreanLine = line;
-            case JPN -> japaneseLine = line;
+        linesAndTalkTimes.putIfAbsent(language,
+                new ArrayList<>());
+        linesAndTalkTimes.computeIfPresent(language, (k, v) -> {
+            v.add(new Pair<>(line, -1));
+            return v;
+        });
+    }
+
+    public Pair<String, Integer> getAndRemovePair(Language language) {
+        Pair<String, Integer> pair = new Pair<>(NO_MATCH, NO_VALUE);
+        if (linesAndTalkTimes.get(language) != null) {
+            pair = linesAndTalkTimes.get(language).get(0);
+            linesAndTalkTimes.get(language).remove(0);
         }
+        return pair;
     }
 
     /**
@@ -38,62 +49,33 @@ public class LanguageData {
      * @return The line for the language passed
      */
     @ExtraInfo(UnitTested = false)
-    public String getLine(Language language) {
-        String line = "";
-        switch (language) {
-            case ENG -> line = englishLine;
-            case SPA -> line = spanishLine;
-            case GER -> line = germanLine;
-            case FRE -> line = frenchLine;
-            case ITA -> line = italianLine;
-            case KOR -> line = koreanLine;
-            case JPN -> line = japaneseLine;
-        }
-        return (line == null) ? "Matching line not found" : line;
+    public ArrayList<Pair<String, Integer>> getLines(Language language) {
+        return linesAndTalkTimes.get(language);
     }
 
     /**
-     * Gets the talkTime for the command based on the language passed
      *
-     * @return the language specific talktime
+     * @param language
+     * @param talkTime
+     * @param index
      */
     @ExtraInfo(UnitTested = false)
-    public int getTalkTime(Language language) {
-        return switch (language) {
-            case ENG -> englishTalkTime;
-            case SPA -> spanishTalkTime;
-            case GER -> germanTalkTime;
-            case FRE -> frenchTalkTime;
-            case ITA -> italianTalkTime;
-            case KOR -> koreanTalkTime;
-            case JPN -> japaneseTalkTime;
-        };
-    }
-
-    /**
-     * Sets the talkTime for the command based on the language passed
-     */
-    @ExtraInfo(UnitTested = false)
-    public void setTalkTime(Language language, int talkTime) {
-        switch (language) {
-            case ENG -> englishTalkTime = talkTime;
-            case SPA -> spanishTalkTime = talkTime;
-            case GER -> germanTalkTime = talkTime;
-            case FRE -> frenchTalkTime = talkTime;
-            case ITA -> italianTalkTime = talkTime;
-            case KOR -> koreanTalkTime = talkTime;
-            case JPN -> japaneseTalkTime = talkTime;
-        }
+    public void setTalkTime(Language language, int talkTime, int index) {
+        linesAndTalkTimes.computeIfPresent(language, (k, v) -> {
+            Pair<String, Integer> pair = v.get(index);
+            v.set(index, new Pair<>(pair.a(), talkTime));
+            return v;
+        });
     }
 
 
     /**
-     * Retrieves the character count of the given language's line
      *
-     * @return The character count for the language's line
+     * @param line
+     * @return
      */
     @ExtraInfo(UnitTested = false)
-    public int getCharacterCount(Language language) {
-        return getLine(language).toCharArray().length;
+    public static int getCharacterCount(Pair<String, Integer> line) {
+        return line.a().toCharArray().length;
     }
 }
